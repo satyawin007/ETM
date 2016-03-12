@@ -13,7 +13,7 @@
 
 Route::get('/', function()
 {
-	return View::make('masters');
+	return View::make('masters.login');
 });
 
 Route::get('/logout', function()

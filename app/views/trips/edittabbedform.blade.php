@@ -10,7 +10,7 @@
 			.accordion-style1.panel-group .panel + .panel {
 			    margin-top: 10px;
 			}
-		</style
+		</style>
 	@stop
 
 	@section('bredcum')	

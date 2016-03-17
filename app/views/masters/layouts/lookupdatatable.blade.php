@@ -224,6 +224,7 @@
 			});
 
 			$("#submit").on("click",function(){
+<<<<<<< HEAD
 				vehicleno = $("#vehicleno").val();
 				if( vehicleno == ""){
 					alert("select vehicleno");
@@ -240,6 +241,104 @@
 					return false;
 				}
 			
+=======
+				
+				var statename = $("#statename").val();
+				if(statename != undefined && statename ==""){
+					alert("Please select statename");
+					return false;
+				}
+
+				var sourcecity = $("#sourcecity").val();
+				if(sourcecity != undefined && sourcecity ==""){
+					alert("Please select sourcecity");
+					return false;
+				}
+
+				var destinationcity = $("#destinationcity").val();
+				if(destinationcity != undefined && destinationcity ==""){
+					alert("Please select destinationcity");
+					return false;
+				}
+
+				var vehicletype = $("#vehicletype").val();
+				if(vehicletype != undefined && vehicletype ==""){
+					alert("Please select vehicletype");
+					return false;
+				}
+
+				var type = $("#type").val();
+				if(type != undefined && type==""){
+					alert("Please select type");
+					return false;
+				}
+
+				var cityname = $("#cityname").val();
+				if(cityname != undefined && cityname ==""){
+					alert("Please select cityname");
+					return false;
+				}
+
+				var bankname = $("#bankname").val();
+				if(bankname != undefined && bankname ==""){
+					alert("Please select bankname");
+					return false;
+				}
+
+				var accounttype = $("#accounttype").val();
+				if(accounttype != undefined && accounttype ==""){
+					alert("Please select accounttype");
+					return false;
+				}
+
+				var accounttype = $("#paymenttype").val();
+				if(paymenttype != undefined && paymenttype ==""){
+					alert("Please select paymenttype");
+					return false;
+				}
+
+				var accounttype = $("#bankaccount").val();
+				if(bankaccount != undefined && bankaccount ==""){
+					alert("Please select bankaccount");
+					return false;
+				}
+
+				var accounttype = $("#bankaccount").val();
+				if(bankaccount != undefined && bankaccount ==""){
+					alert("Please select bankaccount");
+					return false;
+				}
+
+				var accounttype = $("#financecompany").val();
+				if(financecompany != undefined && financecompany ==""){
+					alert("Please select financecompany");
+					return false;
+				}
+
+				var accounttype = $("#frequency").val();
+				if(frequency != undefined && frequency ==""){
+					alert("Please select frequency");
+					return false;
+				}
+
+				var accounttype = $("#status").val();
+				if(status != undefined && status ==""){
+					alert("Please select status");
+					return false;
+				}
+
+				var accounttype = $("#branchid").val();
+				if(branchid != undefined && branchid ==""){
+					alert("Please select branchid");
+					return false;
+				}
+
+				var accounttype = $("#provider").val();
+				if(provider != undefined && provider ==""){
+					alert("Please select provider");
+					return false;
+				}
+>>>>>>> test_branch
 				$("#{{$form_info['name']}}").submit();
 			});
 

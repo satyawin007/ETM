@@ -187,9 +187,9 @@ class FinanceCompanyController extends \Controller {
 		$form_fields[] = $form_field;
 		$form_field = array("name"=>"fulladdress", "content"=>"full address", "readonly"=>"",  "required"=>"required","type"=>"text", "class"=>"form-control");
 		$form_fields[] = $form_field;
-		$form_field = array("name"=>"statename", "content"=>"state name", "readonly"=>"",  "required"=>"required", "action"=>array("type"=>"onChange", "script"=>"changeState(this.value);"),  "type"=>"select", "class"=>"form-control", "options"=>$state_arr);
+		$form_field = array("name"=>"statename", "content"=>"state name", "readonly"=>"",  "required"=>"required", "action"=>array("type"=>"onChange", "script"=>"changeState(this.value);"),  "type"=>"select", "class"=>"form-control chosen-select", "options"=>$state_arr);
 		$form_fields[] = $form_field;
-		$form_field = array("name"=>"cityname", "content"=>"city name", "readonly"=>"",  "required"=>"required","type"=>"select", "options"=>array(), "class"=>"form-control");
+		$form_field = array("name"=>"cityname", "content"=>"city name", "readonly"=>"",  "required"=>"required","type"=>"select", "options"=>array(), "class"=>"form-control chosen-select");
 		$form_fields[] = $form_field;
 		
 		$form_info["form_fields"] = $form_fields;

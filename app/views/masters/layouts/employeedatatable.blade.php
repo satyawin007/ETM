@@ -108,7 +108,6 @@
 						$entities = $values['entities'];//Employee::paginate($entries);
 						//$entities = 
 						$total = $values["total"];					
-						
 						foreach($entities as $entity){ 
 					?>
 						<tr>
@@ -124,10 +123,13 @@
 										$jsfields = $action["jsdata"];
 										$jsdata = "";
 										$i=0;
-										for($i=0; $i<(count($jsfields)-1); $i++){
+										/*for($i=0; $i<(count($jsfields)-1); $i++){
 											$jsdata = $jsdata." '".$entity->$jsfields[$i]."', ";
 										}
-										$jsdata = $jsdata." '".$entity->$jsfields[$i];
+										*/
+										$jsdata = $jsdata." '".$entity->id."', ";
+										$jsdata = $jsdata." '".$entity->fullName."', ";
+										$jsdata = $jsdata." '".$entity->empCode;
 										echo "<a class='btn btn-minier btn-".$action["css"]."' href='".$action['url']."' data-toggle='modal' onClick=\"".$action['js'].$jsdata."')\">".strtoupper($action["text"])."</a>&nbsp; &nbsp;" ;
 									}
 									else {
@@ -270,8 +272,6 @@
 					//Note: if you are applying horizontal scrolling (sScrollX) on a ".table-bordered"
 					//you may want to wrap the table inside a "div.dataTables_borderWrap" element
 			
-					//"iDisplayLength": 50
-			
 			
 					select: {
 						style: 'multi'
@@ -344,6 +344,8 @@
 					}
 					$('.dt-button-collection').appendTo('.tableTools-container .dt-buttons')
 				});
+			
+				////
 			
 				////
 			

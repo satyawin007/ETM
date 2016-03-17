@@ -173,9 +173,9 @@ class ServiceDetailsController extends \Controller {
 			$city_arr[$city['id']] = $city->name;
 		}		
 				
-		$form_field = array("name"=>"sourcecity", "content"=>"Source city", "readonly"=>"",  "required"=>"required", "action"=>array("type"=>"onChange", "script"=>""),  "type"=>"select", "class"=>"form-control", "options"=>$city_arr);
+		$form_field = array("name"=>"sourcecity", "content"=>"Source city", "readonly"=>"",  "required"=>"required", "action"=>array("type"=>"onChange", "script"=>""),  "type"=>"select", "class"=>"form-control chosen-select", "options"=>$city_arr);
 		$form_fields[] = $form_field;
-		$form_field = array("name"=>"destinationcity", "content"=>"destination city", "readonly"=>"",  "required"=>"required", "action"=>array("type"=>"onChange", "script"=>""),  "type"=>"select", "class"=>"form-control", "options"=>$city_arr);
+		$form_field = array("name"=>"destinationcity", "content"=>"destination city", "readonly"=>"",  "required"=>"required", "action"=>array("type"=>"onChange", "script"=>""),  "type"=>"select", "class"=>"form-control chosen-select", "options"=>$city_arr);
 		$form_fields[] = $form_field;
 		$form_field = array("name"=>"serviceno", "content"=>"Service no", "readonly"=>"",  "required"=>"required","type"=>"text", "class"=>"form-control");
 		$form_fields[] = $form_field;

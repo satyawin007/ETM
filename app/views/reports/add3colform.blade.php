@@ -36,7 +36,7 @@
 			    font-weight: normal;
 			    font-size: 13px;
 			}
-		</style
+		</style>
 	@stop
 		<div class="col-xs-12" style="margin-top: -1%">
 		<div class="row">

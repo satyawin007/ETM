@@ -41,7 +41,7 @@
 			    font-weight: normal;
 			    font-size: 13px;
 			}
-		</style
+		</style>
 	@stop
 	
 	@section('bredcum')	

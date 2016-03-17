@@ -230,7 +230,7 @@ class CityController extends \Controller {
 		$form_fields[] = $form_field;
 		$form_field = array("name"=>"citycode1", "content"=>"city code", "readonly"=>"",  "required"=>"required","type"=>"text", "class"=>"form-control");
 		$form_fields[] = $form_field;
-		$form_field = array("name"=>"statename1", "content"=>"state name", "readonly"=>"",  "required"=>"required", "type"=>"select", "class"=>"form-control", "options"=>$state_arr);
+		$form_field = array("name"=>"statename1", "content"=>"state name", "readonly"=>"",  "required"=>"required", "type"=>"select", "class"=>"form-control chosen-select", "options"=>$state_arr);
 		$form_fields[] = $form_field;
 		$form_field = array("name"=>"status1", "value"=>"", "content"=>"status", "readonly"=>"", "value"=>"", "required"=>"", "type"=>"select", "options"=>array("ACTIVE"=>"ACTIVE","INACTIVE"=>"INACTIVE"), "class"=>"form-control");
 		$form_fields[] = $form_field;

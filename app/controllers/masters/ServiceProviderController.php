@@ -239,7 +239,7 @@ class ServiceProviderController extends \Controller {
 			$form_fields[] = $form_field;
 		}
 		else {
-			$form_field = array("name"=>"provider", "value"=>$values["provider"], "content"=>"provider", "readonly"=>"",  "required"=>"required", "type"=>"select", "class"=>"form-control", "options"=>$types_arr);
+			$form_field = array("name"=>"provider", "value"=>$values["provider"], "content"=>"provider", "readonly"=>"",  "required"=>"required", "type"=>"select", "class"=>"form-control chosen-select", "options"=>$types_arr);
 			$form_fields[] = $form_field;
 		}
 		
@@ -254,7 +254,7 @@ class ServiceProviderController extends \Controller {
 		
 		$form_fields = [];
 		if(isset($values["provider"]) && $values["provider"] === "Current"){
-			$form_field = array("name"=>"provider1", "value"=>$values["provider"], "content"=>"provider", "readonly"=>"",  "required"=>"required", "type"=>"select", "class"=>"form-control", "options"=>$types_arr);
+			$form_field = array("name"=>"provider1", "value"=>$values["provider"], "content"=>"provider", "readonly"=>"",  "required"=>"required", "type"=>"select", "class"=>"form-control chosen-select", "options"=>$types_arr);
 			$form_fields[] = $form_field;
 			$form_field = array("name"=>"branch1", "content"=>"branch", "readonly"=>"",  "required"=>"required", "type"=>"select", "class"=>"form-control", "options"=>$branches_arr);
 			$form_fields[] = $form_field;

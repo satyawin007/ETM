@@ -216,11 +216,11 @@ class EmployeeBattaController extends \Controller {
 			$type_arr [$type['id']] = $type->name;
 		}
 		
-		$form_field = array("name"=>"sourcecity", "content"=>"Source city", "readonly"=>"",  "required"=>"required", "action"=>array("type"=>"onChange", "script"=>""),  "type"=>"select", "class"=>"form-control", "options"=>$city_arr);
+		$form_field = array("name"=>"sourcecity", "content"=>"Source city", "readonly"=>"",  "required"=>"required", "action"=>array("type"=>"onChange", "script"=>""),  "type"=>"select", "class"=>"form-control chosen-select", "options"=>$city_arr);
 		$form_fields[] = $form_field;
-		$form_field = array("name"=>"destinationcity", "content"=>"destination city", "readonly"=>"",  "required"=>"required", "action"=>array("type"=>"onChange", "script"=>""),  "type"=>"select", "class"=>"form-control", "options"=>$city_arr);
+		$form_field = array("name"=>"destinationcity", "content"=>"destination city", "readonly"=>"",  "required"=>"required", "action"=>array("type"=>"onChange", "script"=>""),  "type"=>"select", "class"=>"form-control chosen-select", "options"=>$city_arr);
 		$form_fields[] = $form_field;
-		$form_field = array("name"=>"vehicletype", "content"=>"Vehicle Type", "readonly"=>"",  "required"=>"required","type"=>"select", "options"=>$type_arr, "class"=>"form-control");
+		$form_field = array("name"=>"vehicletype", "content"=>"Vehicle Type", "readonly"=>"",  "required"=>"required","type"=>"select", "options"=>$type_arr, "class"=>"form-control chosen-select");
 		$form_fields[] = $form_field;
 		$form_field = array("name"=>"driverbattaperday", "content"=>"driver batta per day", "readonly"=>"",  "required"=>"required","type"=>"text", "class"=>"form-control number");
 		$form_fields[] = $form_field;

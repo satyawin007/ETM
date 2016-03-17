@@ -36,7 +36,7 @@
 			    font-weight: normal;
 			    font-size: 13px;
 			}
-		</style
+		</style>
 	@stop
 		<div class="">
 			<div class="">

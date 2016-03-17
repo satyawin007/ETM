@@ -135,6 +135,8 @@ Route::get('/getempid',"masters\EmployeeController@getEmpId");
 
 Route::post('/addemployee',"masters\EmployeeController@addEmployee");
 
+Route::post('/employee',"masters\EmployeeController@manageEmployees");
+
 Route::get('/editemployee',"masters\EmployeeController@editEmployee");
 
 Route::get('/states', "masters\StateController@manageStates");

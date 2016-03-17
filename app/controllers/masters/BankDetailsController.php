@@ -276,7 +276,7 @@ class BankDetailsController extends \Controller {
 			$state_arr[$state['id']] = $state->name;
 		}
 		
-		$form_field = array("name"=>"bankname", "content"=>"bank name", "readonly"=>"",  "required"=>"required","type"=>"select", "options"=>$bank_arr, "class"=>"form-control");
+		$form_field = array("name"=>"bankname", "content"=>"bank name", "readonly"=>"",  "required"=>"required","type"=>"select", "options"=>$bank_arr, "class"=>"form-control chosen-select");
 		$form_fields[] = $form_field;
 		$form_field = array("name"=>"branchname", "content"=>"Branch Name", "readonly"=>"",  "required"=>"required","type"=>"text", "class"=>"form-control");
 		$form_fields[] = $form_field;
@@ -284,13 +284,13 @@ class BankDetailsController extends \Controller {
 		$form_fields[] = $form_field;
 		$form_field = array("name"=>"accountno", "content"=>"account number", "readonly"=>"",  "required"=>"required","type"=>"text", "class"=>"form-control");
 		$form_fields[] = $form_field;
-		$form_field = array("name"=>"accounttype", "content"=>"account type", "readonly"=>"",  "required"=>"required",   "type"=>"select", "class"=>"form-control", "options"=>$actype_arr);
+		$form_field = array("name"=>"accounttype", "content"=>"account type", "readonly"=>"",  "required"=>"required",   "type"=>"select", "class"=>"form-control chosen-select", "options"=>$actype_arr);
 		$form_fields[] = $form_field;
 		$form_field = array("name"=>"balanceamount", "content"=>"Balance Amount", "readonly"=>"",  "required"=>"required","type"=>"text", "class"=>"form-control");
 		$form_fields[] = $form_field;
-		$form_field = array("name"=>"statename", "content"=>"state name", "readonly"=>"",  "required"=>"required", "action"=>array("type"=>"onChange", "script"=>"changeState(this.value);"),  "type"=>"select", "class"=>"form-control", "options"=>$state_arr);
+		$form_field = array("name"=>"statename", "content"=>"state name", "readonly"=>"",  "required"=>"required", "action"=>array("type"=>"onChange", "script"=>"changeState(this.value);"),  "type"=>"select", "class"=>"form-control chosen-select", "options"=>$state_arr);
 		$form_fields[] = $form_field;
-		$form_field = array("name"=>"cityname", "content"=>"city name", "readonly"=>"",  "required"=>"required","type"=>"select", "options"=>array(), "class"=>"form-control");
+		$form_field = array("name"=>"cityname", "content"=>"city name", "readonly"=>"",  "required"=>"required","type"=>"select", "options"=>array(), "class"=>"form-control chosen-select");
 		$form_fields[] = $form_field;
 		
 		$form_info["form_fields"] = $form_fields;

@@ -39,7 +39,7 @@
 			    font-weight: normal;
 			    font-size: 13px;
 			}
-		</style
+		</style>
 	@stop	
 	
 		<div class="widget-box col-xs-12">

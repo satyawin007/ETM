@@ -20,7 +20,7 @@
 			td {
 			    white-space: nowrap;
 			}
-		</style
+		</style>
 		
 		<link rel="stylesheet" href="../assets/css/bootstrap-datepicker3.css"/>
 	@stop

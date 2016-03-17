@@ -10,10 +10,62 @@
 | and give it the Closure to execute when that URI is requested.
 |
 */
+/*
+truncate table bankdetails;
+blockdataentry;
+bookingvehicles;
+branch_suspense_report;
+busbookings;
+cities;
+creditsuppliers;
+creditsuppliertransactions;
+creditsuppliertransdetails;
+dailyfinances;
+db_transactions;
+empdueamount;
+employeebatta;
+expensetransactions;
+familymembers;
+financecompanies;
+fuelstationdetails;
+fueltransactions;
+inchargeaccounts;
+incometransactions;
+inventorylookupvalues;
+inventory_transaction;
+item_categories;
+items;
+item_types;
+leaves;
+loans;
+login_log;
+lookuptypevalues;
+manufactures;
+vehiclemeterreading;
+officebranch;
+parameters;
+purchased_items;
+purchase_orders;
+rentdetails;
+empsalarydetails;
+empsalarytransactions;
+servicedetails;
+serviceproviders;
+states;
+tripadvances;
+tripdetails;
+tripexpenses;
+tripparticulars;
+tripservicedetails;
+user_roles_master;
+vehicle;
+vehicle_history;
+vehicle_sale_details;
+*/
 
 Route::get('/', function()
 {
-	return View::make('masters');
+	return View::make('masters.login');
 });
 
 Route::get('/logout', function()

@@ -90,7 +90,7 @@
 			</div>
 			<div class="table-header" style="margin-top: 10px;">
 				Results for "{{$values['bredcum']}}"				 
-				<div style="float:right;padding-right: 15px;padding-top: 6px;"><a style="color: white;" href="{{$values['home_url']}}"><i class="ace-icon fa fa-home bigger-200"></i></a> </div>				
+								
 			</div>
 			<!-- div.table-responsive -->
 			<!-- div.dataTables_borderWrap -->
@@ -236,6 +236,22 @@
 			});
 
 			$("#submit").on("click",function(){
+				var type = $("#type").val();
+				if(type != undefined && type ==""){
+					alert("Please select type");
+					return false;
+				}
+				var itemcategory = $("#itemcategory").val();
+				if(itemcategory != undefined && itemcategory ==""){
+					alert("Please select itemcategory");
+					return false;
+				}
+				var itemtype = $("#itemtype").val();
+				if(itemtype != undefined && itemtype ==""){
+					alert("Please select itemtype");
+					return false;
+				}
+				
 				$("#{{$form_info['name']}}").submit();
 			});
 

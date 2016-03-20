@@ -206,7 +206,7 @@ class DataTableController extends \Controller {
 		$search = $_REQUEST["search"];
 		$search = $search['value'];
 		if($search != ""){
-			$entities = \ItemTypes::where("name", "like", "%$search%")->select($select_args)->limit($length)->offset($start)->get();
+			$entities = \ItemTypes::where("item_types.name", "like", "%$search%")->join("item_categories","item_categories.id","=","item_types.itemCategoryId")->select($select_args)->limit($length)->offset($start)->get();
 			$total = count($entities);
 		}
 		else{
@@ -268,7 +268,7 @@ class DataTableController extends \Controller {
 		$search = $_REQUEST["search"];
 		$search = $search['value'];
 		if($search != ""){
-			$entities = \Items::where("name", "like", "%$search%")->join("inventorylookupvalues","inventorylookupvalues.id","=","items.unitsOfMeasure")->join("item_types","item_types.id","=","items.itemTypeId")->select($select_args)->limit($length)->offset($start)->get();
+			$entities = \Items::where("items.name", "like", "%$search%")->join("inventorylookupvalues","inventorylookupvalues.id","=","items.unitsOfMeasure")->join("item_types","item_types.id","=","items.itemTypeId")->select($select_args)->limit($length)->offset($start)->get();
 			$total = count($entities);
 		}
 		else{
@@ -402,7 +402,7 @@ class DataTableController extends \Controller {
 		$search = $_REQUEST["search"];
 		$search = $search['value'];
 		if($search != ""){
-			$entities = \PurchasedOrders::where("name", "like", "%$search%")->join("inventorylookupvalues","inventorylookupvalues.id","=","items.unitsOfMeasure")->join("item_types","item_types.id","=","items.itemTypeId")->select($select_args)->limit($length)->offset($start)->get();
+			$entities = \PurchasedOrders::where("creditsuppliers.supplierName", "like", "%$search%")->leftjoin("officebranch","officebranch.id","=","purchase_orders.officeBranchId")->join("creditsuppliers","creditsuppliers.id","=","purchase_orders.creditSupplierId")->join("employee","employee.id","=","purchase_orders.receivedBy")->select($select_args)->limit($length)->offset($start)->get();
 			$total = count($entities);
 		}
 		else{

@@ -23,7 +23,7 @@ App::before(function($request)
 
 App::after(function($request, $response)
 {
-	/*if(Session::has("email_message")){
+	/* if(Session::has("email_message")){
 		$data = Session::get("email_message");
 		Mail::queue('emails.welcome', $data, function($message)
 		{
@@ -31,7 +31,7 @@ App::after(function($request, $response)
 			$message->to('rayisatyanarayana22@gmail.com', 'Satya')->subject($subject);
 		});
 		Session::forget('email_message');
-	}*/
+	} */
 });
 
 /*
@@ -99,4 +99,11 @@ Route::filter('csrf', function()
 	{
 		throw new Illuminate\Session\TokenMismatchException;
 	}
+});
+
+Route::filter('invalidate-browser-cache', function($request, $response)
+{
+	$response->headers->set('Cache-Control','nocache, no-store, max-age=0, must-revalidate');
+	$response->headers->set('Pragma','no-cache');
+	$response->headers->set('Expires','Fri, 01 Jan 1990 00:00:00 GMT');
 });

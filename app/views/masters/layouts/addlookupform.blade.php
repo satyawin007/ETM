@@ -109,7 +109,7 @@
 						<div class="form-group">
 							<label class="col-xs-4 control-label no-padding-right" for="form-field-1"> <?php echo strtoupper($form_field['content']); if($form_field['required']=="required") echo '<span style="color:red;">*</span>'; ?> </label>
 							<div class="col-xs-8">
-								<select class="{{$form_field['class']}}" {{$form_field['required']}} name="{{$form_field['name']}}" id="{{$form_field['name']}}" <?php if(isset($form_field['action'])) { $action = $form_field['action'];  echo $action['type']."=".$action['script']; }?>  <?php if(isset($form_field['multiple'])) { echo " multiple "; }?>>
+								<select class="{{$form_field['class']}}" {{$form_field['required']}} name="{{$form_field['name']}}" <?php if(isset($form_field['id'])) { echo 'id="'.$form_field['id'].'"'; } else { echo 'id="'.$form_field['name'].'"'; }?>  <?php if(isset($form_field['action'])) { $action = $form_field['action'];  echo $action['type']."=".$action['script']; }?>  <?php if(isset($form_field['multiple'])) { echo " multiple "; }?>>
 									<option value="">-- {{$form_field['name']}} --</option>
 									<?php 
 										foreach($form_field["options"] as $key => $value){
@@ -149,7 +149,7 @@
 					<div class="clearfix">
 						<div class="col-md-offset-0 col-md-12 form-actions" style="margin: 0px">
 							<div class="col-md-offset-4 col-md-5">
-							<button id="submit" class="btn primary" type="submit">
+							<button id="submit" class="btn primary" type="submit" id="submit">
 								<i class="ace-icon fa fa-check bigger-110"></i>
 								SUBMIT
 							</button>

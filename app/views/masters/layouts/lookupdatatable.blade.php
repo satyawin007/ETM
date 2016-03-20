@@ -224,24 +224,6 @@
 			});
 
 			$("#submit").on("click",function(){
-<<<<<<< HEAD
-				vehicleno = $("#vehicleno").val();
-				if( vehicleno == ""){
-					alert("select vehicleno");
-					return false;
-				}
-				state = $("#statename").val();
-				if(state != undefined && state == ""){
-					alert("select state");
-					return false;
-				}
-				fuelstationname = $("#fuelstationname").val();
-				if(fuelstationname != undefined && fuelstationname == ""){
-					alert("select fuelstationname");
-					return false;
-				}
-			
-=======
 				
 				var statename = $("#statename").val();
 				if(statename != undefined && statename ==""){
@@ -291,55 +273,65 @@
 					return false;
 				}
 
-				var accounttype = $("#paymenttype").val();
+				var paymenttype = $("#paymenttype").val();
 				if(paymenttype != undefined && paymenttype ==""){
 					alert("Please select paymenttype");
 					return false;
 				}
 
-				var accounttype = $("#bankaccount").val();
+				var bankaccount = $("#bankaccount").val();
 				if(bankaccount != undefined && bankaccount ==""){
 					alert("Please select bankaccount");
 					return false;
 				}
 
-				var accounttype = $("#bankaccount").val();
-				if(bankaccount != undefined && bankaccount ==""){
-					alert("Please select bankaccount");
-					return false;
-				}
-
-				var accounttype = $("#financecompany").val();
+				var financecompany = $("#financecompany").val();
 				if(financecompany != undefined && financecompany ==""){
 					alert("Please select financecompany");
 					return false;
 				}
 
-				var accounttype = $("#frequency").val();
+				var frequency = $("#frequency").val();
 				if(frequency != undefined && frequency ==""){
 					alert("Please select frequency");
 					return false;
 				}
 
-				var accounttype = $("#status").val();
+				var status = $("#status").val();
 				if(status != undefined && status ==""){
 					alert("Please select status");
 					return false;
 				}
 
-				var accounttype = $("#branchid").val();
+				var branchid = $("#branchid").val();
 				if(branchid != undefined && branchid ==""){
 					alert("Please select branchid");
 					return false;
 				}
 
-				var accounttype = $("#provider").val();
+				var provider = $("#provider").val();
 				if(provider != undefined && provider ==""){
 					alert("Please select provider");
 					return false;
 				}
->>>>>>> test_branch
+				var loanforvehicle = $("#loanforvehicle").val();
+				if((loanforvehicle != undefined && loanforvehicle =="") || (loanforvehicle != undefined && loanforvehicle == null)){
+					alert("Please select loanforvehicle");
+					return false;
+				}
+
+				var loanpurpose = $("#loanpurpose").val();
+				if((loanpurpose != undefined && loanpurpose =="") || (loanforvehicle != undefined && loanpurpose == null)){
+					alert("Please select loanpurpose");
+					return false;
+				}
 				$("#{{$form_info['name']}}").submit();
+			});
+
+			$("#type").on("change",function(){
+				if(this.value != ""){
+					window.location.replace('lookupvalues?type='+this.value);
+				}
 			});
 
 			$("#type").on("change",function(){
@@ -358,6 +350,7 @@
 			      url: "getcitiesbystateid?id="+val,
 			      success: function(data) {
 			    	  $("#cityname").html(data);
+			    	  $('.chosen-select').trigger("chosen:updated");
 			      },
 			      type: 'GET'
 			   });

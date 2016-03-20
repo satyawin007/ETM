@@ -52,9 +52,8 @@
 		<div class="row col-xs-12" id="children_fields_all">
 			<div id="children_fields" style="padding-top: 7px; padding-bottom: 2px;" class="children_fields">
 				<div id="row0" class="">								
-					<div class="form-group inline" style="float:left;width:30%;">
-						<label class="col-xs-2 control-label no-padding-right" for="form-field-1">ITEM </label>
-						<div class="col-xs-10">
+					<div class="form-group inline" style="float:left;width:20%;">
+						<div class="col-xs-12">
 							<select class="form-control item chosen-select" id="item0" name="item[]" onchange="getItemInfo(this.value, this.id)">
 								<option value="">-- item --</option>
 								<?php 
@@ -65,18 +64,16 @@
 							</select>
 						</div>
 					</div>
-					<div class="form-group inline" style="float:left; width:10%; margin-left:5px;">
+					<div class="form-group inline" style="float:left; width:12%; margin-left:5px;">
 						<label class="col-xs-4 control-label no-padding-right" for="form-field-1"> UNITS </label>
 						<div class="col-xs-8">
 							<input type="text" name="units[]" readonly="readonly" id="units0" class="form-control units" onchange="unitsChange(this.id)">
 						</div>
 					</div>
-					<div class="form-group inline" style="float:right; width: 60%; margin-right: 0%; margin-left: 1%;">
-						<label style="width:5%; float:left; margin-right:5px;" class="control-label no-padding-right" for="form-field-1"> QTY </label>
-						<div style="width:15%; float:left; margin-right:15px;">
-							<input type="text" id="qty0" name="qty[]" class="form-control qty" onchange="qtyChange(this.id)">
+					<div class="form-group inline" style="float:right; width: 68%; margin-right: 0%; margin-left: 1%;">
+						<div style="width:10%; float:left; margin-right:15px;">
+							<input type="text" id="qty0" name="qty[]" class="form-control qty" placeholder="qty" onchange="qtyChange(this.id)">
 						</div>
-						<label style="width:8%;float:left; margin-right:5px;" class=" control-label no-padding-right" for="form-field-1"> VEHICLE </label>
 						<div style="width:17%; float:left; margin-right:15px;">
 							<select class="form-control chosen-select vehicle" id="vehicle0" name="vehicle[]" >
 								<option value="">-- vehicle --</option>
@@ -87,7 +84,10 @@
 								?>
 							</select>
 						</div>
-						<div style="width:40%; float:right; ">
+						<div style="width:20%; float:left; margin-left:40px;">
+							<input type="text" id="alertdate0" placeholder="alert date (if any)"  name="alertdate[]" class="form-control date-picker" >
+						</div>
+						<div style="width:43%; float:right; ">
 							<input type="text" id="remarks0" placeholder="remarks"  name="remarks[]" class="form-control remarks" >
 						</div>
 					</div>

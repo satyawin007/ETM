@@ -46,8 +46,6 @@
 			<div class="widget-header">
 				<h4 class="widget-title">{{ strtoupper($form_info['bredcum'])}}</h4>
 				<div style="float:right;padding-right: 2%; margin-top: 7px;">
-					<a style="color: grey;" href="#" title="masters"><span style="color:white"><i class="ace-icon fa fa-home bigger-200"></i></span></a> &nbsp; &nbsp;
-					<a style="color: grey;"  title="{{$form_info['back_url']}}" href="{{$form_info['back_url']}}"><span style="color:white"><i class="ace-icon fa fa-arrow-circle-left bigger-200"></i></span></a>
 					<?php if(isset($form_info["addlink"])){ ?>
 					    &nbsp;&nbsp;&nbsp;&nbsp;<a style="color: grey;"  title="{{$form_info['addlink']}}"  data-toggle='modal' href="#{{$form_info['addlink']}}"><span style="color:white"><i class="ace-icon fa fa-plus-circle bigger-200"></i></span></a>					    
 					<?php } ?>
@@ -148,9 +146,9 @@
 					<div class="clearfix">
 						<div class="col-md-offset-0 col-md-12 form-actions" style="margin: 0px">
 							<div class="col-md-offset-4 col-md-5">
-							<button id="reset" class="btn primary" type="submit" id="submit">
+							<button class="btn primary" type="submit" id="submit">
 								<i class="ace-icon fa fa-check bigger-110"></i>
-								ADD
+								SUBMIT
 							</button>
 							<!--  <input type="submit" class="btn btn-info" type="button" value="SUBMIT"> -->
 							&nbsp; &nbsp; &nbsp;

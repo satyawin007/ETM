@@ -1,12 +1,16 @@
 @extends('masters.master')
 	@section('page_css')
 		<link rel="stylesheet" href="../assets/css/bootstrap-datepicker3.css"/>
+		<link rel="stylesheet" href="../assets/css/chosen.css" />
 	@stop
 	
 	@section('inline_css')
 		<style>
 			.accordion-style1.panel-group .panel + .panel {
 			    margin-top: 10px;
+			}
+			.chosen-container{
+			  width: 100% !important;
 			}
 		</style>
 	@stop
@@ -28,7 +32,7 @@
 				<div class="widget-box">
 				<div class="widget-header">
 					<h4 class="widget-title">{{strtoupper($form_info['bredcum'])}}</h4>
-					<div style="float:right;padding-right: 2%; margin-top: 1%"><a style="color: grey;" href="masters" title="masters"><span style="color:grey"><i class="ace-icon fa fa-home bigger-200"></i></span></a> &nbsp; &nbsp;<a style="color: grey;" title="{{$form_info['back_url']}}" href="{{$form_info['back_url']}}"><span style="color:grey"><i class="ace-icon fa fa-arrow-circle-left bigger-200"></i></span></a></div>
+					<div style="float:right;padding-right: 2%; margin-top: 1%"><a style="color: white;" href="masters" title="masters"><span style="color:white"><i class="ace-icon fa fa-home bigger-200"></i></span></a> &nbsp; &nbsp;<a style="color: white;" title="{{$form_info['back_url']}}" href="{{$form_info['back_url']}}"><span style="color:white"><i class="ace-icon fa fa-arrow-circle-left bigger-200"></i></span></a></div>
 				</div>
 				<div class="widget-body">
 					<div class="widget-main">
@@ -117,7 +121,7 @@
 						</div>
 						<div class="clearfix form-actions">
 							<div class="col-md-offset-3 col-md-9">
-								<input class="btn btn-info" type="submit" value="SUBMIT"/>
+								<input class="btn btn-info" type="submit" value="SUBMIT" id="submit"/>
 								&nbsp; &nbsp; &nbsp;
 								<button id="reset" class="btn" type="reset">
 									<i class="ace-icon fa fa-undo bigger-110"></i>
@@ -137,6 +141,7 @@
 	@section('page_js')
 		<script src="../assets/js/date-time/bootstrap-datepicker.js"></script>
 		<script src="../assets/js/bootbox.js"></script>
+		<script src="../assets/js/chosen.jquery.js"></script>
 	@stop
 	
 	@section('inline_js')
@@ -146,6 +151,7 @@
 			      url: "getcitiesbystateid?id="+val,
 			      success: function(data) {
 			    	  $("#cityname").html(data);
+			    	  $('.chosen-select').trigger("chosen:updated");
 			      },
 			      type: 'GET'
 			   });
@@ -182,12 +188,66 @@
 			
 
 			$("#submit").on("click",function(){
+				var statename = $("#statename").val();
+				if(statename != undefined && statename ==""){
+					alert("Please select statename");
+					return false;
+				}
+
+				var cityname = $("#cityname").val();
+				if(cityname != undefined && cityname ==""){
+					alert("Please select cityname");
+					return false;
+				}
+
+				var paymenttype = $("#paymenttype").val();
+				if(paymenttype != undefined && paymenttype ==""){
+					alert("Please select paymenttype");
+					return false;
+				}
+
+				var bankaccount = $("#bankaccount").val();
+				if(bankaccount != undefined && bankaccount ==""){
+					alert("Please select bankaccount");
+					return false;
+				}
+				
 				$("#{{$form_info['name']}}").submit();
 			});
 
 			$("#reset").on("click",function(){
 				$("#{{$form_info['name']}}").reset();
 			});
+			
+			if(!ace.vars['touch']) {
+				$('.chosen-select').chosen({allow_single_deselect:true}); 
+				//resize the chosen on window resize
+		
+				$(window)
+				.off('resize.chosen')
+				.on('resize.chosen', function() {
+					$('.chosen-select').each(function() {
+						 var $this = $(this);
+						 $this.next().css({'width': $this.parent().width()});
+					})
+				}).trigger('resize.chosen');
+				//resize chosen on sidebar collapse/expand
+				$(document).on('settings.ace.chosen', function(e, event_name, event_val) {
+					if(event_name != 'sidebar_collapsed') return;
+					$('.chosen-select').each(function() {
+						 var $this = $(this);
+						 $this.next().css({'width': $this.parent().width()});
+					})
+				});
+		
+		
+				$('#chosen-multiple-style .btn').on('click', function(e){
+					var target = $(this).find('input[type=radio]');
+					var which = parseInt(target.val());
+					if(which == 2) $('#form-field-select-4').addClass('tag-input-style');
+					 else $('#form-field-select-4').removeClass('tag-input-style');
+				});
+			}
 			
 		</script>
 	@stop

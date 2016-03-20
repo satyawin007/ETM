@@ -42,6 +42,9 @@ class StockController extends \Controller {
 						$fields["stockItemId"] = $values["item"][$i];
 						$fields["qty"] = $values["qty"][$i];
 						$fields["remarks"] = $values["remarks"][$i];
+						if(isset($values["alertdate"]) && $values["alertdate"][$i] != ""){
+							$fields["alertDate"] = date("Y-m-d",strtotime($values["alertdate"][$i]));
+						}
 						$db_functions_ctrl->insert($table, $fields);
 						
 						$table = "\PurchasedItems";

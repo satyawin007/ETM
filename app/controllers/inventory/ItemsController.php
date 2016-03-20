@@ -157,7 +157,7 @@ class ItemsController extends \Controller {
 			$form_fields[] = $form_field;
 		
 			$form_info["form_fields"] = $form_fields;
-			return View::make("transactions.edit2colmodalform",array("form_info"=>$form_info));
+			return View::make("inventory.edit2colmodalform",array("form_info"=>$form_info));
 		}
 	}
 	
@@ -243,7 +243,7 @@ class ItemsController extends \Controller {
 		$form_fields[] = $form_field;
 		$form_field = array("name"=>"model", "content"=>"item model", "readonly"=>"",  "required"=>"", "type"=>"text", "class"=>"form-control");
 		$form_fields[] = $form_field;
-		$form_field = array("name"=>"manufacturer[]", "content"=>"manufacturer", "readonly"=>"",  "required"=>"required", "multiple"=>"multiple", "type"=>"select", "options"=>$manufacturers_arr, "class"=>"form-control chosen-select");
+		$form_field = array("name"=>"manufacturer[]", "content"=>"manufacturer", "readonly"=>"",  "required"=>"", "multiple"=>"multiple", "type"=>"select", "options"=>$manufacturers_arr, "class"=>"form-control chosen-select");
 		$form_fields[] = $form_field;
 		$form_field = array("name"=>"itemactions[]", "content"=>"item actions", "readonly"=>"",  "required"=>"", "multiple"=>"multiple", "type"=>"select", "options"=>$itemactions_arr, "class"=>"form-control chosen-select");
 		$form_fields[] = $form_field;

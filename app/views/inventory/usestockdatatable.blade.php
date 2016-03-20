@@ -345,6 +345,7 @@
 			    	  $("#units").attr("disabled",true);
 			    	  $("#alertdate").hide();
 			    	  $('.chosen-select').chosen();
+			    	  $('.date-picker').datepicker({ autoclose: true, todayHighlight: true })
 			    	  $('.chosen-select').trigger('chosen:updated');
 			    	  //var ele = $('#children_fields:first-child').clone(false);
 			    	  $("#children_add").on("click",function(){
@@ -365,6 +366,8 @@
 			    		    $("#qty"+count).removeAttr("readonly");
 			    		    $("#children_fields:last-child").find(".remarks").attr('id',"remarks"+count);
 			    		    $("#remarks"+count).val("");
+			    		    $("#children_fields:last-child").find(".date-picker").attr('id',"alertdate"+count);
+			    		    $("#alertdate"+count).val("");
 			    		    $("#children_fields:last-child").find(".vehicle").attr('id',"vehicle"+count);
 			    		    
 			                $('#children_fields:last-child select').addClass("chosen-select");
@@ -573,7 +576,7 @@
 			});
 
 			//or change it into a date range picker
-			$('.input-daterange').datepicker({autoclose:true});
+			$('.input-daterange').datepicker({autoclose:true,todayHighlight: true });
 
 			$('.input-mask-phone').mask('(999) 999-9999');
 
@@ -613,22 +616,6 @@
 					echo "bootbox.confirm('".Session::pull('message')."', function(result) {});";
 				}
 			?>
-
-			<?php 
-				if(Session::has('message')){
-					echo "bootbox.confirm('".Session::pull('message')."', function(result) {});";
-				}
-			?>
-
-			//to translate the daterange picker, please copy the "examples/daterange-fr.js" contents here before initialization
-			$('.date-range-picker').daterangepicker({
-				'applyClass' : 'btn-sm btn-success',
-				'cancelClass' : 'btn-sm btn-default',	
-				locale: {
-					applyLabel: 'Apply',
-					cancelLabel: 'Cancel',
-				}
-			});
 
 			$('.file').ace_file_input({
 				no_file:'No File ...',
@@ -671,7 +658,7 @@
 			        "bServerSide": true,
 					"ajax":{
 		                url :"getinventorydatatabledata?name=<?php echo $values["provider"] ?>", // json datasource
-		                type: "post",  // method  , by default get
+		                type: "get",  // method  , by default get
 		                error: function(){  // error handling
 		                    $(".employee-grid-error").html("");
 		                    $("#dynamic-table").append('<tbody class="employee-grid-error"><tr>No data found in the server</tr></tbody>');

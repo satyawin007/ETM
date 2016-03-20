@@ -79,7 +79,7 @@
 			<?php } ?>
 			<div class="table-header" style="margin-top: 10px;">
 				Results for "{{$values['bredcum']}}"				 
-				<div style="float:right;padding-right: 15px;padding-top: 6px;"><a style="color: white;" href="{{$values['home_url']}}"><i class="ace-icon fa fa-home bigger-200"></i></a> &nbsp; &nbsp; &nbsp; <a style="color: white;"  href="{{$values['add_url']}}"><i class="ace-icon fa fa-plus-circle bigger-200"></i></a></div>				
+								
 			</div>
 			<!-- div.table-responsive -->
 			<!-- div.dataTables_borderWrap -->

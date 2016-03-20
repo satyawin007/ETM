@@ -183,7 +183,7 @@ class LookupValueController extends \Controller {
 		$form_fields[] = $form_field;
 		$form_field = array("name"=>"value", "content"=>"value", "readonly"=>"",  "required"=>"required","type"=>"text", "class"=>"form-control");
 		$form_fields[] = $form_field;
-		$form_field = array("name"=>"remarks", "content"=>"additional information", "readonly"=>"",  "required"=>"required","type"=>"textarea", "class"=>"form-control");
+		$form_field = array("name"=>"remarks", "content"=>"additional information", "readonly"=>"",  "required"=>"","type"=>"textarea", "class"=>"form-control");
 		$form_fields[] = $form_field;
 		
 		$form_info["form_fields"] = $form_fields;
@@ -202,7 +202,7 @@ class LookupValueController extends \Controller {
 		$form_fields[] = $form_field;
 		$form_field = array("name"=>"value1", "content"=>"value", "readonly"=>"",  "required"=>"required","type"=>"text", "class"=>"form-control");
 		$form_fields[] = $form_field;
-		$form_field = array("name"=>"remarks1", "content"=>"additional information", "readonly"=>"",  "required"=>"required","type"=>"textarea", "class"=>"form-control");
+		$form_field = array("name"=>"remarks1", "content"=>"additional information", "readonly"=>"",  "required"=>"","type"=>"textarea", "class"=>"form-control");
 		$form_fields[] = $form_field;
 		$form_field = array("name"=>"status1", "content"=>"status", "readonly"=>"",  "required"=>"","type"=>"radio", "options"=>array("ACTIVE"=>"ACTIVE", "INACTIVE"=>"INACTIVE"), "class"=>"form-control");
 		$form_fields[] = $form_field;
@@ -221,7 +221,7 @@ class LookupValueController extends \Controller {
 		$form_fields[] = $form_field;
 		$form_field = array("name"=>"parent", "value"=>"yes", "content"=>"", "readonly"=>"", "required"=>"","type"=>"hiddent", "class"=>"form-control");
 		$form_fields[] = $form_field;
-		$form_field = array("name"=>"parentremarks", "content"=>"Additional Info", "readonly"=>"", "required"=>"required","type"=>"textarea", "class"=>"form-control");
+		$form_field = array("name"=>"parentremarks", "content"=>"Additional Info", "readonly"=>"", "required"=>"","type"=>"textarea", "class"=>"form-control");
 		$form_fields[] = $form_field;
 		$form_info["form_fields"] = $form_fields;
 		$modals[] = $form_info;

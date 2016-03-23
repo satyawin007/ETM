@@ -57,7 +57,7 @@ return array(
 			'host'      => 'localhost',
 			'database'  => 'etm',
 			'username'  => 'root',
-			'password'  => 'google',
+			'password'  => '',
 			'charset'   => 'utf8',
 			'collation' => 'utf8_unicode_ci',
 			'prefix'    => '',

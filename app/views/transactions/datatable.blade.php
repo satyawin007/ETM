@@ -658,8 +658,6 @@
 			$('.input-daterange').datepicker({autoclose:true,todayHighlight: true});
 
 			//$('.input-mask-phone').mask('(999) 999-9999');
-			
-			
 			<?php 
 				if(Session::has('message')){
 					echo "bootbox.confirm('".Session::pull('message')."', function(result) {});";

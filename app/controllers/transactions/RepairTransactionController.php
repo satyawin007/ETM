@@ -14,6 +14,7 @@ class RepairTransactionController extends \Controller {
 		if (\Request::isMethod('post'))
 		{
 			$values = Input::all();
+			//$values["Dsf"];
 			$url = "repairtransactions";
 			$field_names = array("creditsupplier"=>"creditSupplierId","branch"=>"branchId","battapaidto"=>"battaEmployee", "paymenttype"=>"paymentType",
 						"date"=>"date","billnumber"=>"billNumber","amountpaid"=>"paymentPaid","comments"=>"comments","totalamount"=>"amount",
@@ -58,7 +59,6 @@ class RepairTransactionController extends \Controller {
 			try{
 				$db_functions_ctrl = new DBFunctionsController();
 				$table = "CreditSupplierTransDetails"; 
-				
 				$jsonitems = json_decode($values["jsondata"]);
 				foreach ($jsonitems as $jsonitem){
 					$fields = array();
@@ -90,7 +90,7 @@ class RepairTransactionController extends \Controller {
 		if (\Request::isMethod('post'))
 		{
 			//$values["sdf"];
-			$url = "editrepairtransaction?id=".$values["id"];
+			$url = "editrepairtransaction?id=".$values["id1"];
 			$field_names = array("creditsupplier"=>"creditSupplierId","warehouse"=>"officeBranchId","receivedby"=>"receivedBy", "paymenttype"=>"paymentType",
 					"orderdate"=>"orderDate","billnumber"=>"billNumber","amountpaid"=>"amountPaid","comments"=>"comments","totalamount"=>"totalAmount",
 					"bankaccount"=>"bankAccount","chequenumber"=>"chequeNumber","issuedate"=>"issueDate",
@@ -681,9 +681,9 @@ class RepairTransactionController extends \Controller {
 		$form_fields[] = $form_field;
 		$form_field = array("name"=>"billnumber", "content"=>"bill number", "readonly"=>"", "required"=>"required","type"=>"text", "class"=>"form-control");
 		$form_fields[] = $form_field;
-		$form_field = array("name"=>"branch", "content"=>"branch", "readonly"=>"", "required"=>"required","type"=>"select", "options"=>$warehouse_arr, "class"=>"form-control chosen-select");
+		$form_field = array("name"=>"branchname", "content"=>"branch", "readonly"=>"readonly", "required"=>"required","type"=>"text", "class"=>"form-control");
 		$form_fields[] = $form_field;
-		$form_field = array("name"=>"date", "content"=>"Transaction date", "readonly"=>"", "required"=>"required","type"=>"text", "class"=>"form-control date-picker");
+		$form_field = array("name"=>"date", "content"=>"Transaction date", "readonly"=>"readonly", "required"=>"required","type"=>"text", "class"=>"form-control");
 		$form_fields[] = $form_field;
 		$form_field = array("name"=>"vehicle", "content"=>"Vehicle", "readonly"=>"", "required"=>"required","type"=>"select", "options"=>$veh_arr, "class"=>"form-control chosen-select");
 		$form_fields[] = $form_field;
@@ -699,7 +699,7 @@ class RepairTransactionController extends \Controller {
 		$form_fields[] = $form_field;
 		$form_field = array("name"=>"enableincharge", "content"=>"enable incharge", "readonly"=>"", "required"=>"","type"=>"select", "options"=>array("YES"=>" YES","NO"=>" NO"), "action"=>array("type"=>"onchange","script"=>"enableIncharge(this.value)"), "class"=>"form-control");
 		$form_fields[] = $form_field;
-		$form_field = array("name"=>"paymenttype", "content"=>"payment type", "readonly"=>"", "required"=>"required","type"=>"select", "action"=>array("type"=>"onchange","script"=>"showPaymentFields(this.value)"), "options"=>array("cash"=>"CASH","advance"=>"FROM ADVANCE","cheque_credit"=>"CHEQUE (CREDIT)","cheque_debit"=>"CHEQUE (DEBIT)","ecs"=>"ECS","neft"=>"NEFT","rtgs"=>"RTGS","dd"=>"DD"), "class"=>"form-control");
+		$form_field = array("name"=>"paymenttype", "content"=>"payment type", "readonly"=>"", "required"=>"","type"=>"select", "action"=>array("type"=>"onchange","script"=>"showPaymentFields(this.value)"), "options"=>array("cash"=>"CASH","advance"=>"FROM ADVANCE","cheque_credit"=>"CHEQUE (CREDIT)","cheque_debit"=>"CHEQUE (DEBIT)","ecs"=>"ECS","neft"=>"NEFT","rtgs"=>"RTGS","dd"=>"DD"), "class"=>"form-control");
 		$form_fields[] = $form_field;
 		$form_field = array("name"=>"incharge", "content"=>"Incharge name", "readonly"=>"",  "required"=>"", "type"=>"select", "class"=>"form-control chosen-select",  "options"=>$incharges_arr);
 		$form_fields[] = $form_field;
@@ -710,6 +710,8 @@ class RepairTransactionController extends \Controller {
 		$form_field = array("name"=>"billfile", "content"=>"upload bill", "readonly"=>"", "required"=>"", "type"=>"file", "class"=>"form-control file");
 		$form_fields[] = $form_field;
 		$form_field = array("name"=>"totalamount", "content"=>"total amount", "readonly"=>"", "required"=>"required","type"=>"text", "class"=>"form-control ");
+		$form_fields[] = $form_field;
+		$form_field = array("name"=>"branch", "content"=>"", "value"=>"0", "readonly"=>"", "required"=>"","type"=>"hidden", "class"=>"form-control");
 		$form_fields[] = $form_field;
 		$form_field = array("name"=>"jsondata", "value"=>"", "content"=>"", "readonly"=>"", "required"=>"","type"=>"hidden", "class"=>"form-control ");
 		$form_fields[] = $form_field;
@@ -753,7 +755,7 @@ class RepairTransactionController extends \Controller {
 		$values["provider"] = "purchasedorder";
 	
 		$values["modals"] = $modals;
-		return View::make('transactions.purchaseorder', array("values"=>$values));
+		return View::make('transactions.addrepairtransaction', array("values"=>$values));
 	}
 	
 	/**

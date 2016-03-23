@@ -1142,7 +1142,7 @@ class TransactionController extends \Controller {
 		$form_info = array();
 		$values = Input::All();
 		
-		if(isset($values["typeId"]) && ($values["typeId"]>900 || $values["typeId"]=="88" || $values["typeId"]=="89" || $values["typeId"]=="119" || $values["typeId"]=="120" || $values["typeId"]=="124"  || $values["typeId"]=="129"  || $values["typeId"]=="134" || $values["typeId"]=="121" || $values["typeId"]=="147") ) {
+		if(isset($values["typeId"]) && ($values["typeId"]>900 || $values["typeId"]=="88" || $values["typeId"]=="89" || $values["typeId"]=="108" || $values["typeId"]=="119" || $values["typeId"]=="120" || $values["typeId"]=="124"  || $values["typeId"]=="129"  || $values["typeId"]=="134" || $values["typeId"]=="121" || $values["typeId"]=="145" || $values["typeId"]=="146" || $values["typeId"]=="147") ) {
 			$entity_name = "";
 			$entity_text = "";
 			$entity_arr = array();
@@ -1313,6 +1313,60 @@ class TransactionController extends \Controller {
 				$form_field = array("name"=>$entity_name, "content"=>$entity_text, "readonly"=>"",  "required"=>"", "type"=>"select", "class"=>"form-control chosen-select",  "options"=>$entity_arr);
 				$form_fields[] = $form_field;
 				$values["typeId"] = "991";
+			}
+			if($values["typeId"] == "108"){
+				$parentId = \LookupTypeValues::where("name", "=", "PHONE NUMBERS (Company)")->get();
+				$incomes = array();
+				if(count($parentId)>0){
+					$parentId = $parentId[0];
+					$parentId = $parentId->id;
+					$incomes =  \LookupTypeValues::where("parentId","=",$parentId)->get();
+						
+				}
+				foreach ($incomes as $income){
+					$entity_arr[$income->id] = $income->name;
+				}
+				$entity_name = "phonenumbers";
+				$entity_text = "phone numbers";
+				$form_field = array("name"=>$entity_name, "content"=>$entity_text, "readonly"=>"",  "required"=>"", "type"=>"select", "class"=>"form-control chosen-select",  "options"=>$entity_arr);
+				$form_fields[] = $form_field;
+				$values["typeId"] = "990";
+			}
+			if($values["typeId"] == "145"){
+				$parentId = \LookupTypeValues::where("name", "=", "PF COMPANIES")->get();
+				$incomes = array();
+				if(count($parentId)>0){
+					$parentId = $parentId[0];
+					$parentId = $parentId->id;
+					$incomes =  \LookupTypeValues::where("parentId","=",$parentId)->get();
+			
+				}
+				foreach ($incomes as $income){
+					$entity_arr[$income->id] = $income->name;
+				}
+				$entity_name = "pfcompany";
+				$entity_text = "pf company";
+				$form_field = array("name"=>$entity_name, "content"=>$entity_text, "readonly"=>"",  "required"=>"", "type"=>"select", "class"=>"form-control chosen-select",  "options"=>$entity_arr);
+				$form_fields[] = $form_field;
+				$values["typeId"] = "980";
+			}
+			if($values["typeId"] == "146"){
+				$parentId = \LookupTypeValues::where("name", "=", "ESI COMPANIES")->get();
+				$incomes = array();
+				if(count($parentId)>0){
+					$parentId = $parentId[0];
+					$parentId = $parentId->id;
+					$incomes =  \LookupTypeValues::where("parentId","=",$parentId)->get();
+			
+				}
+				foreach ($incomes as $income){
+					$entity_arr[$income->id] = $income->name;
+				}
+				$entity_name = "esicompany";
+				$entity_text = "esi company";
+				$form_field = array("name"=>$entity_name, "content"=>$entity_text, "readonly"=>"",  "required"=>"", "type"=>"select", "class"=>"form-control chosen-select",  "options"=>$entity_arr);
+				$form_fields[] = $form_field;
+				$values["typeId"] = "990";
 			}
 			$form_field = array("name"=>"amount", "content"=>"amount", "readonly"=>"",  "required"=>"required", "type"=>"text", "class"=>"form-control number");
 			$form_fields[] = $form_field;

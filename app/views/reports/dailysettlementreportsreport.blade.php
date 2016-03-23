@@ -14,6 +14,9 @@
 			    padding-bottom: 0px;
 			    background-color: #EFF3F8;
 			}
+			table {
+				min-width: 100% !important;
+			}
 			th {
 			    white-space: nowrap;
 			}

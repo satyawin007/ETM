@@ -1,4 +1,4 @@
-<?php namespace transactions;
+<?php namespace reports;
 
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\View;

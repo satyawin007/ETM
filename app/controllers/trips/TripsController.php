@@ -94,7 +94,7 @@ class TripsController extends \Controller {
 				}
 				else{
 					$addmessage = false;
-					$fields = array("vehicleId"=>$values["vehicle"][$id],"tripStartDate"=>date("Y-m-d",strtotime($values["date"])),"status"=>"running");
+					$fields = array("vehicleId"=>$values["vehicle"][$id],"tripStartDate"=>date("Y-m-d",strtotime($values["dates"][$id])),"status"=>"running");
 					\DB::beginTransaction();
 					$db_functions_ctrl = new DBFunctionsController();
 					$table = "TripDetails";

@@ -447,7 +447,7 @@ class LoanController extends \Controller {
 		$form_fields[] = $form_field;
 		$form_field = array("name"=>"status", "id"=>"status",  "content"=>"status", "readonly"=>"",  "required"=>"required", "type"=>"select", "class"=>"form-control chosen-select", "options"=>array("ACTIVE"=>"ACTIVE","CLOSED"=>"CLOSED"));
 		$form_fields[] = $form_field;
-		$form_field = array("name"=>"paymenttype", "id"=>"paymenttype", "content"=>"payment type", "readonly"=>"",  "required"=>"required", "type"=>"select", "class"=>"form-control chosen-select", "options"=>$type_arr);
+		$form_field = array("name"=>"paymenttype", "id"=>"paymenttype",  "content"=>"payment type", "readonly"=>"",  "action"=>array("type"=>"onchange","script"=>"showPaymentFields(this.value)"), "required"=>"required", "type"=>"select", "class"=>"form-control select2",  "options"=>array("cash"=>"CASH","advance"=>"FROM ADVANCE","cheque_credit"=>"CHEQUE (CREDIT)","cheque_debit"=>"CHEQUE (DEBIT)","ecs"=>"ECS","neft"=>"NEFT","rtgs"=>"RTGS","dd"=>"DD"));
 		$form_fields[] = $form_field;
 		$form_field = array("name"=>"bankaccount", "id"=>"bankaccount", "content"=>"Bank account", "readonly"=>"",  "required"=>"", "type"=>"select", "class"=>"form-control chosen-select", "options"=>$banks_arr);
 		$form_fields[] = $form_field;

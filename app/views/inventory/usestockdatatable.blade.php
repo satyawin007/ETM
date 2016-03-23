@@ -343,7 +343,7 @@
 			      success: function(data) {
 			    	  $("#addfields").html(data);
 			    	  $("#units").attr("disabled",true);
-			    	  $("#alertdate").hide();
+			    	  //$("#alertdate").hide();
 			    	  $('.chosen-select').chosen();
 			    	  $('.date-picker').datepicker({ autoclose: true, todayHighlight: true })
 			    	  $('.chosen-select').trigger('chosen:updated');
@@ -522,10 +522,10 @@
 					      url: "deleteusedstockitem?id="+id,
 					      success: function(data) {
 						      if(data=="success"){
-						    	  bootbox.confirm('PURCHASE ORDER SUCCESSFULLY DELETED!', function(result) {});
+						    	  bootbox.confirm('ADDED STOCK ITEM SUCCESSFULLY DELETED!', function(result) {});
 						      }
 						      else{
-						    	  bootbox.confirm('PURCHASE ORDER COULD NOT BE DELETED!', function(result) {});
+						    	  bootbox.confirm('ADDED STOCK ITEM COULD NOT BE DELETED!', function(result) {});
 						      }
 						      location.reload();	
 					      },

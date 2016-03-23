@@ -21,6 +21,9 @@
 			    white-space: nowrap;
 			    min-width: 100%;
 			}
+			table {
+				min-width: 100% !important;
+			}
 			panel-group .panel {
 			    margin-bottom: 20px;
 			    border-radius: 4px;

@@ -20,6 +20,9 @@ use Illuminate\Support\Facades\Input;
 			th {
 			    white-space: wrap;
 			}
+			table {
+				min-width: 100% !important;
+			}
 			td {
 			    white-space: wrap;
 			}

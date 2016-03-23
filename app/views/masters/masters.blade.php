@@ -86,12 +86,14 @@
 			</button>
 			</a>
 			<?php } if(in_array(158, $jobs)){?>
+			<!-- 
 			<a href="meeterreading">
 			<button >
 				<i class="ace-icon fa fa-dashboard bigger-300"></i><BR/>
 				 &nbsp;  MEETER READING &nbsp; 
 			</button>
 			</a>
+			 -->
 			<?php } if(in_array(159, $jobs)){?>
 			<a href="lookupvalues">
 			<button>

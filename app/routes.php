@@ -78,13 +78,25 @@ Route::post('/login', function()
 	$values = Input::All();
 	if (Auth::attempt(array('emailId' => $values["email"], 'password' => $values["password"])))
 	{
-	    $roleid = Auth::user()->roleId;
+	    $roleid = Auth::user()->rolePrevilegeId;
 	    $privileges = RolePrivileges::where("roleId","=",$roleid)->get();
 	    $privileges_arr = array();
 	    foreach ($privileges as $privilege){
 	    	$privileges_arr[] = $privilege->jobId;
 	    }
 	    Session::put("jobs",$privileges_arr);
+	    
+	    $rec = Parameters::where("name","=","banner type")->get();
+	    $rec = $rec[0];
+	    Session::put("banner_type",$rec->value);
+	    
+	    $rec = Parameters::where("name","=","banner")->get();
+	    $rec = $rec[0];
+	    Session::put("banner",$rec->value);
+	    
+	    $rec = Parameters::where("name","=","title")->get();
+	    $rec = $rec[0];
+	    Session::put("title",$rec->value);
 	    
 	    $ip = "";
 	    if(!empty($_SERVER["HTTP_CLIENT_IP"])){ $ip = $_SERVER["HTTP_CLIENT_IP"]; }
@@ -362,15 +374,15 @@ Route::any('/addinventorylookupvalue', "inventory\LookupValueController@addLooku
 
 Route::any('/editinventorylookupvalue', "inventory\LookupValueController@editLookupValue");
 
-Route::any('/purchaseorder', "inventory\purchaseOrderController@managePurchaseOrders");
+Route::any('/purchaseorder', "inventory\PurchaseOrderController@managePurchaseOrders");
 
-Route::any('/createpurchaseorder', "inventory\purchaseOrderController@createPurchaseOrder");
+Route::any('/createpurchaseorder', "inventory\PurchaseOrderController@createPurchaseOrder");
 
-Route::any('/addpurchaseorder', "inventory\purchaseOrderController@addPurchaseOrder");
+Route::any('/addpurchaseorder', "inventory\PurchaseOrderController@addPurchaseOrder");
 
-Route::any('/editpurchaseorder', "inventory\purchaseOrderController@editPurchaseOrder");
+Route::any('/editpurchaseorder', "inventory\PurchaseOrderController@editPurchaseOrder");
 
-Route::any('/deletepurchaseorder', "inventory\purchaseOrderController@deletePurchaseOrder");
+Route::any('/deletepurchaseorder', "inventory\PurchaseOrderController@deletePurchaseOrder");
 
 Route::any('/viewpurchaseditems', "inventory\purchaseOrderItemController@managePurchaseOrderItems");
 
@@ -378,7 +390,7 @@ Route::any('/editpurchaseditem', "inventory\purchaseOrderItemController@editPurc
 
 Route::any('/deletepurchaseorderitem', "inventory\purchaseOrderItemController@deletePurchaseOrderItem");
 
-Route::get('/getmanufacturers', "inventory\purchaseOrderController@getManufacturers");
+Route::get('/getmanufacturers', "inventory\PurchaseOrderController@getManufacturers");
 
 Route::any('/manufacturers', "inventory\ManufacturesController@manageManufacturers");
 
@@ -437,5 +449,21 @@ Route::any('/edittransactionblocking', "masters\BlockDataEntryController@editTra
 
 Route::any('/verifytransactiondateandbranch', "masters\BlockDataEntryController@verifyTransactionDateandBranch");
 
+Route::get('/showalerts', function() {
+	return View::make('alerts.showalerts');
+});
 
+Route::get('/profile', function() {
+	return View::make('settings.profile');
+});
+
+Route::get('/settings', function() {
+	return View::make('settings.appsettings');
+});
+
+Route::any('/updateprofile', "settings\UserSettingsController@updateprofile");
+	
+Route::any('/updatepassword', "settings\UserSettingsController@updatepassword");
+	
+Route::any('/updatebannersettings', "settings\AppSettingsController@updateBannerSettings");
 

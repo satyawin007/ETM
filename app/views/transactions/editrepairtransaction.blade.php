@@ -1,5 +1,5 @@
 <?php
-use Illuminate\Support\Facades\Input;
+	use Illuminate\Support\Facades\Input;
 ?>
 @extends('masters.master')
 	@section('inline_css')
@@ -278,9 +278,10 @@ use Illuminate\Support\Facades\Input;
 					<thead>
 						<tr>
 							<th>Item</th>
-							<th>Item Info</th>
 							<th>Quantity</th>
-							<th>Price of Unit</th>
+							<th>Amount</th>
+							<th>Remarks</th>
+							<th>id</th>
 							<th>Actions</th>
 						</tr>
 					</thead>
@@ -452,22 +453,19 @@ use Illuminate\Support\Facades\Input;
 
 			<?php
 				$select_args = array();
-				$select_args[] = "items.name as item";
-				$select_args[] = "manufactures.name as manufacturer";
-				$select_args[] = "purchased_items.qty as qty";
-				$select_args[] = "purchased_items.unitPrice as unitPrice";
-				$select_args[] = "purchased_items.itemStatus as itemStatus";
-				$select_args[] = "purchased_items.status as status";
-				$select_args[] = "purchased_items.id as id";
-				$select_args[] = "purchased_items.itemId as itemId";
-				$select_args[] = "purchased_items.manufacturerId as manufacturerId";
-				$entities = \CreditSupplierTransDetails::where("creditsuppliertransdetails.status","=","ACTIVE")->where("purchasedOrderId","=",$values["id"])->join("items","items.id","=","purchased_items.itemId")->join("manufactures","manufactures.id","=","purchased_items.manufacturerId")->select($select_args)->get();
-				echo "var row = ".count($entities)."; ";2
+				$select_args[] = "lookuptypevalues.name as item";
+				$select_args[] = "creditsuppliertransdetails.quantity as qty";
+				$select_args[] = "creditsuppliertransdetails.amount as amount";
+				$select_args[] = "creditsuppliertransdetails.comments as comments";
+				$select_args[] = "creditsuppliertransdetails.id as id";
+				$entities = \CreditSupplierTransDetails::where("creditsuppliertransdetails.status","=","ACTIVE")->where("creditSupplierTransId","=",$values["id"])->leftjoin("lookuptypevalues","lookuptypevalues.id","=","creditsuppliertransdetails.repairedItem")->select($select_args)->get();
+				
+				echo "var row = ".count($entities)."; ";
 				$table_data = "tabledata = [";
 				$i = -1;
 				foreach ($entities as $entity){
 					$i++;
-					$table_data = $table_data."['".$entity->item."', '".$entity->manufacturer."', '".$entity->qty."', '".$entity->unitPrice."', '".$entity->itemStatus."', '".$entity->id."', ";
+					$table_data = $table_data."['".$entity->item."', '".$entity->qty."', '".$entity->amount."', '".$entity->comments."', '".$entity->id."', ";
 					$table_data = $table_data.'\'<button class="btn btn-sm btn-primary" onclick="editItem('.($i).')">Edit</button>&nbsp;&nbsp;&nbsp;<button class="btn btn-sm btn-danger" onclick="removeItem('.($i).')">Remove</button>\', \''.$entity->itemId."', '".$entity->manufacturerId."'],";    
 				}
 				$table_data = $table_data."]; ";

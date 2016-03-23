@@ -50,17 +50,40 @@
 			<script type="text/javascript">
 				try{ace.settings.check('navbar' , 'fixed')}catch(e){}
 			</script>
+			
+			<?php
+				$total_alerts = 0;
+				$tires_alert_data = "";
+				$today = date("Y-m-d");
+				$next_month = date('Y-m-d', strtotime('+1 month'));
+				$sql = "select vehicle.veh_reg,inventory_transaction.alertDate from inventory_transaction join vehicle on vehicle.id=inventory_transaction.toVehicleId where alertDate BETWEEN '".$today."' and '".$next_month."'";
+				$recs = \DB::select(\DB::raw($sql));
+				$total_alerts = $total_alerts+count($recs);
+				foreach ($recs as $rec){
+					$dt = date('d-m-Y', strtotime($rec->alertDate));
+					$tires_alert_data = $tires_alert_data.'<span class="pull-right">'.$rec->veh_reg.' &nbsp;('.$dt.')</span>';
+				}
+			?>
 
 			<div class="navbar-container" id="navbar-container">
 				<div class="navbar-header pull-left">
 					<!-- #section:basics/navbar.layout.brand -->
 					<a href="#" class="navbar-brand">
-						<small>
-							<i class="fa fa-leaf"></i>
-							Easy Travel Management
-						</small>
+						<?php 
+							$banner_type = Session::get("banner_type");
+							if($banner_type=="title"){ 
+								$title = Session::get("title");
+								echo '<small>'.'<i class="fa fa-lightbulb-o"></i>&nbsp;'.$title.'</small>';
+							}
+							else {
+								$banner = Session::get("banner");
+								echo "<img style='width:100%; max-height:26px;' src='../app/storage/uploads/".$banner."' />";
+							}
+						?>
 					</a>
 
+							
+						
 					<!-- /section:basics/navbar.layout.brand -->
 
 					<!-- #section:basics/navbar.toggle -->
@@ -97,15 +120,8 @@
 									<ul class="nav nav-tabs">
 										<li class="active">
 											<a data-toggle="tab" href="#navbar-tasks">
-												Tasks
-												<span class="badge badge-danger">4</span>
-											</a>
-										</li>
-
-										<li>
-											<a data-toggle="tab" href="#navbar-messages">
-												Messages
-												<span class="badge badge-danger">5</span>
+												Alerts
+												<span class="badge badge-danger">{{$total_alerts}}</span>
 											</a>
 										</li>
 									</ul><!-- .nav-tabs -->
@@ -116,10 +132,12 @@
 												<li class="dropdown-content">
 													<ul class="dropdown-menu dropdown-navbar">
 														<li>
-															<a href="#">
+															<a href="showalerts">
 																<div class="clearfix">
-																	<span class="pull-left">Software Update</span>
-																	<span class="pull-right">65%</span>
+																	<span style="font-size:13px; font-weight: bold;" class="pull-left">Vehicle Tire Change Alerts : </span><br/>
+																	<div style="padding: 5px; color: red; font-weight: bold;">
+																	{{$tires_alert_data}}
+																	</div>
 																</div>
 
 																<div class="progress progress-mini">
@@ -127,53 +145,7 @@
 																</div>
 															</a>
 														</li>
-
-														<li>
-															<a href="#">
-																<div class="clearfix">
-																	<span class="pull-left">Hardware Upgrade</span>
-																	<span class="pull-right">35%</span>
-																</div>
-
-																<div class="progress progress-mini">
-																	<div style="width:35%" class="progress-bar progress-bar-danger"></div>
-																</div>
-															</a>
-														</li>
-
-														<li>
-															<a href="#">
-																<div class="clearfix">
-																	<span class="pull-left">Unit Testing</span>
-																	<span class="pull-right">15%</span>
-																</div>
-
-																<div class="progress progress-mini">
-																	<div style="width:15%" class="progress-bar progress-bar-warning"></div>
-																</div>
-															</a>
-														</li>
-
-														<li>
-															<a href="#">
-																<div class="clearfix">
-																	<span class="pull-left">Bug Fixes</span>
-																	<span class="pull-right">90%</span>
-																</div>
-
-																<div class="progress progress-mini progress-striped active">
-																	<div style="width:90%" class="progress-bar progress-bar-success"></div>
-																</div>
-															</a>
-														</li>
 													</ul>
-												</li>
-
-												<li class="dropdown-footer">
-													<a href="#">
-														See tasks with details
-														<i class="ace-icon fa fa-arrow-right"></i>
-													</a>
 												</li>
 											</ul>
 										</div><!-- /.tab-pane -->
@@ -285,7 +257,8 @@
 						<!-- #section:basics/navbar.user_menu -->
 						<li class="light-blue user-min">
 							<a data-toggle="dropdown" href="#" class="dropdown-toggle">
-								<img class="nav-user-photo" src="../assets/avatars/user.jpg" alt="Jason's Photo" />
+								<?php $filename = "../app/storage/uploads/".Auth::user()->filePath;?>
+								<img class="nav-user-photo" src="{{$filename}}" alt="Jason's Photo" />
 								<span class="user-info">
 									<small>Welcome,</small>
 									{{Auth::user()->fullName}}
@@ -296,14 +269,14 @@
 
 							<ul class="user-menu dropdown-menu-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
 								<li>
-									<a href="#">
+									<a href="profile">
 										<i class="ace-icon fa fa-cog"></i>
 										Settings
 									</a>
 								</li>
 
 								<li>
-									<a href="profile.html">
+									<a href="profile">
 										<i class="ace-icon fa fa-user"></i>
 										Profile
 									</a>
@@ -648,7 +621,7 @@
 					
 					<li class="hover">
 						<?php if(in_array(6, $jobs)){?>	
-						<a href="#">
+						<a href="settings">
 							<i class="menu-icon fa fa-cog"></i>
 							<span class="menu-text"> SETTINGS </span>
 						</a>

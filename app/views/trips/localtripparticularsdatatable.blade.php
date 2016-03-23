@@ -346,7 +346,7 @@ use Illuminate\Support\Facades\Input;
 			<?php 
 				$vehicles = OfficeBranch::All();
 				$parentId = -1;
-				$parent = \LookupTypeValues::where("name","=","TRIP EXPENSES")->get();
+				$parent = \LookupTypeValues::where("name","=","EXPENSE")->get();
 				if(count($parent)>0){
 					$parent = $parent[0];
 					$parentId = $parent->id;

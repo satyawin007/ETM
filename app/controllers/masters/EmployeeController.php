@@ -160,49 +160,49 @@ class EmployeeController extends \Controller {
 					
 			if(isset($values['action']) && $values['action']=="driver_helpers"){
 				if(isset($values['branch']) && $values['branch'] != ""){
-					$entities = \Employee::where('officeBranchId',"=",$values['branch'])->where('roleId',"=",20)->orwhere("roleId", "=",19)->join('user_roles_master','employee.roleId','=','user_roles_master.id')->paginate($entries);
-					$total = \Employee::where('officeBranchId',"=",$values['branch'])->where('roleId',"=",20)->orwhere("roleId", "=",19)->join('user_roles_master','employee.roleId','=','user_roles_master.id')->get();
+					$entities = \Employee::leftjoin('officebranch','employee.officeBranchId','=','officebranch.id')->where('officeBranchId',"=",$values['branch'])->where('roleId',"=",20)->orwhere("roleId", "=",19)->leftjoin('user_roles_master','employee.roleId','=','user_roles_master.id')->select($select_args)->paginate($entries);
+					$total = \Employee::leftjoin('officebranch','employee.officeBranchId','=','officebranch.id')->where('officeBranchId',"=",$values['branch'])->where('roleId',"=",20)->orwhere("roleId", "=",19)->leftjoin('user_roles_master','employee.roleId','=','user_roles_master.id')->select($select_args)->get();
 					$total = count($total);
 				}
 				else{
-					$entities = \Employee::where('roleId',"=",20)->orwhere("roleId", "=",19)->join('user_roles_master','employee.roleId','=','user_roles_master.id')->paginate($entries);
-					$total = \Employee::where('roleId',"=",20)->orwhere("roleId", "=",19)->join('user_roles_master','employee.roleId','=','user_roles_master.id')->get();
+					$entities = \Employee::leftjoin('officebranch','employee.officeBranchId','=','officebranch.id')->where('roleId',"=",20)->orwhere("roleId", "=",19)->leftjoin('user_roles_master','employee.roleId','=','user_roles_master.id')->select($select_args)->paginate($entries);
+					$total = \Employee::leftjoin('officebranch','employee.officeBranchId','=','officebranch.id')->where('roleId',"=",20)->orwhere("roleId", "=",19)->leftjoin('user_roles_master','employee.roleId','=','user_roles_master.id')->select($select_args)->get();
 					$total = count($total);
 				}
 			}
 			else if(isset($values['action']) && $values['action']=="blocked"){
 				if(isset($values['branch']) && $values['branch'] != ""){
-					$entities = \Employee::where('officeBranchId',"=",$values['branch'])->where('status',"=","BLOCKED")->join('user_roles_master','employee.roleId','=','user_roles_master.id')->join('officebranch','employee.officeBranchId','=','officebranch.id')->select($select_args)->paginate($entries);
-					$total = \Employee::where('officeBranchId',"=",$values['branch'])->where('status',"=","BLOCKED")->join('user_roles_master','employee.roleId','=','user_roles_master.id')->join('officebranch','employee.officeBranchId','=','officebranch.id')->select($select_args)->get();
+					$entities = \Employee::where('officeBranchId',"=",$values['branch'])->where('status',"=","BLOCKED")->leftjoin('user_roles_master','employee.roleId','=','user_roles_master.id')->leftjoin('officebranch','employee.officeBranchId','=','officebranch.id')->select($select_args)->paginate($entries);
+					$total = \Employee::where('officeBranchId',"=",$values['branch'])->where('status',"=","BLOCKED")->leftjoin('user_roles_master','employee.roleId','=','user_roles_master.id')->leftjoin('officebranch','employee.officeBranchId','=','officebranch.id')->select($select_args)->get();
 					$total = count($total);
 				}
 				else {
-					$entities = \Employee::where('status',"=","BLOCKED")->join('user_roles_master','employee.roleId','=','user_roles_master.id')->join('officebranch','employee.officeBranchId','=','officebranch.id')->select($select_args)->paginate($entries);
-					$total = \Employee::where('status',"=","BLOCKED")->join('user_roles_master','employee.roleId','=','user_roles_master.id')->join('officebranch','employee.officeBranchId','=','officebranch.id')->select($select_args)->get();
+					$entities = \Employee::where('status',"=","BLOCKED")->leftjoin('user_roles_master','employee.roleId','=','user_roles_master.id')->leftjoin('officebranch','employee.officeBranchId','=','officebranch.id')->select($select_args)->paginate($entries);
+					$total = \Employee::where('status',"=","BLOCKED")->leftjoin('user_roles_master','employee.roleId','=','user_roles_master.id')->leftjoin('officebranch','employee.officeBranchId','=','officebranch.id')->select($select_args)->get();
 					$total = count($total);
 				}
 			}
 			else if(isset($values['action']) && $values['action']=="terminated"){
 				if(isset($values['branch']) && $values['branch'] != ""){
-					$entities = \Employee::where('officeBranchId',"=",$values['branch'])->where('status',"=","TERMINATED")->leftjoin('user_roles_master','employee.roleId','=','user_roles_master.id')->join('officebranch','employee.officeBranchId','=','officebranch.id')->select($select_args)->paginate($entries);
-					$total = \Employee::where('officeBranchId',"=",$values['branch'])->where('status',"=","TERMINATED")->leftjoin('user_roles_master','employee.roleId','=','user_roles_master.id')->join('officebranch','employee.officeBranchId','=','officebranch.id')->select($select_args)->get();
+					$entities = \Employee::where('officeBranchId',"=",$values['branch'])->where('status',"=","TERMINATED")->leftjoin('user_roles_master','employee.roleId','=','user_roles_master.id')->leftjoin('officebranch','employee.officeBranchId','=','officebranch.id')->select($select_args)->paginate($entries);
+					$total = \Employee::where('officeBranchId',"=",$values['branch'])->where('status',"=","TERMINATED")->leftjoin('user_roles_master','employee.roleId','=','user_roles_master.id')->leftjoin('officebranch','employee.officeBranchId','=','officebranch.id')->select($select_args)->get();
 					$total = count($total);
 				}
 				else {
-					$entities = \Employee::where('status',"=","TERMINATED")->join('user_roles_master','employee.roleId','=','user_roles_master.id')->leftjoin('officebranch','employee.officeBranchId','=','officebranch.id')->select($select_args)->paginate($entries);
+					$entities = \Employee::where('status',"=","TERMINATED")->leftjoin('user_roles_master','employee.roleId','=','user_roles_master.id')->leftjoin('officebranch','employee.officeBranchId','=','officebranch.id')->select($select_args)->paginate($entries);
 					$total = \Employee::where('status',"=","TERMINATED")->get();
 					$total = count($total);
 				}
 			}
 			else if(isset($values['action']) && $values['action']=="all"){
 				if(isset($values['branch']) && $values['branch'] != ""){
-					$entities = \Employee::where('officeBranchId',"=",$values['branch'])->where('roleId',"!=",20)->where("roleId", "!=",19)->where("status", "=","Active")->join('user_roles_master','employee.roleId','=','user_roles_master.id')->join('officebranch','employee.officeBranchId','=','officebranch.id')->select($select_args)->paginate($entries);
-					$total = \Employee::where('officeBranchId',"=",$values['branch'])->where('roleId',"!=",20)->where("roleId", "!=",19)->where("status", "=","Active")->join('user_roles_master','employee.roleId','=','user_roles_master.id')->join('officebranch','employee.officeBranchId','=','officebranch.id')->select($select_args)->get();
+					$entities = \Employee::where('officeBranchId',"=",$values['branch'])->where('roleId',"!=",20)->where("roleId", "!=",19)->where("status", "=","Active")->leftjoin('user_roles_master','employee.roleId','=','user_roles_master.id')->leftjoin('officebranch','employee.officeBranchId','=','officebranch.id')->select($select_args)->paginate($entries);
+					$total = \Employee::where('officeBranchId',"=",$values['branch'])->where('roleId',"!=",20)->where("roleId", "!=",19)->where("status", "=","Active")->leftjoin('user_roles_master','employee.roleId','=','user_roles_master.id')->leftjoin('officebranch','employee.officeBranchId','=','officebranch.id')->select($select_args)->get();
 					$total = count($total);
 				}
 				else {
-					$entities = \Employee::where('roleId',"!=",20)->where("roleId", "!=",19)->where("status", "=","Active")->join('user_roles_master','employee.roleId','=','user_roles_master.id')->join('officebranch','employee.officeBranchId','=','officebranch.id')->select($select_args)->paginate($entries);
-					$total = \Employee::where('roleId',"!=",20)->where("roleId", "!=",19)->where("status", "=","Active")->join('user_roles_master','employee.roleId','=','user_roles_master.id')->join('officebranch','employee.officeBranchId','=','officebranch.id')->get();
+					$entities = \Employee::where('roleId',"!=",20)->where("roleId", "!=",19)->where("status", "=","Active")->leftjoin('user_roles_master','employee.roleId','=','user_roles_master.id')->leftjoin('officebranch','employee.officeBranchId','=','officebranch.id')->select($select_args)->paginate($entries);
+					$total = \Employee::where('roleId',"!=",20)->where("roleId", "!=",19)->where("status", "=","Active")->leftjoin('user_roles_master','employee.roleId','=','user_roles_master.id')->leftjoin('officebranch','employee.officeBranchId','=','officebranch.id')->get();
 					$total = count($total);					
 				}
 			}
@@ -375,7 +375,7 @@ class EmployeeController extends \Controller {
 				"workgroup"=>"workGroup","age"=>"age", "fathername"=>"fatherName",
 				"religion"=>"religion","residance"=>"residance", "nonlocaldetails"=>"detailsForNonLocal",
 				"phonenumber"=>"mobileNo","homenumber"=>"homePhoneNo", "idproof"=>"idCardName",
-				"idproofnumber"=>"idCardNumber","joiningdate"=>"joiningDate", "rtaoffice"=>"rtaBranch",
+				"idproofnumber"=>"idCardNumber","leftjoiningdate"=>"leftjoiningDate", "rtaoffice"=>"rtaBranch",
 				"aadhdaarnumber"=>"aadharNumber","rationcardnumber"=>"rationCardNumber", "drivinglicence"=>"drivingLicence",
 				"drivingliceneexpiredate"=>"drvLicenceExpDate","accountnumber"=>"accountNumber", "bankname"=>"bankName",
 				"ifsccode"=>"ifscCode","branchname"=>"branchName", "presentaddress"=>"presentAddress"
@@ -383,7 +383,7 @@ class EmployeeController extends \Controller {
 		$fields = array();
 		foreach ($field_names as $key=>$val){
 			if(isset($values[$key])){
-				if($val == "dob" || $val == "drvLicenceExpDate" || $val == "joiningDate"){
+				if($val == "dob" || $val == "drvLicenceExpDate" || $val == "leftjoiningDate"){
 					$fields[$val] = date("Y-m-d",strtotime($values[$key]));
 				}
 				else if($val == "password"){

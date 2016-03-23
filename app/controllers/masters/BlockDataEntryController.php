@@ -169,6 +169,64 @@ class BlockDataEntryController extends \Controller {
 		}
 	}	
 	
+	
+	/**
+	 * get all city based on stateId
+	 *
+	 * @return Response
+	 */
+	public function verifyTransactionDateandBranchLocally($values)
+	{
+		$blockBranch = $values['branch'];
+		$blockDate = date("Y-m-d",strtotime($values['date']));
+		$CTIME = 0;
+		$rec = \Parameters::where("name","=","transaction_closing_time")->get();
+		if(count($rec)>0){
+			$rec = $rec[0];
+			$CTIME = $rec->value;
+		}
+		$todayHours = date("H");
+		$todayDate = date("Y-m-d");
+		$yesterDay = date("Y-m-d", strtotime("-1 days"));
+		if($blockDate == $todayDate)
+		{
+			return "YES";
+		}
+		else if($blockDate == $yesterDay)
+		{
+			if($todayHours < $CTIME)
+			{
+				return "YES";
+			}
+			else
+			{
+				$rec =\BlockDataEntry::where("branchId","=",$blockBranch)->where("dataEntryDate","=",date("Y-m-d",strtotime($blockDate)))->get();
+				$status = "";
+				if(count($rec)>0){
+					$rec = $rec[0];
+					$status = $rec->status;
+				}
+				if($status == "OPEN")
+					return "YES";
+					else
+						return "NO";
+			}
+		}
+		else
+		{
+			$rec =\BlockDataEntry::where("branchId","=",$blockBranch)->where("dataEntryDate","=",date("Y-m-d",strtotime($blockDate)))->get();
+			$status = "";
+			if(count($rec)>0){
+				$rec = $rec[0];
+				$status = $rec->status;
+			}
+			if($status == "OPEN")
+				return "YES";
+				else
+					return "NO";
+		}
+	}
+	
 	/**
 	 * get all city based on stateId
 	 *

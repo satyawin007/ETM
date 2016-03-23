@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\View;
+use masters\BlockDataEntryController;
 class DataTableController extends \Controller {
 
 	/**
@@ -128,6 +129,7 @@ class DataTableController extends \Controller {
 		$select_args[] = "incometransactions.remarks as remarks";
 		$select_args[] = "incometransactions.transactionId as id";
 		$select_args[] = "incometransactions.lookupValueId as lookupValueId";
+		$select_args[] = "incometransactions.branchId as branch";
 		
 			
 		$actions = array();
@@ -175,6 +177,9 @@ class DataTableController extends \Controller {
 			$data_values = array_values($entity);
 			$actions = $values['actions'];
 			$action_data = "";
+			$bde = new BlockDataEntryController();
+			$values1 = array("branch"=>$entity["branch"],"date"=>$entity["date"]);
+			$valid = $bde->verifyTransactionDateandBranchLocally($values1);
 			foreach($actions as $action){
 				if($action["type"] == "modal"){
 					$jsfields = $action["jsdata"];
@@ -184,10 +189,15 @@ class DataTableController extends \Controller {
 						$jsdata = $jsdata." '".$entity[$jsfields[$i]]."', ";
 					}
 					$jsdata = $jsdata." '".$entity[$jsfields[$i]];
-					$action_data = $action_data. "<a class='btn btn-minier btn-".$action["css"]."' href='".$action['url']."' data-toggle='modal' onClick=\"".$action['js'].$jsdata."')\">".strtoupper($action["text"])."</a>&nbsp; &nbsp;" ;
+					
+					if($valid=="YES"){
+						$action_data = $action_data. "<a class='btn btn-minier btn-".$action["css"]."' href='".$action['url']."' data-toggle='modal' onClick=\"".$action['js'].$jsdata."')\">".strtoupper($action["text"])."</a>&nbsp; &nbsp;" ;
+					}
 				}
 				else {
-					$action_data = $action_data."<a class='btn btn-minier btn-".$action["css"]."' href='".$action['url']."&id=".$entity['id']."'>".strtoupper($action["text"])."</a>&nbsp; &nbsp;" ;
+					if($valid=="YES"){
+						$action_data = $action_data."<a class='btn btn-minier btn-".$action["css"]."' href='".$action['url']."&id=".$entity['id']."'>".strtoupper($action["text"])."</a>&nbsp; &nbsp;" ;
+					}
 				}
 			}
 			$data_values[7] = $action_data;
@@ -214,6 +224,7 @@ class DataTableController extends \Controller {
 		$select_args[] = "creditsuppliertransactions.electricianCharges as electricianCharges";
 		$select_args[] = "creditsuppliertransactions.batta as batta";
 		$select_args[] = "creditsuppliertransactions.id as id";
+		$select_args[] = "creditsuppliertransactions.branchId as branch";
 		$actions = array();
 		$action = array("url"=>"editrepairtransaction?", "type"=>"", "css"=>"primary", "js"=>"modalEditRepairTransaction(", "jsdata"=>array("id"), "text"=>"EDIT");
 		$actions[] = $action;
@@ -224,14 +235,23 @@ class DataTableController extends \Controller {
 		$search = $_REQUEST["search"];
 		$search = $search['value'];
 		if($search != ""){
-			$entities = \IncomeTransaction::where("transactionId", "like", "%$search%")->where("branchId","=",$values["branch1"])->leftjoin("officebranch", "officebranch.id","=","incometransactions.branchId")->leftjoin("lookuptypevalues", "lookuptypevalues.id","=","incometransactions.lookupValueId")->select($select_args)->limit($length)->offset($start)->get();
-			$total = \IncomeTransaction::where("transactionId", "like", "%$search%")->count();
+			$supids_arr = array();
+			$suppliers = \CreditSupplier::where("supplierName","like","%$search%")->get();
+			foreach ($suppliers as $supplier){
+				$supids_arr[] = $supplier->id;
+			}
+			$branchids_arr = array();
+			$branches = \OfficeBranch::where("name","like","%$search%")->get();
+			foreach ($branches as $branch){
+				$branchids_arr[] = $branch->id;
+			}
+			$entities = \CreditSupplierTransactions::whereIn("creditsuppliertransactions.branchId",$branchids_arr)->orWhereIn("creditsuppliertransactions.creditSupplierId",$supids_arr)->where("creditsuppliertransactions.deleted","=","No")->leftjoin("vehicle", "vehicle.id","=","creditsuppliertransactions.vehicleId")->leftjoin("officebranch", "officebranch.id","=","creditsuppliertransactions.branchId")->leftjoin("creditsuppliers", "creditsuppliers.id","=","creditsuppliertransactions.creditSupplierId")->select($select_args)->limit($length)->offset($start)->get();
+			$total = \CreditSupplierTransactions::whereIn("creditsuppliertransactions.branchId",$branchids_arr)->orWhereIn("creditsuppliertransactions.creditSupplierId",$supids_arr)->where("creditsuppliertransactions.deleted","=","No")->count();
 		}
 		else{
 			$entities = \CreditSupplierTransactions::where("creditsuppliertransactions.deleted","=","No")->leftjoin("vehicle", "vehicle.id","=","creditsuppliertransactions.vehicleId")->leftjoin("officebranch", "officebranch.id","=","creditsuppliertransactions.branchId")->leftjoin("creditsuppliers", "creditsuppliers.id","=","creditsuppliertransactions.creditSupplierId")->select($select_args)->limit($length)->offset($start)->get();
 			$total = \CreditSupplierTransactions::count();
 		}
-	
 		$entities = $entities->toArray();
 		foreach($entities as $entity){
 			$entity["date"] = date("d-m-Y",strtotime($entity["date"]));
@@ -242,6 +262,9 @@ class DataTableController extends \Controller {
 			$data_values = array_values($entity);
 			$actions = $values['actions'];
 			$action_data = "";
+			$bde = new BlockDataEntryController();
+			$values1 = array("branch"=>$entity["branch"],"date"=>$entity["date"]);
+			$valid = $bde->verifyTransactionDateandBranchLocally($values1);
 			foreach($actions as $action){
 				if($action["type"] == "modal"){
 					$jsfields = $action["jsdata"];
@@ -251,13 +274,15 @@ class DataTableController extends \Controller {
 						$jsdata = $jsdata." '".$entity[$jsfields[$i]]."', ";
 					}
 					$jsdata = $jsdata." '".$entity[$jsfields[$i]];
-					$action_data = $action_data. "<a class='btn btn-minier btn-".$action["css"]."' href='".$action['url']."' data-toggle='modal' onClick=\"".$action['js'].$jsdata."')\">".strtoupper($action["text"])."</a>&nbsp; &nbsp;" ;
-				}
-				else if($action['url'] == "#"){
-					$action_data = $action_data."<button class='btn btn-minier btn-".$action["css"]."' onclick='".$action["id"]."(".$entity["id"].")' >".strtoupper($action["text"])."</button>&nbsp; &nbsp;" ;
+					
+					if($valid=="YES"){
+						$action_data = $action_data. "<a class='btn btn-minier btn-".$action["css"]."' href='".$action['url']."' data-toggle='modal' onClick=\"".$action['js'].$jsdata."')\">".strtoupper($action["text"])."</a>&nbsp; &nbsp;" ;
+					}
 				}
 				else {
-					$action_data = $action_data."<a class='btn btn-minier btn-".$action["css"]."' href='".$action['url']."&id=".$entity['id']."'>".strtoupper($action["text"])."</a>&nbsp; &nbsp;" ;
+					if($valid=="YES"){
+						$action_data = $action_data."<a class='btn btn-minier btn-".$action["css"]."' href='".$action['url']."&id=".$entity['id']."'>".strtoupper($action["text"])."</a>&nbsp; &nbsp;" ;
+					}
 				}
 			}
 			$data_values[10] = $action_data;
@@ -281,6 +306,7 @@ class DataTableController extends \Controller {
 		$select_args[] = "fueltransactions.paymentType as paymentType";
 		$select_args[] = "fueltransactions.remarks as remarks";
 		$select_args[] = "fueltransactions.id as id";
+		$select_args[] = "fueltransactions.branchId as branch";
 		
 		$actions = array();
 		$action = array("url"=>"#edit", "type"=>"modal", "css"=>"primary", "js"=>"modalEditTransaction(", "jsdata"=>array("id"), "text"=>"EDIT");
@@ -326,6 +352,9 @@ class DataTableController extends \Controller {
 			$data_values = array_values($entity);
 			$actions = $values['actions'];
 			$action_data = "";
+			$bde = new BlockDataEntryController();
+			$values1 = array("branch"=>$entity["branch"],"date"=>$entity["date"]);
+			$valid = $bde->verifyTransactionDateandBranchLocally($values1);
 			foreach($actions as $action){
 				if($action["type"] == "modal"){
 					$jsfields = $action["jsdata"];
@@ -335,10 +364,15 @@ class DataTableController extends \Controller {
 						$jsdata = $jsdata." '".$entity[$jsfields[$i]]."', ";
 					}
 					$jsdata = $jsdata." '".$entity[$jsfields[$i]];
-					$action_data = $action_data. "<a class='btn btn-minier btn-".$action["css"]."' href='".$action['url']."' data-toggle='modal' onClick=\"".$action['js'].$jsdata."')\">".strtoupper($action["text"])."</a>&nbsp; &nbsp;" ;
+					
+					if($valid=="YES"){
+						$action_data = $action_data. "<a class='btn btn-minier btn-".$action["css"]."' href='".$action['url']."' data-toggle='modal' onClick=\"".$action['js'].$jsdata."')\">".strtoupper($action["text"])."</a>&nbsp; &nbsp;" ;
+					}
 				}
 				else {
-					$action_data = $action_data."<a class='btn btn-minier btn-".$action["css"]."' href='".$action['url']."&id=".$entity['id']."'>".strtoupper($action["text"])."</a>&nbsp; &nbsp;" ;
+					if($valid=="YES"){
+						$action_data = $action_data."<a class='btn btn-minier btn-".$action["css"]."' href='".$action['url']."&id=".$entity['id']."'>".strtoupper($action["text"])."</a>&nbsp; &nbsp;" ;
+					}
 				}
 			}
 			$data_values[8] = $action_data;
@@ -360,6 +394,7 @@ class DataTableController extends \Controller {
 		$select_args[] = "expensetransactions.remarks as remarks";
 		$select_args[] = "expensetransactions.transactionId as id";
 		$select_args[] = "expensetransactions.lookupValueId as lookupValueId";
+		$select_args[] = "expensetransactions.branchId as branch";
 	
 			
 		$actions = array();
@@ -407,6 +442,9 @@ class DataTableController extends \Controller {
 			$data_values = array_values($entity);
 			$actions = $values['actions'];
 			$action_data = "";
+			$bde = new BlockDataEntryController();
+			$values1 = array("branch"=>$entity["branch"],"date"=>$entity["date"]);
+			$valid = $bde->verifyTransactionDateandBranchLocally($values1);
 			foreach($actions as $action){
 				if($action["type"] == "modal"){
 					$jsfields = $action["jsdata"];
@@ -416,10 +454,15 @@ class DataTableController extends \Controller {
 						$jsdata = $jsdata." '".$entity[$jsfields[$i]]."', ";
 					}
 					$jsdata = $jsdata." '".$entity[$jsfields[$i]];
-					$action_data = $action_data. "<a class='btn btn-minier btn-".$action["css"]."' href='".$action['url']."' data-toggle='modal' onClick=\"".$action['js'].$jsdata."')\">".strtoupper($action["text"])."</a>&nbsp; &nbsp;" ;
+					
+					if($valid=="YES"){
+						$action_data = $action_data. "<a class='btn btn-minier btn-".$action["css"]."' href='".$action['url']."' data-toggle='modal' onClick=\"".$action['js'].$jsdata."')\">".strtoupper($action["text"])."</a>&nbsp; &nbsp;" ;
+					}
 				}
 				else {
-					$action_data = $action_data."<a class='btn btn-minier btn-".$action["css"]."' href='".$action['url']."&id=".$entity['id']."'>".strtoupper($action["text"])."</a>&nbsp; &nbsp;" ;
+					if($valid=="YES"){
+						$action_data = $action_data."<a class='btn btn-minier btn-".$action["css"]."' href='".$action['url']."&id=".$entity['id']."'>".strtoupper($action["text"])."</a>&nbsp; &nbsp;" ;
+					}
 				}
 			}
 			$data_values[7] = $action_data;

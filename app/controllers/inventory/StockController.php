@@ -180,11 +180,11 @@ class StockController extends \Controller {
 				DB::commit();
 			}
 			if(isset($values["action"]) && $values["action"]=="vehicletovehicle"){
-				$field_names = array("action"=>"action","date"=>"date","warehouse"=>"fromWareHouseId","item"=>"stockItemId","fromvehicleno"=>"fromVehicleId","tovehicleno"=>"toVehicleId","fromaction"=>"fromActionId","toaction"=>"toActionId","usedqty"=>"qty","usedqty"=>"qty","remarks"=>"remarks");
+				$field_names = array("action"=>"action","date"=>"date","warehouse"=>"fromWareHouseId","item"=>"stockItemId","fromvehicleno"=>"fromVehicleId","tovehicleno"=>"toVehicleId","fromaction"=>"fromActionId","toaction"=>"toActionId","usedqty"=>"qty","usedqty"=>"qty","remarks"=>"remarks","alertdate"=>"alertDate");
 				$fields = array();
 				foreach ($field_names as $key=>$val){
 					if(isset($values[$key])){
-						if($key == "date"){
+						if($key == "date" || $key=="alertdate"){
 							$fields[$val] = date("Y-m-d",strtotime($values[$key]));
 						}
 						else{
@@ -588,7 +588,9 @@ class StockController extends \Controller {
 			return view::make("inventory.usestockfields",array("values"=>$values));
 		}
 		else if($values["action"] == "vehicletovehicle"){
-			$form_field = array("name"=>"item", "id"=>"item",  "content"=>"item", "readonly"=>"",  "required"=>"required", "type"=>"select", "class"=>"form-control chosen-select", "action"=>array("type"=>"onchange","script"=>"getItemInfo1(this.value)"), "options"=>$items_arr);
+			$form_field = array("name"=>"alertdate", "id"=>"alertdate",  "content"=>"alert date", "readonly"=>"",  "required"=>"", "type"=>"text", "class"=>"form-control date-picker");
+			$form_fields[] = $form_field;
+			$form_field = array("name"=>"item", "id"=>"item",  "content"=>"item", "readonly"=>"",  "required"=>"required", "type"=>"select", "class"=>"form-control chosen-select",  "options"=>$items_arr);
 			$form_fields[] = $form_field;
 			$form_field = array("name"=>"fromvehicleno", "id"=>"fromvehicleno",  "content"=>"from vehicle number", "readonly"=>"",  "required"=>"required", "type"=>"select", "class"=>"form-control chosen-select", "options"=>$vehicles_arr);
 			$form_fields[] = $form_field;
@@ -666,12 +668,14 @@ class StockController extends \Controller {
 			$table = "\PurchasedItems"; 
 			$data = array('id'=>$entity->stockItemId);
 			$entity = $db_functions_ctrl->get($table, $data);
-			$entity = $entity[0];
-			$updateqty = $entity->qty+$usedqty;
-			$table = "\PurchasedItems";
-			$fields = array("qty"=>$updateqty);
-			$data = array('id'=>$entity->id);
-			$db_functions_ctrl->update($table, $fields, $data);
+			if(count($entity)>0){
+				$entity = $entity[0];
+				$updateqty = $entity->qty+$usedqty;
+				$table = "\PurchasedItems";
+				$fields = array("qty"=>$updateqty);
+				$data = array('id'=>$entity->id);
+				$db_functions_ctrl->update($table, $fields, $data);
+			}
 			
 			$table = "\InventoryTransactions";
 			$fields = array("status"=>"DELETED");

@@ -17,6 +17,9 @@
 			th {
 			    white-space: nowrap;
 			}
+			table {
+				min-width: 100% !important;
+			}
 			td {
 			    white-space: nowrap;
 			}

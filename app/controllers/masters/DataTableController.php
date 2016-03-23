@@ -664,7 +664,7 @@ private function getProvider($values, $length, $start){
 				$citieids_arr[] = $cityid->id;
 			}
 			$entities = \ServiceDetails::wherein("sourceCity", $citieids_arr)->join("cities","cities.id","=","servicedetails.sourceCity")->join("cities as cities1","cities1.id","=","servicedetails.destinationCity")->select($select_args)->limit($length)->offset($start)->get();
-			$total = \ServiceDetails::wherein("sourceCity", $citieids_arr)->join("cities","cities.id","=","servicedetails.sourceCity")->join("cities as cities1","cities1.id","=","servicedetails.destinationCity")->count();;
+			$total = \ServiceDetails::wherein("sourceCity", $citieids_arr)->join("cities","cities.id","=","servicedetails.sourceCity")->join("cities as cities1","cities1.id","=","servicedetails.destinationCity")->count();
 		}
 		else{
 			$entities = \ServiceDetails::join("cities","cities.id","=","servicedetails.sourceCity")->join("cities as cities1","cities1.id","=","servicedetails.destinationCity")->select($select_args)->limit($length)->offset($start)->get();

@@ -149,10 +149,15 @@
 					<div class="clearfix">
 						<div class="col-md-offset-0 col-md-12 form-actions" style="margin: 0px">
 							<div class="col-md-offset-4 col-md-5">
-							<button id="reset" class="btn primary" type="submit" id="submit">
+							
+							<div style="float:left;">
+								<a href="#edit2" role="button" class="btn primary" onclick="modalShowTripInfo()" data-toggle="modal"> SHOW TRIP INFO </a>
+								
+							</div>&nbsp;&nbsp;&nbsp;
+							<div class="btn primary" id="submit">
 								<i class="ace-icon fa fa-cross bigger-110"></i>
 								CANCEL TRIP
-							</button>
+							</div>
 							</div>
 						</div>
 					</div>

@@ -1,6 +1,3 @@
-<?php
-use Illuminate\Support\Facades\Input;
-?>
 @extends('masters.master')
 	@section('inline_css')
 		<style>
@@ -31,24 +28,15 @@ use Illuminate\Support\Facades\Input;
 				text-align: right;
 				margin-top: 5px;
 			}
-			.table {
-			    width: 100%;
-			    max-width: 100%;
-			    margin-bottom: 0px;
+			.chosen-container{
+			  width: 100% !important;
 			}
-			.form-actions {
-			    display: block;
-			    background-color: #F5F5F5;
-			    border-top: 1px solid #E5E5E5;
-			    /* margin-bottom: 20px; 
-			    margin-top: 20px;
-			    padding: 19px 20px 20px;*/
-			}
+			
 		</style>
 	@section('page_css')
 		<link rel="stylesheet" href="../assets/css/jquery-ui.custom.css" />
 		<link rel="stylesheet" href="../assets/css/bootstrap-datepicker3.css"/>
-		<link rel="stylesheet" href="../assets/css/chosen.css" />
+		<link rel="stylesheet" href="../assets/css/chosen1.css" />
 		<link rel="stylesheet" href="../assets/css/daterangepicker.css" />
 	@stop
 		
@@ -56,56 +44,47 @@ use Illuminate\Support\Facades\Input;
 	
 	@section('bredcum')	
 		<small>
-			TRIPS
+			TRIPS & SERVICES
 			<i class="ace-icon fa fa-angle-double-right"></i>
 			{{$values['bredcum']}}
 		</small>
 	@stop
-	
-	<?php 
-		$total_expenses = 0;
-		$total_advance = 0;
-		$total_fuel_amount = 0;
-		$total_incomes = 0;
-		$total = 0.0;
-		
-		$parentId = -1;
-		$tripparticulars_arr = array();
-		$parent = \LookupTypeValues::where("name","=","TRIP ADVANCES")->get();
-		if(count($parent)>0){
-			$parent = $parent[0];
-			$parentId = $parent->id;
-		}
-		$tripparticulars =  \LookupTypeValues::where("parentId","=",$parentId)->where("status", "=", "ACTIVE")->get();
-		foreach ($tripparticulars as $tripparticular){
-			$tripparticulars_arr[] = $tripparticular->id;
-		}
-		$select_args = array();
-		$select_args[] = "officebranch.name as branchId";
-		$select_args[] = "tripparticulars.vehicleId as vehicleId";
-		$select_args[] = "tripparticulars.amount as amount";
-		$select_args[] = "tripparticulars.date as date";
-		$select_args[] = "tripparticulars.remarks as remarks";
-		$tripadvances = \TripParticulars::where("tripId","=",$values["id"])->where("tripType","=","LOCAL")->where("status","=","ACTIVE")->whereIn("lookupValueId",$tripparticulars_arr)->leftjoin("officebranch","officebranch.id","=","tripparticulars.branchId")->select($select_args)->get();
-		foreach($tripadvances as $tripadvance){
-			$total = $total+$tripadvance->amount;
-		} 
-		$total_advance = $total;
-	?>
 
 	@section('page_content')
 		<div class="col-xs-offset-4 col-xs-8 ccordion-style1 panel-group">
-			<div style="float:left;">
-				<a class="btn btn-sm btn-primary" href="addlocaltrip">CREATE/ADD BOOKING</a> &nbsp;&nbsp;
-				<a class="btn btn-sm  btn-inverse" href="managetrips?triptype=LOCAL">MANAGE TRIPS</a> &nbsp;&nbsp;
-			</div>
-			<div style="float:right;">
-				<a href="tripclosingreport?tripid={{$values['id']}}" class="btn btn-white btn-info btn-bold">
-					<i class="ace-icon fa fa-print bigger-160"></i>
-					CLOSING REPORT
-				</a>
-			</div>
+			<a class="btn btn-sm btn-primary" href="dailytrips">CREATE/ADD SERVICES</a> &nbsp;&nbsp;
+			<a class="btn btn-sm  btn-inverse" href="managetrips?triptype={{$values['triptype']}}">MANAGE TRIPS</a> &nbsp;&nbsp;
 		</div>
+		<?php 
+			$total_expenses = 0;
+			$total_advance = 0;
+			$total_fuel_amount = 0;
+			$total_incomes = 0;
+			$total = 0.0;
+			
+			$parentId = -1;
+			$tripparticulars_arr = array();
+			$parent = \LookupTypeValues::where("name","=","TRIP ADVANCES")->get();
+			if(count($parent)>0){
+				$parent = $parent[0];
+				$parentId = $parent->id;
+			}
+			$tripparticulars =  \LookupTypeValues::where("parentId","=",$parentId)->where("status", "=", "ACTIVE")->get();
+			foreach ($tripparticulars as $tripparticular){
+				$tripparticulars_arr[] = $tripparticular->id;
+			}
+			$select_args = array();
+			$select_args[] = "officebranch.name as branchId";
+			$select_args[] = "tripparticulars.vehicleId as vehicleId";
+			$select_args[] = "tripparticulars.amount as amount";
+			$select_args[] = "tripparticulars.date as date";
+			$select_args[] = "tripparticulars.remarks as remarks";
+			$tripadvances = \TripParticulars::where("tripId","=",$values["id"])->where("tripType","=","LOCAL")->where("status","=","ACTIVE")->whereIn("lookupValueId",$tripparticulars_arr)->leftjoin("officebranch","officebranch.id","=","tripparticulars.branchId")->select($select_args)->get();
+			foreach($tripadvances as $tripadvance){
+				$total = $total+$tripadvance->amount;
+			} 
+			$total_advance = $total;
+		?>
 		<div id="accordion1" class="col-xs-offset-0 col-xs-12 accordion-style1 panel-group">			
 			<div class="panel panel-default">
 				<div class="panel-heading">
@@ -131,8 +110,6 @@ use Illuminate\Support\Facades\Input;
 							<tbody>
 								<tr>
 							<?php 
-								$source_busno = 0;
-								$dest_busno = 0;
 								if(isset($values["id"])){
 									$entities = \BusBookings::where("id","=",$values["id"])->get();
 									foreach ($entities as $entity){
@@ -158,8 +135,6 @@ use Illuminate\Support\Facades\Input;
 										echo "<td>".$entity->returntrip."</td>";
 										echo "<td>".$entity->custinfo."</td>";
 										echo "<td>".$entity->amount."</td>";
-										$source_busno = $entity->source_busno;
-										$dest_busno = $entity->dest_busno;
 									}
 								}
 							?>
@@ -171,11 +146,10 @@ use Illuminate\Support\Facades\Input;
 				</div>
 			</div>
 		</div>
-		<div class="col-xs-offset-2 col-xs-10 ccordion-style1 panel-group">
+		<div class="col-xs-offset-3 col-xs-9 ccordion-style1 panel-group">
 			<a class="btn btn-sm  btn-purple" href="addlocaltripparticular?id={{$values['id']}}&type=advances">ADD TRIP ADVANCE</a>&nbsp;&nbsp;
 			<a class="btn btn-sm btn-purple" href="addlocaltripparticular?id={{$values['id']}}&type=expenses_and_incomes">ADD TRIP EXPESENSES/INCOMES</a> &nbsp;&nbsp;
 			<a class="btn btn-sm btn-purple" href="addlocaltripfuel?id={{$values['id']}}&triptype=LOCAL&transtype=fuel">ADD TRIP FUEL EXPENSES</a> &nbsp;&nbsp;
-			<a class="btn btn-sm btn-purple" href="assigndrivervehicle?id={{$values['id']}}&triptype=LOCAL">ASSIGN DRIVER & VEHICLE</a> &nbsp;&nbsp;
 			<a class="btn btn-sm btn-purple" href="bookingrefund?id={{$values['id']}}&triptype=LOCAL&transtype=bookingrefund">BOOKING REFUND</a> &nbsp;&nbsp;
 		</div>
 		<div id="accordion1" class="col-xs-offset-0 col-xs-12 accordion-style1 panel-group">			
@@ -184,195 +158,20 @@ use Illuminate\Support\Facades\Input;
 					<h4 class="panel-title">
 						<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#TEST">
 							<i class="ace-icon fa fa-angle-down bigger-110" data-icon-hide="ace-icon fa fa-angle-down" data-icon-show="ace-icon fa fa-angle-right"></i>
-							&nbsp;ASSIGN DRIVER & VEHICLE
+							&nbsp;ADD TRIP FUEL TRANSACTION
 						</a>
 					</h4>
 				</div>
 				<div class="panel-collapse collapse in" id="TEST">
 					<div class="panel-body" style="padding: 0px">
 						<?php $form_info = $values["form_info"]; ?>
-					</div>
-					<div class="row">
-						<div class="col-xs-12" style="padding:2%">
-							<table id="simple-table" class="table table-striped table-bordered table-hover">
-								<thead>
-									<tr>
-										<th>ROUTE TYPE</th>
-										<th>DRIVER1</th>
-										<th>DRIVER2</th>
-										<th>HELPER</th>
-										<th>VEHICLE</th>
-									</tr>
-								</thead>
-								<?php 
-									$url = "adddailytrips";
-								?>
-								<form name="tripsform" action="assigndrivervehicle" method="post" onsubmit="return validateData();">
-									<?php 
-										$tripid = BusBookings::where("id","=",$values["id"])->first();
-										$tripid = $tripid->booking_number;
-									?>
-									<input type="hidden" name="bookingnumber" value="{{$tripid}}" />
-									<input type="hidden" name="tripid" value="{{$values['id']}}" />
-									<tbody>
-										<?php 
-											$drivers = Employee::where("roleId","=",19)->get();
-											$helpers = Employee::where("roleId","=",20)->get();
-											$vehicles = Vehicle::All();
-											$select_args = array();
-											$select_args[] = "cities.name as sourceCity";
-											$select_args[] = "cities1.name as destinationCity";
-											$select_args[] = "servicedetails.serviceNo as serviceNo";
-											$select_args[] = "servicedetails.active as active";
-											$select_args[] = "servicedetails.serviceStatus as serviceStatus";
-											$select_args[] = "servicedetails.id as id";
-											$entities = array();
-											$i=0;
-											$j=0;
-										for($j=0;$j<$source_busno; $j++){?>
-										<tr>
-											<td style="font-weight: bold; vertical-align: middle">
-												<span style="color: red; font-weight: bold; font-size:14px;">SOURCE ROUTE#{{1}}</span>
-												<input type="hidden" name="vehicleno[]" value="1" />
-												<input type="hidden" name="tripfrom[]" value="source" />
-											</td>
-											<td>
-												<select name="drivers1[]" id="driver1_{{$i}}" class="form-control chosen-select">
-													<option value="">--select driver1--</option>
-												<?php 
-													
-													foreach($drivers as $driver){
-														echo "<option value='".$driver->id."'>".$driver->fullName."</option>";
-													}
-												?>
-												</select>
-											</td>
-											<td>	
-												<select name="drivers2[]" id="driver2_{{$i}}" class="form-control chosen-select" >
-												<option value="">--select driver2--</option>
-												<?php 
-													foreach($drivers as $driver){
-														echo "<option value='".$driver->id."'>".$driver->fullName."</option>";
-													}
-												?>
-												</select>
-											</td>
-											<td>
-												<select name="helper[]" id="helper_{{$i}}"  class="form-control chosen-select">
-												<option value="">--select helper--</option>
-												<?php 
-													foreach($helpers as $helper){
-														echo "<option value='".$helper->id."'>".$helper->fullName."</option>";
-													}
-												?>
-												</select>
-											</td>
-											<td>	
-												<select name="vehicle[]" id="vehicle_{{$i}}" class="form-control chosen-select" >
-												<option value="">--select vehicle--</option>
-												<?php 
-													foreach($vehicles as $vehicle){
-														echo "<option value='".$vehicle->id."'>".$vehicle->veh_reg."</option>";
-													}
-												?>
-												</select>
-											</td>
-										</tr>
-										<?php }
-											for($j=0;$j<$dest_busno; $j++){?>
-										<tr>
-											<td style="font-weight: bold; vertical-align: middle">
-												<span style="color: red; font-weight: bold; font-size:14px;">RETURN ROUTE#{{2}}</span>
-												<input type="hidden" name="vehicleno[]" value="2" />
-												<input type="hidden" name="tripfrom[]" value="destination" />
-											</td>
-											<td>
-												<select name="drivers1[]" id="driver1_{{$i}}" class="form-control chosen-select">
-													<option value="">--select driver1--</option>
-												<?php 
-													
-													foreach($drivers as $driver){
-														echo "<option value='".$driver->id."'>".$driver->fullName."</option>";
-													}
-												?>
-												</select>
-											</td>
-											<td>	
-												<select name="drivers2[]" id="driver2_{{$i}}" class="form-control chosen-select" >
-												<option value="">--select driver2--</option>
-												<?php 
-													foreach($drivers as $driver){
-														echo "<option value='".$driver->id."'>".$driver->fullName."</option>";
-													}
-												?>
-												</select>
-											</td>
-											<td>
-												<select name="helper[]" id="helper_{{$i}}"  class="form-control chosen-select">
-												<option value="">--select helper--</option>
-												<?php 
-													foreach($helpers as $helper){
-														echo "<option value='".$helper->id."'>".$helper->fullName."</option>";
-													}
-												?>
-												</select>
-											</td>
-											<td>	
-												<select name="vehicle[]" id="vehicle_{{$i}}" class="form-control chosen-select" >
-												<option value="">--select vehicle--</option>
-												<?php 
-													foreach($vehicles as $vehicle){
-														echo "<option value='".$vehicle->id."'>".$vehicle->veh_reg."</option>";
-													}
-												?>
-												</select>
-											</td>
-										</tr>
-										<?php } ?>
-									</tbody>
-									
-							</table>
-							<div class="clearfix form-actions" style="margin-bottom: 0px;" >
-								<div class="col-md-offset-4 col-md-8" style="margin-top: 0%; margin-bottom: 0%">
-									<button id="submit" class="btn primary" type="submit" id="submit">
-										<i class="ace-icon fa fa-check bigger-110"></i>
-										SUBMIT
-									</button>
-									<!--  <input type="submit" class="btn btn-info" type="button" value="SUBMIT"> -->
-									&nbsp; &nbsp; &nbsp;
-									<button id="reset" class="btn" type="reset">
-										<i class="ace-icon fa fa-undo bigger-110"></i>
-										RESET
-									</button>
-								</div>
-							</div>
-						</form>
-						</div><!-- /.span -->
+						@include("trips.add3colform",$form_info)						
 					</div>
 				</div>
 			</div>
-		</div>
 		</div>	
-		<div class="table-header" style="margin-top: 10px;">
-			Results for "{{$values['bredcum']}}"				 
-			<div style="float:right;padding-right: 15px;padding-top: 6px;"><a style="color: white;" href="{{$values['home_url']}}"><i class="ace-icon fa fa-home bigger-200"></i></a> </div>				
-		</div>
-		<!-- div.table-responsive -->
-		<!-- div.dataTables_borderWrap -->
-		<div>
-			<table id="dynamic-table" class="table table-striped table-bordered table-hover">
-				<thead>
-					<tr>
-						<?php 
-							$theads = $values['theads'];
-							foreach($theads as $thead){
-								echo "<th>".strtoupper($thead)."</th>";
-							}
-						?>
-					</tr>
-				</thead>
-			</table>								
 		</div>		
+
 		<?php 
 			if(isset($values['modals'])) {
 				$modals = $values['modals'];
@@ -397,41 +196,55 @@ use Illuminate\Support\Facades\Input;
 		<script src="../assets/js/date-time/moment.js"></script>
 		<script src="../assets/js/date-time/daterangepicker.js"></script>		
 		<script src="../assets/js/bootbox.js"></script>
-		<script src="../assets/js/chosen2.jquery.js"></script>
+		<script src="../assets/js/chosen.jquery.js"></script>
 	@stop
 	
 	@section('inline_js')
 		<!-- inline scripts related to this page -->
 		<script type="text/javascript">
+			transtype = "";
+			total_advance = <?php echo "'".$total."';"; ?>
+			$("#totaladvance").val(total_advance);
 
-			function changeDate(val){
-				if(document.getElementById("trip_"+val).checked){
-					var today = new Date();
-				    var dd = today.getDate();
-				    var mm = today.getMonth()+1; //January is 0!
-
-				    var yyyy = today.getFullYear();
-				    if(dd<10){
-				        dd='0'+dd
-				    } 
-				    if(mm<10){
-				        mm='0'+mm
-				    } 
-				    var today = dd+'-'+mm+'-'+yyyy;
-					$("#date_"+val).val($("#date").val());
-					$("#date_"+val).prop("readonly",true);
-				}
-				else{
-					$("#date_"+val).val("");
-					$("#date_"+val).prop("readonly",false);
-				}
+			function test(){;
+				paginate(1);
 			}
 
+			function setTranType1Value(val){
+				transtype = val;
+			}
+
+			function paginate(page){
+				if(transtype == ""){
+					alert("select transaction type");
+					return;
+				}	
+				branch = $("#branch1").val();
+				if(branch == ""){
+					alert("select branch");
+					return;
+				}				
+				var myin = document.createElement("input"); 
+				myin.type='hidden'; 
+				myin.name='transtype'; 
+				myin.value=transtype; 
+				document.getElementById('paginate').appendChild(myin); 
+				var myin = document.createElement("input"); 
+				$("#page").val(page);
+				$("#paginate").submit();				
+			}
+
+			function modalEditLookupValue(id, value){
+				$("#value1").val(value);
+				$("#id1").val(id);
+				return;				
+			}
+			
 			function verifyDate(){
-				city = $("#city").val();
+				branch = $("#branch").val();
 				dt = $("#date").val();
-				if(city == ""){
-					alert("select Service City");
+				if(branch == ""){
+					alert("select branch office");
 					return;
 				}
 				if(dt == ""){
@@ -439,47 +252,88 @@ use Illuminate\Support\Facades\Input;
 					return;
 				}
 				$('#verify').hide();
-				location.replace("dailytrips?city="+city+"&date="+dt);
+				$('#trantypebody').show();
+					
+			}
+			function showPaymentFields(val){
+				$("#addfields").html('<div style="margin-left:600px; margin-top:100px;"><i class="ace-icon fa fa-spinner fa-spin orange bigger-125" style="font-size: 250% !important;"></i></div>');
+				$.ajax({
+				      url: "getpaymentfields?paymenttype="+val,
+				      success: function(data) {
+				    	  $("#addfields").html(data);
+				    	  $('.date-picker').datepicker({
+							autoclose: true,
+							todayHighlight: true
+						  });
+				    	  $("#addfields").show();
+				      },
+				      type: 'GET'
+				   });
+				
+			}
+// 			$('#trantypebody').hide();
+// 			$('#incomebody').hide();
+// 			$('#expensebody').hide();
+// 			$('#transactionform').hide();
+			
+
+			function modalEditServiceProvider(id, branchId, provider, name, number,companyName, configDetails, address, refName,refNumber){
+				$("#provider1 option").each(function() { this.selected = (this.text == provider); });
+				$("#branch1 option").each(function() { this.selected = (this.text == branchId); });
+				$("#name1").val(name);				
+				$("#number1").val(number);
+				$("#companyname1").val(companyName);
+				$("#configdetails1").val(configDetails);
+				$("#address1").val(address);
+				$("#referencename1").val(refName);
+				$("#referencenumber1").val(refNumber);
+				$("#id1").val(id);		
+			}
+
+			function changeState(val){
+				$.ajax({
+			      url: "getcitiesbystateid?id="+val,
+			      success: function(data) {
+			    	  $("#cityname").html(data);
+			      },
+			      type: 'GET'
+			   });
+			}
+
+			function calcTotal(){
+				ltrs = $("#litres").val();
+				price = $("#priceperlitre").val();
+				$("#totalamount").val(ltrs*price);
+			}
+
+			function enablePaymentType(val){
+				if(val == "Yes"){
+					$("#paymenttype").attr("disabled",false);
+				}
+				else{
+					$("#paymenttype").attr("disabled",true);
+				}
+			}
+			function enableIncharge(val){
+				if(val == "Yes"){
+					$("#incharge").attr("disabled",false);
+				}
+				else{
+					$("#incharge").attr("disabled",true);
+				}
 			}
 
 			$("#reset").on("click",function(){
 				$("#{{$form_info['name']}}").reset();
 			});
 
-			function validateData(){
-				var ids = document.forms['tripsform'].elements[ 'ids[]' ];
-				for(i=0; i<ids.length;i++){
-					if(ids[i].checked){
-						if($("#driver1_"+i).val()==""){
-							alert("select complete information for service no : "+$("#servnos_"+i).val());
-							return false;
-						}
-						if($("#vehicle_"+i).val()==""){
-							alert("select complete information for service no : "+$("#servnos_"+i).val());
-							return false;
-						}
-						if($("#helper_"+i).val()==""){
-							alert("select complete information for service no : "+$("#servnos_"+i).val());
-							return false;
-						}
-						if($("#date_"+i).val()==""){
-							alert("select complete information for service no : "+$("#servnos_"+i).val());
-							return false;
-						}
-					}
-				    
+			$("#submit").on("click",function(){
+				branch = $("#branch").val();
+				if(branch != undefined && branch == ""){
+					alert("select branch");
+					return false;
 				}
-			};
-			function modalEditAssignedValues(id,driver1, driver2, helper){
-				$("#driver11 option").each(function() {this.selected = (this.value == driver1); });
-				$("#driver21 option").each(function() { this.selected = (this.value == driver2); });
-				$("#helper1 option").each(function() { this.selected = (this.value == helper); });
-				$("#id1").val(id);
-				$('.chosen-select').trigger('chosen:updated');		
-			}
-			$("#provider").on("change",function(){
-				val = $("#provider option:selected").html();
-				window.location.replace('serviceproviders?provider='+val);
+				$("#{{$form_info['name']}}").submit();
 			});
 
 			$('.number').keydown(function(e) {
@@ -555,7 +409,9 @@ use Illuminate\Support\Facades\Input;
 				});
 			}
 
-			jQuery(function($) {		
+					
+
+			jQuery(function($) {
 				//initiate dataTables plugin
 				var myTable = 
 				$('#dynamic-table')
@@ -577,7 +433,7 @@ use Illuminate\Support\Facades\Input;
 					"bProcessing": true,
 			        "bServerSide": true,
 					"ajax":{
-		                url :"gettripsdatatabledata?name=assigndrivervehicle&id={{$values['id']}}", // json datasource
+		                url :"gettransactiondatatabledata?name=<?php echo $values["provider"] ?>", // json datasource
 		                type: "post",  // method  , by default get
 		                error: function(){  // error handling
 		                    $(".employee-grid-error").html("");
@@ -596,8 +452,7 @@ use Illuminate\Support\Facades\Input;
 					//Note: if you are applying horizontal scrolling (sScrollX) on a ".table-bordered"
 					//you may want to wrap the table inside a "div.dataTables_borderWrap" element
 			
-					//"iDisplayLength": 50
-			
+					//"iDisplayLength": 50			
 			
 					select: {
 						style: 'multi'
@@ -681,6 +536,10 @@ use Illuminate\Support\Facades\Input;
 					});
 				}, 500);
 				
+				
+				
+				
+				
 				myTable.on( 'select', function ( e, dt, type, index ) {
 					if ( type === 'row' ) {
 						$( myTable.row( index ).node() ).find('input:checkbox').prop('checked', true);
@@ -691,6 +550,9 @@ use Illuminate\Support\Facades\Input;
 						$( myTable.row( index ).node() ).find('input:checkbox').prop('checked', false);
 					}
 				} );
+			
+			
+			
 			
 				/////////////////////////////////
 				//table checkboxes

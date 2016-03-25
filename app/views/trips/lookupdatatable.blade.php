@@ -24,15 +24,17 @@
 	@stop
 	
 	@section('page_css')
+		<link rel="stylesheet" href="../assets/css/jquery-ui.custom.css" />
 		<link rel="stylesheet" href="../assets/css/bootstrap-datepicker3.css"/>
-		<link rel="stylesheet" href="../assets/css/chosen.css" />
+		<link rel="stylesheet" href="../assets/css/chosen1.css" />
+		<link rel="stylesheet" href="../assets/css/daterangepicker.css" />
 	@stop
 	
 	@section('bredcum')	
 		<small>
-			ADMINISTRATION
+			HOME
 			<i class="ace-icon fa fa-angle-double-right"></i>
-			MASTERS
+			TRIPS
 			<i class="ace-icon fa fa-angle-double-right"></i>
 			{{$values['bredcum']}}
 		</small>
@@ -124,6 +126,27 @@
 				@include('masters.layouts.modalform', $modal);
 		<?php }} ?>
 		
+		<div id="edit2" class="modal" tabindex="-1">
+			<div class="modal-dialog" style="width: 80%">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h4 class="blue bigger">TOTAL TRIP INFORMATION</h4>
+					</div>
+	
+					<div class="modal-body" id="modal_body">
+					</div>
+	
+					<div class="modal-footer">
+						<button class="btn btn-sm" data-dismiss="modal">
+							<i class="ace-icon fa fa-times"></i>
+							Close
+						</button>
+					</div>
+				</div>
+			</div>
+		</div><!-- PAGE CONTENT ENDS -->
+		
 	@stop
 	
 	@section('page_js')
@@ -137,9 +160,10 @@
 		<script src="../assets/js/dataTables/extensions/buttons/buttons.colVis.js"></script>
 		<script src="../assets/js/dataTables/extensions/select/dataTables.select.js"></script>
 		<script src="../assets/js/date-time/bootstrap-datepicker.js"></script>
+		<script src="../assets/js/date-time/moment.js"></script>
+		<script src="../assets/js/date-time/daterangepicker.js"></script>		
 		<script src="../assets/js/bootbox.js"></script>
-		<script src="../assets/js/chosen1.jquery.js"></script>
-		<script src="../assets/js/jquery.maskedinput.js"></script>
+		<script src="../assets/js/chosen.jquery.js"></script>
 	@stop
 	
 	@section('inline_js')
@@ -195,6 +219,23 @@
 			$('.number').keydown(function(e) {
 				this.value = this.value.replace(/[^0-9.]/g, ''); 
 				this.value = this.value.replace(/(\..*)\./g, '$1');
+			});
+
+			function modalShowTripInfo(){
+				url = "tripcancelinfo?type=expenses_and_incomes&id={{$values["id"]}}";
+				var ifr=$('<iframe />', {
+		            id:'MainPopupIframe',
+		            src:url,
+		            style:'seamless="seamless" scrolling="no" display:none;width:100%;height:423px; border:0px solid',
+		            load:function(){
+		                $("#edit2").show();
+		            }
+		        });
+	    	    $("#modal_body").html(ifr);
+			}
+
+			$("#submit").on("click",function(){
+				$("#{{$form_info['name']}}").submit();
 			});
 		
 			//datepicker plugin

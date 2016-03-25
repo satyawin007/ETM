@@ -160,7 +160,7 @@ use Illuminate\Support\Facades\Input;
 					<?php 
 						$vehicles = OfficeBranch::All();
 						$parentId = -1;
-						$parent = \LookupTypeValues::where("name","=","TRIP INCOMES")->get();
+						$parent = \LookupTypeValues::where("name","=","INCOME")->get();
 						if(count($parent)>0){
 							$parent = $parent[0];
 							$parentId = $parent->id;
@@ -187,16 +187,17 @@ use Illuminate\Support\Facades\Input;
 						foreach ($tripincomes as $tripincome){
 							if(in_array($tripincome->lookupValueId, $income_fields)){
 								$total_incomes = $total_incomes+$tripincome->amount;
+								echo '<tr>';
 								echo '<td width="120px">'.$tripparticulars_name_arr[$tripincome->lookupValueId].'</td>';
 								echo '<td align="right" width="90px">'.$tripincome->amount.'</td>';
-								echo '<td></td>';
+								echo '</tr>';
+								
 							}
 						}
 					?>
 					<tr>
 						<td><font color='green'><b>Total Income</b></font></td>
 						<td align="right"><font color='green'><b>{{$total_advance+$total_incomes}}</b></font></td>
-						<td></td>
 					</tr>
 				</table>
 				<br/>
@@ -234,7 +235,7 @@ use Illuminate\Support\Facades\Input;
 					<?php 
 						$vehicles = OfficeBranch::All();
 						$parentId = -1;
-						$parent = \LookupTypeValues::where("name","=","TRIP EXPENSES")->get();
+						$parent = \LookupTypeValues::where("name","=","EXPENSE")->get();
 						if(count($parent)>0){
 							$parent = $parent[0];
 							$parentId = $parent->id;
@@ -301,12 +302,12 @@ use Illuminate\Support\Facades\Input;
 				</table>
 			</td>
 		</tr>
-		<tr>
+		<tr >
 			<td colspan="2">
-				<table width="100%">
+				<table width="100%"style="margin-top:40px;">
 					<tbody>
 						<tr>
-							<td class='name' width="50%" align="left"><br/>{{date("d-m-Y")}}<br/>Place:</td>
+							<td class='name' width="50%" align="left"><br/>Date : {{date("d-m-Y")}}<br/>Place:</td>
 							<td class='price' width="40%" align="right"><br/>Driver's Signature:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 							<br/><br/>Driver's Fullname:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 							<td class='price' width="10%" align="right"><br/><br/></td>

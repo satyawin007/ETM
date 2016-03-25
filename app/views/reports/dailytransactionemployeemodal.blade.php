@@ -1,4 +1,4 @@
-@extends('masters.master')
+@extends('masters.noheadermaster')
 	@section('inline_css')
 		<style>
 			.pagination {
@@ -69,27 +69,14 @@
 	@stop
 
 	@section('page_content')
-		<div id="accordion1" class="col-xs-offset-0 col-xs-12 accordion-style1 panel-group" style="width: 99%;">			
-			<div class="panel panel-default">
-				<div class="panel-heading">
-					<h4 class="panel-title">
-						<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#TEST">
-							<i class="ace-icon fa fa-angle-down bigger-110" data-icon-hide="ace-icon fa fa-angle-down" data-icon-show="ace-icon fa fa-angle-right"></i>
-							&nbsp;SEARCH BY
-						</a>
-					</h4>
-				</div>
-				<div class="panel-collapse collapse in" id="TEST">
-					<div class="panel-body" style="padding: 0px">
-						<?php $form_info = $values["form_info"]; ?>
-						@include("reports.add3colform",$form_info)						
-					</div>
-				</div>
-			</div>
-		</div>	
-		</div>	
+		<?php $form_info = $values["form_info"]; ?>
 		<div id="processing" class="modal-backdrop fade in"><div id = "loading" > <i  class="ace-icon fa fa-spinner fa-spin orange bigger-250"></i>	</div></div>
 		
+		<form name="getreport" id="getreport">
+			<input name="branch" type="hidden" value="{{$values['branch']}}" />
+			<input name="fromdate" type="hidden" value="{{$values['fromdate']}}" />
+			<input name="todate" type="hidden" value="{{$values['todate']}}" />
+		</form>
 		
 		<div class="row" >
 			<div id="table1">
@@ -153,36 +140,6 @@
 					</div>
 				</div>					
 			</div>
-			<div id="table3">
-				<div class="row col-xs-12" style="padding-left:2%; padding-top: 1%">
-					<?php if(!isset($values['entries'])) $values['entries']=10; if(!isset($values['branch'])) $values['branch']=0; if(!isset($values['page'])) $values['page']=1; ?>
-					<div class="clearfix">
-						<div id="tableTools-container1" class="pull-right tableTools-container"></div>
-					</div>
-					<div class="table-header" style="margin-top: 10px;">
-						Results for <?php if(isset($values['type'])){ echo '"'.strtoupper($values['type'])." REPORT".'"';} ?>				 
-					</div>
-					<!-- div.table-responsive -->
-					<!-- div.dataTables_borderWrap -->
-					<div>
-						<table id="dynamic-table3" class="table table-striped table-bordered table-hover">
-							<thead>
-								<tr>
-									<td>BRANCH</td>
-									<td>INCOME</td>
-									<td>BRANCH AMT RECEIVED</td>
-									<td>EXEPENSE</td>
-									<td>BRANCH AMOUNT DEPOSITED</td>
-									<td>BANK DEPOSITS</td>
-									<td>BALANCE</td>
-								</tr>
-							</thead>
-							<tbody id="tbody3">
-							</tbody>
-						</table>								
-					</div>
-				</div>					
-			</div>
 		</div>
 
 		<?php 
@@ -241,73 +198,16 @@
 			$("#processing").hide();
 			var refresh1 = 0;
 			var refresh2 = 0;
-			var refresh3 = 0;
 
-			function disableEmployee(val){
-				if(val==0){
-					$("#employee").attr("disabled",true);
-					$(".chosen-select").trigger('chosen:updated');
-				}
-				else{
-					$("#employee").attr("disabled",false);
-					$(".chosen-select").trigger('chosen:updated');
-				}
-			}
-			
-			reporttype = "";
-			function getReport1(){
-				reporttype = "ticket_corgos_summery";
-				paginate(1);
-			}
-			function getReport2(){
-				reporttype = "branch_summery";
-				paginate(1);
-			}
-			function getReport3(){
-				reporttype = "txn_details";
-				paginate(1);
-			}
-
+			paginate(1);
 			function paginate(page){
+				reporttype = "ticket_corgos_summery";
 				branch = $("#branch").val();
 				if(branch == ""){
 					alert("select branch");
 					return;
 				}
-				if(reporttype == "ticket_corgos_summery" && branch>0){
-					employee = $("#employee").val();
-					if(employee == ""){
-						alert("select employee");
-						return;
-					}
-				}
-				if(reporttype == "txn_details"){
-					reportfor = $("#reportfor").val();
-					if(reportfor == ""){
-						alert("select reportfor");
-						return;
-					}
-				}
-				fdt = $("#fromdate").val();
-				if(fdt == ""){
-					alert("select daterange FROM date");
-					return;
-				}
-				tdt = $("#fromdate").val();
-				if(tdt == ""){
-					alert("select daterange TO date");
-					return;
-				}
-				dt = fdt+" - "+tdt;	
-				$("#btntype").remove();
-				var myin = document.createElement("input"); 
-				myin.type='hidden'; 
-				myin.name='btntype'; 
-				myin.id='btntype'; 
-				myin.value=reporttype;
-				document.getElementById('getreport').appendChild(myin); 
 				var form=$("#getreport");	
-
 				$("#processing").show();
 				$.ajax({
 			        type:"POST",
@@ -331,23 +231,10 @@
 							myTable.draw(); // Redraw 
 							$("#table1").show();
 							$("#table2").hide();	
-							$("#table3").hide();
 							if(refresh1 == 0){
 								paginate(1);
 								refresh1 = 1;
 							}	
-			        	}
-			        	else if(reporttype == "branch_summery"){
-							myTable3.clear().draw();
-							myTable3.rows.add(arr); // Add new data
-							myTable3.columns.adjust().draw(); // Redraw theDataTable
-							$("#table1").hide();
-							$("#table2").hide();
-							$("#table3").show();
-							if(refresh3 == 0){
-								paginate(1);
-								refresh3 = 1;
-							}			
 			        	}
 			        	else if(reporttype == "txn_details"){
 							myTable1.clear().draw();
@@ -355,13 +242,11 @@
 							myTable1.columns.adjust().draw(); // Redraw theDataTable
 							$("#table1").hide();
 							$("#table2").show();
-							$("#table3").hide();
 							if(refresh2 == 0){
 								paginate(1);
 								refresh2 = 1;
 							}			
 			        	}
-			        	
 						$("#processing").hide();
 			        }
 			    });
@@ -376,7 +261,7 @@
 
 			function modalGetInfo(branch, fromdt, todt, empid, reportfor){
 				//$("#addfields").html('<div style="margin-left:600px; margin-top:100px;"><i class="ace-icon fa fa-spinner fa-spin orange bigger-125" style="font-size: 250% !important;"></i></div>');
-				url = "report?reporttype=dailytransactionsofemployee";
+				url = "edittransaction?type=fuel&id="+1;
 				var ifr=$('<iframe />', {
 		            id:'MainPopupIframe',
 		            src:url,
@@ -494,7 +379,6 @@
 
 			var myTable = null;
 			var myTable1 = null;
-			var myTable3 = null;
 
 			jQuery(function($) {
 					//initiate dataTables plugin
@@ -587,55 +471,10 @@
 							style: 'multi'
 						}
 				    } );
-
-					//initiate dataTables plugin
-					myTable3 = 
-					$('#dynamic-table3')
-					//.wrap("<div class='dataTables_borderWrap' />")   //if you are applying horizontal scrolling (sScrollX)
-					.DataTable( {
-						dom: 'Bfrtip',
-						buttons: [
-							{
-								extend:'colvis',
-								text : "<i class='fa fa-search bigger-110 blue'></i> <span class='hidden'>Show/hide columns</span>"
-							},
-							{
-								extend: 'excelHtml5',
-								 title: 'reportTitle',
-								text : "<i class='fa fa-file-excel-o bigger-110 green'></i> <span class='hidden'>Export to Excel</span>",
-								exportOptions: {
-									columns: ':visible'
-								}
-							},
-							{
-								extend: 'pdfHtml5',
-								text : "<i class='fa fa-file-pdf-o bigger-110 red'></i> <span class='hidden'>Export to PDF</span>",
-								exportOptions: {
-									columns: ':visible'
-								}
-							}
-							
-						], 
-						bAutoWidth: false,
-						"aoColumns": [
-						     null, null, null, null, null, null, null
-						],
-						"aaSorting": [],
-						//"sScrollY": "500px",
-						//"bPaginate": false,
-						"sScrollX" : "true",
-						//"sScrollX": "300px",
-						//"sScrollXInner": "120%",
-						"bScrollCollapse": true,
-						select: {
-							style: 'multi'
-						}
-				    } );
 					////
 					setTimeout(function() {
-						$("#table1").hide();
+						//$("#table1").hide();
 						$("#table2").hide();
-						$("#table3").hide();
 					}, 50);
 				})
 			

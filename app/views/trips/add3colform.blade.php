@@ -111,7 +111,7 @@
 					<div id="addfields"></div>
 					<div class="clearfix form-actions" >
 						<div class="col-md-offset-4 col-md-8" style="margin-top: 2%; margin-bottom: 1%">
-							<button id="reset" class="btn primary" type="submit" id="submit">
+							<button class="btn primary" type="submit" id="submit">
 								<i class="ace-icon fa fa-check bigger-110"></i>
 								SUBMIT
 							</button>

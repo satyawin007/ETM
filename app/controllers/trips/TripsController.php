@@ -776,16 +776,81 @@ class TripsController extends \Controller {
 		$values = Input::all();
 		if (\Request::isMethod('post'))
 		{
-			$fields = array("status"=>"Cancelled");
+			$url = "editdailytrip?id=".$values["id"]."&triptype=DAILY";
+			\DB::beginTransaction();
 			$db_functions_ctrl = new DBFunctionsController();
-			$table = "\TripDetails";
+			$table = "TripDetails";
+			try{
+				$table = "\TripDetails";
+				$fields = array("status"=>"Cancelled");
+				$data = array("id"=>$values["id"]);
+				$tripexpid = $db_functions_ctrl->update($table, $fields, $data);
+				$table = "\TripServiceDetails";
+				$fields = array("status"=>"Cancelled");
+				$data = array("id"=>$values["id"]);
+				$tripexpid = $db_functions_ctrl->update($table, $fields, $data);
+				\TripParticulars::where('tripId',$values["id"])->where('tripType',"DAILY")->update(['status' => "INACTIVE"]);
+			}
+			catch(\Exception $ex){
+				\Session::put("message","Operation Could not be completed, Try Again!");
+				\DB::rollback();
+				return \Redirect::to($url);
+			}
+			\DB::commit();
+			\Session::put("message","Operation completed successfully!");
+			return \Redirect::to($url);
+		}
+	}
+	
+	public function unCancelDailyTrip()
+	{
+		$values = Input::all();
+		if (\Request::isMethod('get'))
+		{
+			$url = "editdailytrip?id=".$values["id"]."&triptype=DAILY";
+			\DB::beginTransaction();
+			$db_functions_ctrl = new DBFunctionsController();
+			$table = "TripDetails";
+			try{
+				$table = "\TripDetails";
+				$fields = array("status"=>"Running");
+				$data = array("id"=>$values["id"]);
+				$tripexpid = $db_functions_ctrl->update($table, $fields, $data);
+				$table = "\TripServiceDetails";
+				$fields = array("status"=>"Running");
+				$data = array("id"=>$values["id"]);
+				$tripexpid = $db_functions_ctrl->update($table, $fields, $data);
+				\TripParticulars::where('tripId',$values["id"])->where('tripType',"DAILY")->update(['status' => "ACTIVE"]);
+			}
+			catch(\Exception $ex){
+				\Session::put("message","Operation Could not be completed, Try Again!");
+				\DB::rollback();
+				return \Redirect::to($url);
+			}
+			\DB::commit();
+			\Session::put("message","Operation completed successfully!");
+			return \Redirect::to($url);
+		}
+	}
+	
+	public function cancelLocalTrip()
+	{
+		$values = Input::all();
+		if (\Request::isMethod('get'))
+		{
+			$fields = array("status"=>"Cancelled");
+			if(isset($values["action"]) && $values["action"]=="uncancel"){
+				$fields = array("status"=>"Pending");
+			}
+			$db_functions_ctrl = new DBFunctionsController();
+			$table = "\BusBookings";
 			$data = array("id"=>$values["id"]);
 			if($db_functions_ctrl->update($table, $fields, $data)){
-				\Session::put("message","Operation completed Successfully");
-				return \Redirect::to("managedailytrips");
+				echo "success";
+				return;
 			}
-			\Session::put("message","Operation Could not be completed, Try Again!");
-			return \Redirect::to("managedailytrips");
+			echo "fail";
+			return;
 		}
 	}
 	
@@ -798,9 +863,10 @@ class TripsController extends \Controller {
 	public function editDailyTrip()
 	{
 		$values = Input::all();
+		
 		if (\Request::isMethod('post'))
 		{
-		$field_names = array("service"=>"serviceId", "driver1"=>"driver1","driver2"=>"driver2","helper"=>"helper","status"=>"status");
+			$field_names = array("service"=>"serviceId", "driver1"=>"driver1","driver2"=>"driver2","helper"=>"helper","status"=>"status");
 			$fields = array();
 			foreach ($field_names as $key=>$val){
 				if(isset($values[$key])){
@@ -995,25 +1061,58 @@ class TripsController extends \Controller {
 		$values = Input::all();
 		if (\Request::isMethod('post'))
 		{
-			$values["dsf"];
-			$field_names = array("lastreading"=>"9001", "initialreading"=>"9002","closingreading"=>"9003","wastedmeters"=>"9004","remarks"=>"9005");
-			foreach ($field_names as $key=>$val){
-				if(isset($values[$key])){
-					$fields = array();
-					$fields["lookupValueId"] = $val;
-					$fields["date"] = date("Y-m-d");
-					$fields["tripId"] = $values["tripid"];
-					$fields['remarks'] = $values[$key];
-					$db_functions_ctrl = new DBFunctionsController();
-					$table = "\TripParticulars";
-					$db_functions_ctrl->insert($table, $fields);
-				}
-			}
-			$db_functions_ctrl = new DBFunctionsController();
+			//$values["dsf"];
+			$field_names = array("lastreading"=>"9001", "initialreading"=>"9002","closingreading"=>"9003","wastedmeters"=>"9004");
 			if(isset($values["triptype"]) &&  $values["triptype"]=="local"){
+				$i= 0;
+				while($i<count($values["vehicleid"])){
+					foreach ($field_names as $key=>$val){
+						if(isset($values[$key])){
+							$fields = array();
+							$fields["lookupValueId"] = $val;
+							$fields["date"] = date("Y-m-d",strtotime($values["closingdate"][$i]));
+							$fields["tripId"] = $values["tripid"];
+							$fields['tripType'] = "LOCAL";
+							$fields['remarks'] = $values["remarks"][$i];
+							$fields['vehicleId'] = $values["vehicleid"][$i];
+							$db_functions_ctrl = new DBFunctionsController();
+							$table = "\TripParticulars";
+							if(!$db_functions_ctrl->insert($table, $fields)){
+								\Session::put("message","Operation Could not be completed, Try Again!");
+								return \Redirect::to("addlocaltripparticular?id=".$values["tripid"]."&type=expenses_and_incomes");
+							}
+						}
+					}
+					$i++;
+				}
+				/*$db_functions_ctrl = new DBFunctionsController();
+				$table = "\TripDetails";
+				$fields = array();
+				$fields["tripCloseDate"] = date("Y-m-d",strtotime($values['closingdate']));
+				$fields["status"] = "Closed";
+				$data = array("id"=>$values["tripid"]);
+				if($db_functions_ctrl->update($table, $fields, $data)){
+				}
+				*/
+				\Session::put("message","Operation completed Successfully");
+				return \Redirect::to("addlocaltripparticular?id=".$values["tripid"]."&type=expenses_and_incomes");
 				
 			}
 			else{
+				foreach ($field_names as $key=>$val){
+					if(isset($values[$key])){
+						$fields = array();
+						$fields["lookupValueId"] = $val;
+						$fields["date"] = date("Y-m-d");
+						$fields["tripId"] = $values["tripid"];
+						$fields['remarks'] = $values[$key];
+						$fields['tripType'] = "DAILY";
+						$db_functions_ctrl = new DBFunctionsController();
+						$table = "\TripParticulars";
+						$db_functions_ctrl->insert($table, $fields);
+					}
+				}
+				$db_functions_ctrl = new DBFunctionsController();
 				$table = "\TripDetails";
 				$fields = array();
 				$fields["tripCloseDate"] = date("Y-m-d",strtotime($values['closingdate']));
@@ -1405,6 +1504,112 @@ class TripsController extends \Controller {
 			$values['provider'] = "localtripparticulars&tripid=".$values["id"];
 			return View::make('trips.localtripparticularsdatatable', array("values"=>$values));
 		}
+	}
+	
+	/**
+	 * edit a Office Branch.
+	 *
+	 * @return Response
+	 */
+	public function bookingRefund()
+	{
+		$values = Input::all();
+		if (\Request::isMethod('post'))
+		{
+			$url = "bookingrefund?id=".$values["tripid"]."&triptype=LOCAL&transtype=bookingrefund";
+			$entities = \BusBookings::where("id","=",$values["tripid"])->get();
+			foreach ($entities as $entity){
+				$values["booking_number"] = $entity->booking_number;
+				$values["status"] = "Approved";
+			}
+			$field_names = array("booking_number"=>"booking_number","totaladvance"=>"advance_amount","returnedamount"=>"returnedAmount",
+					"branch"=>"debited_branch","paymentdate"=>"payment_date","status"=>"status","remarks"=>"remarks");
+			$fields = array();
+			foreach ($field_names as $key=>$val){
+				if(isset($values[$key])){
+					if($key=="paymentdate"){
+						$fields[$val] = date("Y-m-d",strtotime($values[$key]));
+					}
+					else {
+						$fields[$val] = $values[$key];
+					}
+				}
+			}
+			$db_functions_ctrl = new DBFunctionsController();
+			$table = "\BusBookingReturnedAmounts"; 
+			if($db_functions_ctrl->insert($table, $fields)){
+				\Session::put("message","Operation completed Successfully");
+				return \Redirect::to($url);
+			}
+			else{
+				\Session::put("message","Operation Could not be completed, Try Again!");
+				return \Redirect::to($url);
+			}
+		}
+		
+		$values['bredcum'] = "MANAGE LOCAL TRIPS";
+		$values['home_url'] = 'masters';
+		$values['add_url'] = '#';
+		$values['form_action'] = '#';
+		$values['action_val'] = '#';
+	
+		$actions = array();
+		$action = array("url"=>"#edit", "type"=>"modal", "css"=>"inverse", "js"=>"modalEditServiceProvider(", "jsdata"=>array("id","branchId","provider","name","number","companyName","configDetails","address","refName","refNumber"), "text"=>"EDIT");
+		$actions[] = $action;
+		$values["actions"] = $actions;
+	
+		if(isset($values["transtype"]) && $values["transtype"]=="fuel"){
+			$theads = array('branch', 'fuel station name', 'veh reg No', 'filled date', 'amount', 'bill no', 'payment type', 'remarks', "Actions");
+			$values["theads"] = $theads;
+			$url = "fuel&";
+			if(isset($values["id"])){
+				$url = $url."tripid=".$values["id"];
+			}
+			$values["provider"]= $url;
+		}
+		else{
+			$values["theads"] = array();
+			$values["tds"] = array();;
+			$entities = array();
+			$total = 0;
+		}
+			
+		$form_info = array();
+		$form_info["name"] = "transactionform";
+		$form_info["action"] = "bookingrefund";
+		$form_info["method"] = "post";
+		$form_info["class"] = "form-horizontal";
+		$form_info["back_url"] = "masters";
+		$form_info["bredcum"] = "add transaction";
+		$form_info["tripid"] = $values["id"];
+	
+		$form_fields = array();
+		$val = "";
+		if(!isset($values["provider"])){
+			$values["provider"] = "";
+		}
+		$branches =  \OfficeBranch::All();
+		$branches_arr = array();
+		foreach ($branches as $branch){
+			$branches_arr[$branch->id] = $branch->name;
+		}
+		$form_field = array("name"=>"totaladvance", "content"=>"customer advance", "readonly"=>"readonly",  "required"=>"required", "type"=>"text", "class"=>"form-control");
+		$form_fields[] = $form_field;
+		$form_field = array("name"=>"returnedamount", "content"=>"returned amount", "readonly"=>"",  "required"=>"required", "type"=>"text", "class"=>"form-control");
+		$form_fields[] = $form_field;
+		$form_field = array("name"=>"branch", "content"=>"debited branch", "readonly"=>"",  "required"=>"", "type"=>"select", "class"=>"form-control chosen-select", "options"=>$branches_arr);
+		$form_fields[] = $form_field;
+		$form_field = array("name"=>"paymentdate", "content"=>"payment date", "readonly"=>"",  "required"=>"required", "type"=>"text", "class"=>"form-control date-picker");
+		$form_fields[] = $form_field;
+		$form_field = array("name"=>"remarks", "content"=>"remarks", "readonly"=>"",  "required"=>"", "type"=>"textarea", "class"=>"form-control");
+		$form_fields[] = $form_field;
+		
+		$form_info["form_fields"] = $form_fields;
+		$values["form_info"] = $form_info;
+		$modals[] = $form_info;
+			
+		$values["modals"] = $modals;
+		return View::make('trips.bookingrefunddatatable', array("values"=>$values));
 	}
 	
 	/**

@@ -176,7 +176,7 @@ use Illuminate\Support\Facades\Input;
 			<a class="btn btn-sm btn-purple" href="addlocaltripparticular?id={{$values['id']}}&type=expenses_and_incomes">ADD TRIP EXPESENSES/INCOMES</a> &nbsp;&nbsp;
 			<a class="btn btn-sm btn-purple" href="addlocaltripfuel?id={{$values['id']}}&triptype=LOCAL&transtype=fuel">ADD TRIP FUEL EXPENSES</a> &nbsp;&nbsp;
 			<a class="btn btn-sm btn-purple" href="assigndrivervehicle?id={{$values['id']}}&triptype=LOCAL">ASSIGN DRIVER & VEHICLE</a> &nbsp;&nbsp;
-			<a class="btn btn-sm btn-purple" href="addlocaltripfuel?id={{$values['id']}}&triptype=LOCAL&transtype=fuel">BOOKING REFUND</a> &nbsp;&nbsp;
+			<a class="btn btn-sm btn-purple" href="bookingrefund?id={{$values['id']}}&triptype=LOCAL&transtype=bookingrefund">BOOKING REFUND</a> &nbsp;&nbsp;
 		</div>
 		<div id="accordion1" class="col-xs-offset-0 col-xs-12 accordion-style1 panel-group">			
 			<div class="panel panel-default">

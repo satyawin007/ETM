@@ -31,11 +31,13 @@
 			.chosen-container{
 			  width: 100% !important;
 			}
+			
 		</style>
 	@section('page_css')
 		<link rel="stylesheet" href="../assets/css/jquery-ui.custom.css" />
 		<link rel="stylesheet" href="../assets/css/bootstrap-datepicker3.css"/>
-		<link rel="stylesheet" href="../assets/css/chosen.css" />
+		<link rel="stylesheet" href="../assets/css/chosen1.css" />
+		<link rel="stylesheet" href="../assets/css/daterangepicker.css" />
 	@stop
 		
 	@stop
@@ -51,95 +53,88 @@
 	@section('page_content')
 		<div class="col-xs-offset-4 col-xs-8 ccordion-style1 panel-group">
 			<a class="btn btn-sm btn-primary" href="dailytrips">CREATE/ADD SERVICES</a> &nbsp;&nbsp;
-			<a class="btn btn-sm  btn-inverse" href="managetrips?triptype=DAILY">MANAGE TRIPS</a> &nbsp;&nbsp;
+			<a class="btn btn-sm  btn-inverse" href="managetrips?triptype={{$values['triptype']}}">MANAGE TRIPS</a> &nbsp;&nbsp;
 		</div>
+		<?php 
+			$total_expenses = 0;
+			$total_advance = 0;
+			$total_fuel_amount = 0;
+			$total_incomes = 0;
+			$total = 0.0;
+			
+			$parentId = -1;
+			$tripparticulars_arr = array();
+			$parent = \LookupTypeValues::where("name","=","TRIP ADVANCES")->get();
+			if(count($parent)>0){
+				$parent = $parent[0];
+				$parentId = $parent->id;
+			}
+			$tripparticulars =  \LookupTypeValues::where("parentId","=",$parentId)->where("status", "=", "ACTIVE")->get();
+			foreach ($tripparticulars as $tripparticular){
+				$tripparticulars_arr[] = $tripparticular->id;
+			}
+			$select_args = array();
+			$select_args[] = "officebranch.name as branchId";
+			$select_args[] = "tripparticulars.vehicleId as vehicleId";
+			$select_args[] = "tripparticulars.amount as amount";
+			$select_args[] = "tripparticulars.date as date";
+			$select_args[] = "tripparticulars.remarks as remarks";
+			$tripadvances = \TripParticulars::where("tripId","=",$values["id"])->where("tripType","=","LOCAL")->where("status","=","ACTIVE")->whereIn("lookupValueId",$tripparticulars_arr)->leftjoin("officebranch","officebranch.id","=","tripparticulars.branchId")->select($select_args)->get();
+			foreach($tripadvances as $tripadvance){
+				$total = $total+$tripadvance->amount;
+			} 
+			$total_advance = $total;
+		?>
 		<div id="accordion1" class="col-xs-offset-0 col-xs-12 accordion-style1 panel-group">			
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					<h4 class="panel-title">
-						<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#tripinfo">
+						<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#TEST1">
 							<i class="ace-icon fa fa-angle-down bigger-110" data-icon-hide="ace-icon fa fa-angle-down" data-icon-show="ace-icon fa fa-angle-right"></i>
-							&nbsp;TRIP INFORMATION
+							&nbsp;BOOKING INFORMATION
 						</a>
 					</h4>
 				</div>
-				<div class="panel-collapse collapse in" id="tripinfo">
+				<div class="panel-collapse collapse in" id="TEST1">
 					<div class="panel-body" style="padding: 0px">
 					<div class="col-xs-offset-0 col-xs-12" style="margin-top: 1%; margin-bottom: 1%">
 						<table id="simple-table" class="table table-striped table-bordered table-hover">
 							<thead>
 								<tr>
-									<th>VEHICLE REG NO</th>
-									<th>START DATE</th>
-									<th>ROUTE INFORMATION</th>
-									<th>DRIVER1</th>
-									<th>DRIVER2</th>
-									<th>HELPER</th>
-									<th>CLOSE DATE</th>
-									<th>ROUTES</th>
+									<th>SOURCE JOURNEY INFO</th>
+									<th>RETURN JOURNEY INFO</th>
+									<th>CUSTOMER INFO</th>
+									<th>BOOKING AMOUNT INFO</th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr>
 							<?php 
-								$select_args[] = "vehicle.veh_reg as vehicleId";
-								$select_args[] = "tripdetails.tripStartDate as tripStartDate";
-								$select_args[] = "tripdetails.id as routeInfo";
-								$select_args[] = "tripdetails.tripCloseDate as tripCloseDate";
-								$select_args[] = "tripdetails.routeCount as routes";
-								$select_args[] = "tripdetails.id as id";
-								
 								if(isset($values["id"])){
-									$entities = \TripDetails::where("tripdetails.id","=",$values["id"])->leftjoin("vehicle", "vehicle.id","=","tripdetails.vehicleId")->select($select_args)->get();
+									$entities = \BusBookings::where("id","=",$values["id"])->get();
 									foreach ($entities as $entity){
-										$entity["tripStartDate"] = date("d-m-Y",strtotime($entity["tripStartDate"]));
-										$entity["tripCloseDate"] = date("d-m-Y",strtotime($entity["tripCloseDate"]));
-										if($entity["tripCloseDate"] == "01-01-1970"){
-											$entity["tripCloseDate"] = "NOT CLOSED";
+										$entity["source_date"] = date("d-m-Y",strtotime($entity["source_date"]));
+										$entity["dest_date"] = date("d-m-Y",strtotime($entity["dest_date"]));
+										if($entity["dest_date"] == "01-01-1970"){
+											$entity["dest_date"] = "";
 										}
-										$entity["fuelamount"] = 0;
-										$entity["routeInfo"] = "";
-										$entity["totalAdvance"] = \TripAdvances::where("tripID","=",$entity->id)->where("deleted","=","No")->sum("amount");
-										$routeInfo = "";
-										$driver1 = "";
-										$driver2 = "";
-										$helper = "";
-										$employees = \Employee::where("roleId","=","19")->orWhere("roleId","=","20")->get();
-										$tripservices = \TripServiceDetails::where("tripId","=",$entity->id)->where("status","=","Running")->get();
-										foreach($tripservices as $tripservice){
-											$select_args = array();
-											$select_args[] = "cities.name as sourceCity";
-											$select_args[] = "cities1.name as destinationCity";
-											$select_args[] = "servicedetails.serviceNo as serviceNo";
-											$select_args[] = "servicedetails.active as active";
-											$select_args[] = "servicedetails.serviceStatus as serviceStatus";
-											$select_args[] = "servicedetails.id as id";
-											$service = \ServiceDetails::where("servicedetails.id","=",$tripservice->serviceId)->join("cities","cities.id","=","servicedetails.sourceCity")->join("cities as cities1","cities1.id","=","servicedetails.destinationCity")->select($select_args)->get();
-											if(count($service)>0){
-												$service = $service[0];
-												$routeInfo = $routeInfo."<span style='font-size:13px; font-weight:bold; color:red;'>".$service->serviceNo."</span> - &nbsp; ".$service->sourceCity." TO ".$service->destinationCity."<br/>";
-											}
-											foreach ($employees as $employee){
-												if($employee->id == $tripservice->driver1){
-													$driver1 = $employee->fullName;
-												}
-												else if($employee->id == $tripservice->driver2){
-													$driver2 = $employee->fullName;
-												}
-												else if($employee->id == $tripservice->helper){
-													$helper = $employee->fullName;
-												}
-											}
-										}
-										$entity["routeInfo"] = $routeInfo;
-										echo "<td>".$entity->vehicleId."</td>";
-										echo "<td>".$entity->tripStartDate."</td>";
-										echo "<td>".$routeInfo."</td>";
-										echo "<td>".$driver1."</td>";
-										echo "<td>".$driver2."</td>";
-										echo "<td>".$helper."</td>";
-										echo "<td>".$entity->tripCloseDate."</td>";
-										echo "<td>".$entity->routes."</td>";
+										$entity["sourcetrip"] = $entity["source_start_place"]."<br/> ".$entity["source_end_place"];
+										$entity["sourcetrip"] = $entity["sourcetrip"]."<br/>Date & Time &nbsp;: ".$entity["source_date"]." ".$entity["source_time"];
+										$entity["sourcetrip"] = $entity["sourcetrip"]."<br/>Bus Type  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: ".$entity["source_bustype"];
+										$entity["sourcetrip"] = $entity["sourcetrip"]."<br/>No of buses &nbsp;&nbsp;: ".$entity["source_busno"];
+										$entity["returntrip"] = $entity["dest_start_place"]."<br/> ".$entity["dest_end_place"];
+										$entity["returntrip"] = $entity["returntrip"]."<br/>Date & Time &nbsp;: ".$entity["dest_date"]." ".$entity["dest_time"];
+										$entity["returntrip"] = $entity["returntrip"]."<br/>Bus Type  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: ".$entity["dest_bustype"];
+										$entity["returntrip"] = $entity["returntrip"]."<br/>No of buses &nbsp;&nbsp;: ".$entity["dest_busno"];
+										
+										$entity["custinfo"] = "Name : ".$entity["cust_name"]."<br/>Phone : ".$entity["cust_phone"];
+										$entity["custinfo"] = $entity["custinfo"]."<br/><br/><br/><span>Fuel Charge By : ".$entity["fuel_charge_type"]."</span>";
+										$entity["amount"] = "TOTAL &nbsp;&nbsp;&nbsp;   &nbsp;  : ".$entity["total_cost"]."<br/>ADVANCE : ".$total_advance."<br/>BALANCE : ".($entity["total_cost"]-$total_advance);
+										$entity["amount"] = $entity["amount"]."<br/><br/><span style='font-size: 15px;font-weight: bold;color: red;'>BOOKING NO : ".$entity["booking_number"]."</span>";
+										echo "<td>".$entity->sourcetrip."</td>";
+										echo "<td>".$entity->returntrip."</td>";
+										echo "<td>".$entity->custinfo."</td>";
+										echo "<td>".$entity->amount."</td>";
 									}
 								}
 							?>
@@ -151,9 +146,11 @@
 				</div>
 			</div>
 		</div>
-		<div class="col-xs-offset-4 col-xs-8 ccordion-style1 panel-group">
-			<a class="btn btn-sm  btn-purple" href="addtripparticular?id={{$values['id']}}&type=advances">ADD TRIP ADVANCE</a>&nbsp;&nbsp;
-			<a class="btn btn-sm btn-purple" href="addtripparticular?id={{$values['id']}}&type=expenses_and_incomes">ADD TRIP EXPESENSES/INCOMES</a> &nbsp;&nbsp;
+		<div class="col-xs-offset-3 col-xs-9 ccordion-style1 panel-group">
+			<a class="btn btn-sm  btn-purple" href="addlocaltripparticular?id={{$values['id']}}&type=advances">ADD TRIP ADVANCE</a>&nbsp;&nbsp;
+			<a class="btn btn-sm btn-purple" href="addlocaltripparticular?id={{$values['id']}}&type=expenses_and_incomes">ADD TRIP EXPESENSES/INCOMES</a> &nbsp;&nbsp;
+			<a class="btn btn-sm btn-purple" href="addlocaltripfuel?id={{$values['id']}}&triptype=LOCAL&transtype=fuel">ADD TRIP FUEL EXPENSES</a> &nbsp;&nbsp;
+			<a class="btn btn-sm btn-purple" href="bookingrefund?id={{$values['id']}}&triptype=LOCAL&transtype=bookingrefund">BOOKING REFUND</a> &nbsp;&nbsp;
 		</div>
 		<div id="accordion1" class="col-xs-offset-0 col-xs-12 accordion-style1 panel-group">			
 			<div class="panel panel-default">
@@ -174,36 +171,6 @@
 			</div>
 		</div>	
 		</div>		
-		<div class="col-xs-12" >
-			<h3 class="header smaller lighter blue" style="font-size: 15px; font-weight: bold;margin-bottom: -10px;">MANAGE TRANSACTIONS</h3>		
-			<div class="col-xs-12" >
-				<div>
-					<div class="row" >
-						<?php if(!isset($values['entries'])) $values['entries']=10; if(!isset($values['branch'])) $values['branch']=0; if(!isset($values['page'])) $values['page']=1; ?>
-						<div class="table-header" style="margin-top: 10px;">
-							Results for <?php if(isset($values['transtype'])){ echo '"'.strtoupper($values['transtype'])." TRANCTIONS".'"';} ?>				 
-							<div style="float:right;padding-right: 15px;padding-top: 6px;"><a style="color: white;" href="{{$values['home_url']}}"><i class="ace-icon fa fa-home bigger-200"></i></a> &nbsp; &nbsp; &nbsp; <a style="color: white;"  href="{{$values['add_url']}}"><i class="ace-icon fa fa-plus-circle bigger-200"></i></a></div>				
-						</div>
-						<!-- div.table-responsive -->
-						<!-- div.dataTables_borderWrap -->
-						<div>
-							<table id="dynamic-table" class="table table-striped table-bordered table-hover">
-								<thead>
-									<tr>
-										<?php 
-											$theads = $values['theads'];
-											foreach($theads as $thead){
-												echo "<th>".strtoupper($thead)."</th>";
-											}
-										?>
-									</tr>
-								</thead>
-							</table>								
-						</div>
-					</div>					
-				</div>
-			</div>
-		</div>
 
 		<?php 
 			if(isset($values['modals'])) {
@@ -212,27 +179,6 @@
 		?>
 				@include('masters.layouts.modalform', $modal)
 		<?php }} ?>
-		
-		<div id="edit" class="modal" tabindex="-1">
-			<div class="modal-dialog" style="width: 80%">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal">&times;</button>
-						<h4 class="blue bigger">Please fill the following form fields</h4>
-					</div>
-	
-					<div class="modal-body" id="modal_body">
-					</div>
-	
-					<div class="modal-footer">
-						<button class="btn btn-sm" data-dismiss="modal">
-							<i class="ace-icon fa fa-times"></i>
-							Close
-						</button>
-					</div>
-				</div>
-			</div>
-		</div><!-- PAGE CONTENT ENDS -->
 		
 	@stop
 	
@@ -250,19 +196,15 @@
 		<script src="../assets/js/date-time/moment.js"></script>
 		<script src="../assets/js/date-time/daterangepicker.js"></script>		
 		<script src="../assets/js/bootbox.js"></script>
-		<script src="../assets/js/chosen1.jquery.js"></script>
+		<script src="../assets/js/chosen.jquery.js"></script>
 	@stop
 	
 	@section('inline_js')
 		<!-- inline scripts related to this page -->
 		<script type="text/javascript">
-			$("#entries").on("change",function(){paginate(1);});
-			$("#branch").on("change",function(){$('#trantypebody').hide();  $("#transactionform").hide(); $('#incomebody').hide(); $('#expensebody').hide(); $('#verify').show();});
-			$("#date").on("change",function(){$('#trantypebody').hide(); $("#transactionform").hide(); $('#incomebody').hide(); $('#expensebody').hide(); $('#verify').show();});
-			
 			transtype = "";
-
-			showTranType("fuel");
+			total_advance = <?php echo "'".$total."';"; ?>
+			$("#totaladvance").val(total_advance);
 
 			function test(){;
 				paginate(1);
@@ -313,110 +255,6 @@
 				$('#trantypebody').show();
 					
 			}
-			function showTranType(val){
-				$("#formbody").hide();
-				$("#addfields").hide();
-				transtype = val;
-				var myin = document.createElement("input"); 
-				myin.type='hidden'; 
-				myin.name='transtype'; 
-				myin.value=val;
-				document.getElementById('transactionform').appendChild(myin); 
-
-				var myin = document.createElement("input"); 
-				myin.type='hidden'; 
-				myin.name='branch'; 
-				myin.value=$("#branch").val();
-				document.getElementById('transactionform').appendChild(myin); 
-				
-				if(val == "fuel"){	
-					$('#transactionform').show();				
-					$('#expensebody').hide();
-					$('#incomebody').hide();
-					$("#formbody").html('<div style="margin-left:600px; margin-top:100px;"><i class="ace-icon fa fa-spinner fa-spin orange bigger-125" style="font-size: 250% !important;"></i></div>');
-					$("#formbody").show();					
-					$.ajax({
-				      url: "getfueltransactionfields?type=trips",
-				      success: function(data) {
-				    	  $("#formbody").html(data);
-				    	  $('.date-picker').datepicker({
-							autoclose: true,
-							todayHighlight: true
-						  });
-				    	  $('.number').keydown(function(e) {
-							 this.value = this.value.replace(/[^0-9.]/g, ''); 
-							 this.value = this.value.replace(/(\..*)\./g, '$1');
-						  });
-						  $(".chosen-select").chosen();
-						  $("#paymenttype").attr("disabled",true);
-				    	  $("#formbody").show();
-				    	  
-				      },
-				      type: 'GET'
-				   });
-				}	
-			}
-			function showForm(val){
-				$('#addfields').hide(); 
-				var myin = document.createElement("input"); 
-				myin.type='hidden'; 
-				myin.name='branch'; 
-				myin.value=$("#branch").val(); 
-				document.getElementById('transactionform').appendChild(myin);
-
-				if(transtype == "income"){ 
-					var myin = document.createElement("input"); 
-					myin.type='hidden'; 
-					myin.name='type'; 
-					myin.value=$("#income").val(); 
-					document.getElementById('transactionform').appendChild(myin);
-				}
-				if(transtype == "expense"){ 
-					var myin = document.createElement("input"); 
-					myin.type='hidden'; 
-					myin.name='type'; 
-					myin.value=$("#expense").val(); 
-					document.getElementById('transactionform').appendChild(myin);
-				} 
-				if(transtype == "fuel"){ 
-					var myin = document.createElement("input"); 
-					myin.type='hidden'; 
-					myin.name='type'; 
-					myin.value="fuel"; 
-					document.getElementById('transactionform').appendChild(myin);
-				} 
-				 
-				var myin = document.createElement("input"); 
-				myin.type='hidden'; 
-				myin.name='date1'; 
-				myin.value=$("#date").val();
-				document.getElementById('transactionform').appendChild(myin);
-				$('#transactionform').show();
-
-				$("#formbody").html('<div style="margin-left:600px; margin-top:100px;"><i class="ace-icon fa fa-spinner fa-spin orange bigger-125" style="font-size: 250% !important;"></i></div>');
-				$("#formbody").show();						
-				
-				$('#incomebody').show();
-				$('#expensebody').hide();
-				$.ajax({
-			      url: "gettransactionfields?typeId="+val,
-			      success: function(data) {
-			    	  $("#formbody").html(data);
-			    	  $('.date-picker').datepicker({
-						autoclose: true,
-						todayHighlight: true
-					  });
-			    	  $('.number').keydown(function(e) {
-						 this.value = this.value.replace(/[^0-9.]/g, ''); 
-						 this.value = this.value.replace(/(\..*)\./g, '$1');
-					  });
-			    	  $('.chosen-select').chosen();
-			    	  $("#formbody").show();
-			    	  
-			      },
-			      type: 'GET'
-			   });	
-			}
 			function showPaymentFields(val){
 				$("#addfields").html('<div style="margin-left:600px; margin-top:100px;"><i class="ace-icon fa fa-spinner fa-spin orange bigger-125" style="font-size: 250% !important;"></i></div>');
 				$.ajax({
@@ -437,40 +275,20 @@
 // 			$('#incomebody').hide();
 // 			$('#expensebody').hide();
 // 			$('#transactionform').hide();
+			
 
-			function modalEditTransaction(id){
-				//$("#addfields").html('<div style="margin-left:600px; margin-top:100px;"><i class="ace-icon fa fa-spinner fa-spin orange bigger-125" style="font-size: 250% !important;"></i></div>');
-				url = "edittransaction?type="+transtype+"&id="+id;
-				var ifr=$('<iframe />', {
-		            id:'MainPopupIframe',
-		            src:url,
-		            style:'seamless="seamless" scrolling="no" display:none;width:100%;height:423px; border:0px solid',
-		            load:function(){
-		                $(this).show();
-		            }
-		        });
-	    	    $("#modal_body").html(ifr);
+			function modalEditServiceProvider(id, branchId, provider, name, number,companyName, configDetails, address, refName,refNumber){
+				$("#provider1 option").each(function() { this.selected = (this.text == provider); });
+				$("#branch1 option").each(function() { this.selected = (this.text == branchId); });
+				$("#name1").val(name);				
+				$("#number1").val(number);
+				$("#companyname1").val(companyName);
+				$("#configdetails1").val(configDetails);
+				$("#address1").val(address);
+				$("#referencename1").val(refName);
+				$("#referencenumber1").val(refNumber);
+				$("#id1").val(id);		
 			}
-
-			function deleteTransaction(id) {
-				bootbox.confirm("Are you sure, you want to delete this transaction?", function(result) {
-					if(result) {
-						$.ajax({
-					      url: "deletetransaction?id="+id+"&type="+transtype,
-					      success: function(data) {
-						      if(data=="success"){
-						    	  bootbox.confirm('TRANSACTION SUCCESSFULLY DELETED!', function(result) {});
-						      }
-						      else{
-						    	  bootbox.confirm('TRANSACTION COULD NOT BE DELETED!', function(result) {});
-						      }
-					      },
-					      type: 'GET'
-					   });	
-					   location.reload();
-					}
-				});
-			};
 
 			function changeState(val){
 				$.ajax({
@@ -510,22 +328,12 @@
 			});
 
 			$("#submit").on("click",function(){
-				fuelstationname = $("#fuelstationname").val();
-				if(fuelstationname != undefined && fuelstationname == ""){
-					alert("select fuelstationname");
+				branch = $("#branch").val();
+				if(branch != undefined && branch == ""){
+					alert("select branch");
 					return false;
 				}
-				var myin = document.createElement("input"); 
-				myin.type='hidden'; 
-				myin.name='triptype'; 
-				myin.value="daily";
-				document.getElementById('transactionform').appendChild(myin); 
 				$("#{{$form_info['name']}}").submit();
-			});
-
-			$("#provider").on("change",function(){
-				val = $("#provider option:selected").html();
-				window.location.replace('serviceproviders?provider='+val);
 			});
 
 			$('.number').keydown(function(e) {

@@ -41,7 +41,6 @@ Route::get('/mailtest', function()
 
 Route::get('/objtest', function()
 {
-	
 	$table = "\DBTransactions";
 	$data  = array();
 	$data['id'] = 1;
@@ -296,6 +295,12 @@ Route::any('/managetrips', "trips\TripsController@manageTrips");
 
 Route::any('/canceldailytrip', "trips\TripsController@cancelDailyTrip");
 
+Route::any('/tripcancelinfo', function() {
+	return View::make('trips.tripcancelinfo');
+});
+
+Route::any('/uncanceldailytrip', "trips\TripsController@unCancelDailyTrip");
+
 Route::any('/editdailytrip', "trips\TripsController@editDailyTrip");
 
 Route::any('/edittripparticular', "trips\TripsController@editTripParticular");
@@ -314,6 +319,8 @@ Route::any('/tripclosingreport', "trips\TripsController@tripClosingReport");
 
 Route::any('/addlocaltrip', "trips\TripsController@addLocalTrip");
 
+Route::any('/cancellocaltrip', "trips\TripsController@cancelLocalTrip");
+
 Route::any('/assigndrivervehicle', "trips\TripsController@assignDriverVehicle");
 
 Route::any('/editassignedvehicle', "trips\TripsController@editassignedvehicle");
@@ -325,6 +332,8 @@ Route::any('/deletebooking', "trips\TripsController@deleteBooking");
 Route::any('/printlocaltrip', "trips\TripsController@printLocalTrip");
 
 Route::any('/addlocaltripparticular', "trips\TripsController@addLocalTripParticular");
+
+Route::any('/bookingrefund', "trips\TripsController@bookingRefund");
 
 Route::any('/roles', "rolejobs\RoleController@manageRoles");
 

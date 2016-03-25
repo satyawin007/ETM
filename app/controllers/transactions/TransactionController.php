@@ -151,7 +151,8 @@ class TransactionController extends \Controller {
 				}
 			}
 			if(isset($values["transtype"]) && $values["transtype"] == "fuel" ){
-				if(isset($values["date"])){
+				
+				if(isset($values["date"]) && $values["date"] == ""){
 					$values["date"] = date("d-m-Y");
 				}
 				$field_names = array("branch"=>"branchId","totalamount"=>"amount","paymenttype"=>"paymentType", "vehicleno"=>"vehicleId", "type"=>"name",
@@ -187,14 +188,20 @@ class TransactionController extends \Controller {
 				$table = "FuelTransaction";
 				if($db_functions_ctrl->insert($table, $fields)){
 					\Session::put("message","Operation completed Successfully");
-					if(isset($values["tripid"])){
+					if(isset($values["tripid"]) && $values["triptype"]=="local"){
+						return \Redirect::to("addlocaltripfuel?triptype=LOCAL&transtype=fuel&id=".$values["tripid"]);
+					}
+					else if(isset($values["tripid"])){
 						return \Redirect::to("addtripfuel?transtype=fuel&id=".$values["tripid"]);
 					}
 					return \Redirect::to("fueltransactions");
 				}
 				else{
 					\Session::put("message","Operation Could not be completed, Try Again!");
-					if(isset($values["tripid"])){
+					if(isset($values["tripid"]) && $values["triptype"]=="local"){
+						return \Redirect::to("addlocaltripfuel?triptype=LOCAL&transtype=fuel&id=".$values["tripid"]);
+					}
+					else if(isset($values["tripid"])){
 						return \Redirect::to("addtripfuel?transtype=fuel&id=".$values["tripid"]);
 					}
 					return \Redirect::to("fueltransactions");
@@ -383,11 +390,11 @@ class TransactionController extends \Controller {
 				if(isset($values["tripid"])){
 					if($db_functions_ctrl->update($table, $fields, $data)){
 						\Session::put("message","Operation completed Successfully");
-						return \Redirect::to("addtripfuel?transtype=fuel&id=".$values["tripid"]);
+						return \Redirect::to("edittransaction?type=fuel&id=".$values["id"]);
 					}
 					else{
 						\Session::put("message","Operation Could not be completed, Try Again!");
-						return \Redirect::to("addtripfuel?transtype=fuel&id=".$values["tripid"]);
+						return \Redirect::to("edittransaction?type=fuel&id=".$values["id"]);
 					}
 				}
 				if($db_functions_ctrl->update($table, $fields, $data)){
@@ -843,7 +850,7 @@ class TransactionController extends \Controller {
 				$form_fields[] = $form_field;
 				
 				if($entity->tripId>0){
-					$form_field = array("name"=>"tripid", "id"=>"tripid", "value"=>$values["id"], "content"=>"", "readonly"=>"",  "required"=>"", "type"=>"hidden", "class"=>"form-control");
+					$form_field = array("name"=>"tripid", "id"=>"tripid", "value"=>$entity->tripId, "content"=>"", "readonly"=>"",  "required"=>"", "type"=>"hidden", "class"=>"form-control");
 					$form_fields[] = $form_field;
 				}
 				$form_info["form_fields"] = $form_fields;
@@ -1099,6 +1106,8 @@ class TransactionController extends \Controller {
 		$form_field = array("name"=>"cityname", "content"=>"city name", "readonly"=>"",  "required"=>"required", "type"=>"select", "options"=>array(), "class"=>"form-control");
 		$form_fields[] = $form_field;
 		*/
+		$form_field = array("name"=>"date", "content"=>"filled date", "readonly"=>"",  "required"=>"", "type"=>"text",  "class"=>"form-control date-picker");
+		$form_fields[] = $form_field;
 		$form_field = array("name"=>"fuelstationname", "content"=>"fuel station name", "readonly"=>"",  "required"=>"required", "type"=>"select", "options"=>$fuelstations_arr, "class"=>"form-control chosen-select");
 		$form_fields[] = $form_field;
 		$form_field = array("name"=>"startreading", "content"=>"start reading", "readonly"=>"",  "required"=>"required", "type"=>"text", "class"=>"form-control number");

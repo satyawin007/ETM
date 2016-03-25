@@ -141,6 +141,9 @@ class ReportsController extends \Controller {
 		if(isset($values["reporttype"]) && $values["reporttype"] == "dailytransactions"){
 			return $this->getDailyTransactiosReport($values);
 		}
+		if(isset($values["reporttype"]) && $values["reporttype"] == "dailytransactionsofemployee"){
+			return $this->getDailyTransactiosEmployeeReport($values);
+		}
 		if(isset($values["reporttype"]) && $values["reporttype"] == "dailysettlement"){
 			return $this->getDailySettlementReport($values);
 		}
@@ -176,8 +179,14 @@ class ReportsController extends \Controller {
 			$frmDt = date("Y-m-d", strtotime($values["fromdate"]));
 			$toDt = date("Y-m-d", strtotime($values["todate"]));
 			$brachId = $values["branch"];
-			$empId = $values["employee"];
-			$reportFor = $values["reportfor"];
+			$empId = "-1";
+			if(isset($values["employee"])){
+				$empId = $values["employee"];
+			}
+			$reportFor = "-1";
+			if(isset($values["reportfor"])){
+				$reportFor = $values["reportfor"];
+			}
 			$resp = array();
 			if($values["btntype"] == "ticket_corgos_summery"){
 				if($brachId == 0){
@@ -186,22 +195,22 @@ class ReportsController extends \Controller {
 						$recs = DB::select( DB::raw("select lookupValueId,sum(amount) as amt from incometransactions where paymentType='CASH' and  branchId=".$branch->id." and date between '".$frmDt."' and '".$toDt."' group by lookupValueId order By lookupValueId"));
 						if(count($recs)>0) {
 							$row = array();
-							$row["branch"] = "<a href='getreportdetails?branchid=".$branch->id."&fromdate=".$frmDt."&todate=".$toDt."&empId=".$empId."&reportfor=".$reportFor."' title='get report details'>".$branch->name."</a>";
+							$row["branch"] = "<a href='#edit' data-toggle='modal' onclick=\"modalGetInfo(".$branch->id.", '".$frmDt."', '".$toDt."', ".$empId.", '".$reportFor."')\" title='get report details'>".$branch->name."</a>";
 							$totalAmt = 0;
 							foreach ($recs as $rec){
-								if($rec->lookupValueId==11){
+								if($rec->lookupValueId==85){
 									$row["tickets"] = $rec->amt;
 									$totalAmt = $totalAmt+$rec->amt;
 								}
-								if($rec->lookupValueId==12){
+								if($rec->lookupValueId==86){
 									$row["ticketcancel"] = $rec->amt;
 									$totalAmt = $totalAmt+$rec->amt;
 								}
-								if($rec->lookupValueId==13){
+								if($rec->lookupValueId==87){
 									$row["cargosimply"] = $rec->amt;
 									$totalAmt = $totalAmt+$rec->amt;
 								}
-								if($rec->lookupValueId==14){
+								if($rec->lookupValueId==-1){
 									$row["cargosimplycancel"] = $rec->amt;
 									$totalAmt = $totalAmt+$rec->amt;
 								}
@@ -227,49 +236,105 @@ class ReportsController extends \Controller {
 					}
 				}
 				else if($brachId > 0){
-					$recs = DB::select( DB::raw("select lookupValueId,sum(amount) as amt from incometransactions where paymentType='CASH' and  branchId=".$brachId." and date between '".$frmDt."' and '".$toDt."' group by lookupValueId order By lookupValueId"));
-					if(count($recs)>0) {
-						$row = array();
-						$brachName = \OfficeBranch::where("id","=",$brachId)->first();
-						$brachName = $brachName->name;
-						$row["branch"] = "<a href='getreportdetails?branchid=".$brachId."&fromdate=".$frmDt."&todate=".$toDt."&empId=".$empId."&reportfor=".$reportFor."' title='get report details'>".$brachName."</a>";
-						$totalAmt = 0;
-						foreach ($recs as $rec){
-							if($rec->lookupValueId==11){
-								$row["tickets"] = $rec->amt;
-								$totalAmt = $totalAmt+$rec->amt;
+					if($empId>0){
+						$recs = DB::select( DB::raw("select lookupValueId,sum(amount) as amt from incometransactions where paymentType='CASH' and createdBy=".$empId." and branchId=".$brachId." and date between '".$frmDt."' and '".$toDt."' group by lookupValueId order By lookupValueId"));
+						if(count($recs)>0) {
+							$row = array();
+							$brachName = \OfficeBranch::where("id","=",$brachId)->first();
+							$brachName = $brachName->name;
+							$row["branch"] = "<a href='#edit' data-toggle='modal' onclick=\"modalGetInfo(".$brachId.", '".$frmDt."', '".$toDt."', ".$empId.", '".$reportFor."')\" title='get report details'>".$brachName."</a>";
+							$totalAmt = 0;
+							foreach ($recs as $rec){
+								if($rec->lookupValueId==85){
+									$row["tickets"] = $rec->amt;
+									$totalAmt = $totalAmt+$rec->amt;
+								}
+								if($rec->lookupValueId==86){
+									$row["ticketcancel"] = $rec->amt;
+									$totalAmt = $totalAmt+$rec->amt;
+								}
+								if($rec->lookupValueId==87){
+									$row["cargosimply"] = $rec->amt;
+									$totalAmt = $totalAmt+$rec->amt;
+								}
+								if($rec->lookupValueId==-1){
+									$row["cargosimplycancel"] = $rec->amt;
+									$totalAmt = $totalAmt+$rec->amt;
+								}
 							}
-							if($rec->lookupValueId==12){
-								$row["ticketcancel"] = $rec->amt;
-								$totalAmt = $totalAmt+$rec->amt;
+							if(!isset($row["tickets"])){
+								$row["tickets"] = 0;
 							}
-							if($rec->lookupValueId==13){
-								$row["cargosimply"] = $rec->amt;
-								$totalAmt = $totalAmt+$rec->amt;
+							if(!isset($row["ticketcancel"])){
+								$row["ticketcancel"] = 0;
 							}
-							if($rec->lookupValueId==14){
-								$row["cargosimplycancel"] = $rec->amt;
-								$totalAmt = $totalAmt+$rec->amt;
+							if(!isset($row["cargosimply"])){
+								$row["cargosimply"] = 0;
 							}
+							if(!isset($row["cargosimplycancel"])){
+								$row["cargosimplycancel"] = 0;
+							}
+							if(!isset($row["cargos"])){
+								$row["cargos"] = 0;
+							}
+							$row["total"] = $totalAmt;
+							$resp[] = $row;
 						}
-						if(!isset($row["tickets"])){
-							$row["tickets"] = 0;
-						}
-						if(!isset($row["ticketcancel"])){
-							$row["ticketcancel"] = 0;
-						}
-						if(!isset($row["cargosimply"])){
-							$row["cargosimply"] = 0;
-						}
-						if(!isset($row["cargosimplycancel"])){
-							$row["cargosimplycancel"] = 0;
-						}
-						if(!isset($row["cargos"])){
-							$row["cargos"] = 0;
-						}
-						$row["total"] = $totalAmt;
-						$resp[] = $row;
 					}
+					else {
+						$recs = DB::select( DB::raw("select lookupValueId,sum(amount) as amt from incometransactions where paymentType='CASH' and  branchId=".$brachId." and date between '".$frmDt."' and '".$toDt."' group by lookupValueId order By lookupValueId"));
+						if(count($recs)>0) {
+							$row = array();
+							$brachName = \OfficeBranch::where("id","=",$brachId)->first();
+							$brachName = $brachName->name;
+							$row["branch"] = "<a href='#edit' data-toggle='modal' onclick=\"modalGetInfo(".$brachId.", '".$frmDt."', '".$toDt."', ".$empId.", '".$reportFor."')\" title='get report details'>".$brachName."</a>";
+							$totalAmt = 0;
+							foreach ($recs as $rec){
+								if($rec->lookupValueId==85){
+									$row["tickets"] = $rec->amt;
+									$totalAmt = $totalAmt+$rec->amt;
+								}
+								if($rec->lookupValueId==86){
+									$row["ticketcancel"] = $rec->amt;
+									$totalAmt = $totalAmt+$rec->amt;
+								}
+								if($rec->lookupValueId==87){
+									$row["cargosimply"] = $rec->amt;
+									$totalAmt = $totalAmt+$rec->amt;
+								}
+								if($rec->lookupValueId==-1){
+									$row["cargosimplycancel"] = $rec->amt;
+									$totalAmt = $totalAmt+$rec->amt;
+								}
+							}
+							if(!isset($row["tickets"])){
+								$row["tickets"] = 0;
+							}
+							if(!isset($row["ticketcancel"])){
+								$row["ticketcancel"] = 0;
+							}
+							if(!isset($row["cargosimply"])){
+								$row["cargosimply"] = 0;
+							}
+							if(!isset($row["cargosimplycancel"])){
+								$row["cargosimplycancel"] = 0;
+							}
+							if(!isset($row["cargos"])){
+								$row["cargos"] = 0;
+							}
+							$row["total"] = $totalAmt;
+							$resp[] = $row;
+						}
+					}
+				}
+			}
+			else if($values["btntype"] == "branch_summery"){
+				DB::statement(DB::raw("CALL daily_transactions_report('".$frmDt."', '".$toDt."');"));
+				if($brachId == 0){
+					$recs = DB::select( DB::raw("select * from temp_daily_transaction order by branchId"));
+				}
+				else if($brachId > 0){
+					$recs = DB::select( DB::raw("select * from temp_daily_transaction where branchId=".$brachId." order by branchId"));
 				}
 			}
 			else if($values["btntype"] == "txn_details"){
@@ -402,7 +467,7 @@ class ReportsController extends \Controller {
 			$transtype_arr [$income->name] = strtoupper($income->name);
 		}
 		
-		$form_field = array("name"=>"branch", "content"=>"branch name", "readonly"=>"",  "required"=>"required","type"=>"select", "options"=>$branches_arr, "class"=>"form-control chosen-select");
+		$form_field = array("name"=>"branch", "content"=>"branch name", "readonly"=>"",  "required"=>"required","type"=>"select", "action"=>array("type"=>"onchange","script"=>"disableEmployee(this.value)"), "options"=>$branches_arr, "class"=>"form-control chosen-select");
 		$form_fields[] = $form_field;
 		$form_field = array("name"=>"employee", "content"=>"employee", "readonly"=>"",  "required"=>"required","type"=>"select", "options"=>$emps_arr, "class"=>"form-control chosen-select");
 		$form_fields[] = $form_field;
@@ -417,6 +482,147 @@ class ReportsController extends \Controller {
 		
 		$values["provider"] = "bankdetails";
 		return View::make('reports.dailytransactionreport', array("values"=>$values));
+	}
+	
+	private function getDailyTransactiosEmployeeReport($values){
+		if (\Request::isMethod('post'))
+		{
+			$frmDt = date("Y-m-d", strtotime($values["fromdate"]));
+			$toDt = date("Y-m-d", strtotime($values["todate"]));
+			$brachId = $values["branch"];
+			$empId = "-1";
+			if(isset($values["employee"])){
+				$empId = $values["employee"];
+			}
+			$reportFor = "-1";
+			if(isset($values["reportfor"])){
+				$reportFor = $values["reportfor"];
+			}
+			$resp = array();
+			$employees = \Employee::All();
+			foreach ($employees as $employee){
+				$recs = DB::select( DB::raw("select lookupValueId, sum(amount) as amt from incometransactions where paymentType='CASH' and createdBy=".$employee->id." and branchId=".$brachId." and date between '".$frmDt."' and '".$toDt."' group by lookupValueId order By lookupValueId"));
+				if(count($recs)>0) {
+					$row = array();
+					$row["branch"] = $employee->fullName;
+					$totalAmt = 0;
+					foreach ($recs as $rec){
+						if($rec->lookupValueId==85){
+							$row["tickets"] = $rec->amt;
+							$totalAmt = $totalAmt+$rec->amt;
+						}
+						if($rec->lookupValueId==86){
+							$row["ticketcancel"] = $rec->amt;
+							$totalAmt = $totalAmt+$rec->amt;
+						}
+						if($rec->lookupValueId==87){
+							$row["cargosimply"] = $rec->amt;
+							$totalAmt = $totalAmt+$rec->amt;
+						}
+						if($rec->lookupValueId==-1){
+							$row["cargosimplycancel"] = $rec->amt;
+							$totalAmt = $totalAmt+$rec->amt;
+						}
+					}
+					if(!isset($row["tickets"])){
+						$row["tickets"] = 0;
+					}
+					if(!isset($row["ticketcancel"])){
+						$row["ticketcancel"] = 0;
+					}
+					if(!isset($row["cargosimply"])){
+						$row["cargosimply"] = 0;
+					}
+					if(!isset($row["cargosimplycancel"])){
+						$row["cargosimplycancel"] = 0;
+					}
+					if(!isset($row["cargos"])){
+						$row["cargos"] = 0;
+					}
+					$row["total"] = $totalAmt;
+					$resp[] = $row;
+				}
+			}
+			echo json_encode($resp);
+			return;
+		}
+		
+		$values["branch"] = 1;
+		$values["fromdate"] = "2015-10-10";
+		$values["todate"] = "2016-10-10";
+	
+		$values['bredcum'] = strtoupper($values["reporttype"]);
+		$values['home_url'] = 'masters';
+		$values['add_url'] = 'getreport';
+		$values['form_action'] = 'getreport';
+		$values['action_val'] = '';
+		$theads = array('Bank Name','Branch Name', "Account Name", "Account No", "Account Type");
+		$values["theads"] = $theads;
+	
+		$form_info = array();
+		$form_info["name"] = "getreport";
+		$form_info["action"] = "getreport";
+		$form_info["method"] = "post";
+		$form_info["class"] = "form-horizontal";
+		$form_info["back_url"] = "bankdetails";
+		$form_info["bredcum"] = "add bank details";
+		$form_info["reporttype"] = $values["reporttype"];
+	
+		$form_fields = array();
+	
+		$branches =  \OfficeBranch::All();
+		$branches_arr = array();
+		$branches_arr["0"] = "ALL BRANCHES";
+		foreach ($branches as $branch){
+			$branches_arr[$branch->id] = $branch->name;
+		}
+	
+		$emps =  \Employee::All();
+		$emps_arr = array();
+		$emps_arr["0"] = "ALL EMPLOYEES";
+		foreach ($emps as $emp){
+			$emps_arr[$emp->id] = $emp->fullName;
+		}
+	
+		$parentId = -1;
+		$parent = \LookupTypeValues::where("name","=","INCOME")->get();
+		if(count($parent)>0){
+			$parent = $parent[0];
+			$parentId = $parent->id;
+		}
+		$incomes =  \LookupTypeValues::where("parentId","=",$parentId)->where("status","=","ACTIVE")->get();
+		$transtype_arr = array();
+		$transtype_arr["0"] = "ALL";
+		foreach ($incomes as $income){
+			$transtype_arr [$income->name] = strtoupper($income->name);
+		}
+	
+		$parentId = -1;
+		$parent = \LookupTypeValues::where("name","=","EXPENSE")->get();
+		if(count($parent)>0){
+			$parent = $parent[0];
+			$parentId = $parent->id;
+		}
+		$incomes =  \LookupTypeValues::where("parentId","=",$parentId)->where("status","=","ACTIVE")->get();
+		foreach ($incomes as $income){
+			$transtype_arr [$income->name] = strtoupper($income->name);
+		}
+	
+		$form_field = array("name"=>"branch", "content"=>"branch name", "readonly"=>"",  "required"=>"required","type"=>"select", "action"=>array("type"=>"onchange","script"=>"disableEmployee(this.value)"), "options"=>$branches_arr, "class"=>"form-control chosen-select");
+		$form_fields[] = $form_field;
+		$form_field = array("name"=>"employee", "content"=>"employee", "readonly"=>"",  "required"=>"required","type"=>"select", "options"=>$emps_arr, "class"=>"form-control chosen-select");
+		$form_fields[] = $form_field;
+		$form_field = array("name"=>"daterange", "content"=>"date range", "readonly"=>"",  "required"=>"required","type"=>"daterange", "class"=>"form-control");
+		$form_fields[] = $form_field;
+		$form_field = array("name"=>"reportfor", "content"=>"report for ", "readonly"=>"",  "required"=>"required","type"=>"select", "options"=>$transtype_arr, "class"=>"form-control chosen-select");
+		$form_fields[] = $form_field;
+		$form_field = array("name"=>"reporttype", "value"=>$values["reporttype"], "content"=>"", "readonly"=>"",  "required"=>"required","type"=>"hidden");
+		$form_fields[] = $form_field;
+		$form_info["form_fields"] = $form_fields;
+		$values["form_info"] = $form_info;
+	
+		$values["provider"] = "bankdetails";
+		return View::make('reports.dailytransactionemployeemodal', array("values"=>$values));
 	}
 	
 	private function getSalaryAdvancesReport($values){

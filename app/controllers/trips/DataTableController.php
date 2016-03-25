@@ -212,6 +212,7 @@ class DataTableController extends \Controller {
 		$select_args[] = "busbookings.dest_time as dest_time";
 		$select_args[] = "busbookings.total_cost as total_cost";
 		$select_args[] = "busbookings.id as id";
+		$select_args[] = "busbookings.status as status";
 			
 		$actions = array();
 		$action = array("url"=>"editlocaltrip?","css"=>"primary","id"=>"editbooking", "type"=>"", "text"=>"Edit");
@@ -297,6 +298,10 @@ class DataTableController extends \Controller {
 					$action_data = $action_data. "<a class='btn btn-minier btn-".$action["css"]."' href='".$action['url']."' data-toggle='modal' onClick=\"".$action['js'].$jsdata."')\">".strtoupper($action["text"])."</a>&nbsp; &nbsp;" ;
 				}
 				else if($action['url'] == "#"){
+					if($action['id']=="cancelbooking" && $entity["status"]=="Cancelled"){
+						$action["text"] = "un canel";
+						$entity["id"] = "\"".$entity["id"]."&action=uncancel\"";
+					}
 					$action_data = $action_data."<button class='btn btn-minier btn-".$action["css"]."' onclick='".$action["id"]."(".$entity["id"].")' >".strtoupper($action["text"])."</button>&nbsp; &nbsp;" ;
 				}
 				else {
@@ -520,12 +525,12 @@ class DataTableController extends \Controller {
 		$search = $_REQUEST["search"];
 		$search = $search['value'];
 		if($search != ""){
-			$entities = \TripParticulars::where("tripId","like","%$search%")->where("tripType","=","LOCAL")->select($select_args)->limit($length)->offset($start)->get();
-			$total = \TripParticulars::where("tripId","like","%$search%")->where("tripType","=","LOCAL")->count();
+			$entities = \TripParticulars::where("tripId","like","%$search%")->where("status","=","ACTIVE")->where("tripType","=","LOCAL")->select($select_args)->limit($length)->offset($start)->get();
+			$total = \TripParticulars::where("tripId","like","%$search%")->where("status","=","ACTIVE")->where("tripType","=","LOCAL")->count();
 		}
 		else{
-			$entities = \TripParticulars::where("tripId","=",$values["tripid"])->where("tripType","=","LOCAL")->select($select_args)->limit($length)->offset($start)->get();
-			$total = \TripParticulars::where("tripId","=",$values["tripid"])->where("tripType","=","LOCAL")->count();
+			$entities = \TripParticulars::where("tripId","=",$values["tripid"])->where("status","=","ACTIVE")->where("tripType","=","LOCAL")->select($select_args)->limit($length)->offset($start)->get();
+			$total = \TripParticulars::where("tripId","=",$values["tripid"])->where("status","=","ACTIVE")->where("tripType","=","LOCAL")->count();
 		}
 		foreach ($entities as $entity){
 			$entity["date"] = date("d-m-Y",strtotime($entity["date"]));
@@ -637,12 +642,12 @@ class DataTableController extends \Controller {
 		$search = $_REQUEST["search"];
 		$search = $search['value'];
 		if($search != ""){
-			$entities = \TripParticulars::where("tripId","like","%$search%")->where("tripType","=","DAILY")->select($select_args)->limit($length)->offset($start)->get();
-			$total = \TripParticulars::where("tripId","like","%$search%")->where("tripType","=","DAILY")->count();
+			$entities = \TripParticulars::where("tripId","like","%$search%")->where("status","=","ACTIVE")->where("tripType","=","DAILY")->select($select_args)->limit($length)->offset($start)->get();
+			$total = \TripParticulars::where("tripId","like","%$search%")->where("status","=","ACTIVE")->where("tripType","=","DAILY")->count();
 		}
 		else{
-			$entities = \TripParticulars::where("tripId","=",$values["tripid"])->where("tripType","=","DAILY")->select($select_args)->limit($length)->offset($start)->get();
-			$total = \TripParticulars::where("tripId","=",$values["tripid"])->where("tripType","=","DAILY")->count();
+			$entities = \TripParticulars::where("tripId","=",$values["tripid"])->where("status","=","ACTIVE")->where("tripType","=","DAILY")->select($select_args)->limit($length)->offset($start)->get();
+			$total = \TripParticulars::where("tripId","=",$values["tripid"])->where("status","=","ACTIVE")->where("tripType","=","DAILY")->count();
 		}
 		foreach ($entities as $entity){
 			$entity["date"] = date("d-m-Y",strtotime($entity["date"]));

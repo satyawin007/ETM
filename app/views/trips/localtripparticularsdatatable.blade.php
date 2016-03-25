@@ -104,9 +104,9 @@ use Illuminate\Support\Facades\Input;
 				<a class="btn btn-sm  btn-inverse" href="managetrips?triptype=LOCAL">MANAGE TRIPS</a> &nbsp;&nbsp;
 			</div>
 			<div style="float:right;">
-				<a href="tripclosingreport?tripid={{$values['id']}}" class="btn btn-white btn-info btn-bold">
+				<a href="printlocaltrip?id={{$values['id']}}" class="btn btn-white btn-info btn-bold">
 					<i class="ace-icon fa fa-print bigger-160"></i>
-					CLOSING REPORT
+					PRINT REPORT
 				</a>
 			</div>
 		</div>
@@ -181,7 +181,7 @@ use Illuminate\Support\Facades\Input;
 			<?php }?>
 				<a class="btn btn-sm btn-purple" href="addlocaltripfuel?id={{$values['id']}}&triptype=LOCAL&transtype=fuel">ADD TRIP FUEL EXPENSES</a> &nbsp;&nbsp;
 				<a class="btn btn-sm btn-purple" href="assigndrivervehicle?id={{$values['id']}}&triptype=LOCAL">ASSIGN DRIVER & VEHICLE</a> &nbsp;&nbsp;
-				<a class="btn btn-sm btn-purple" href="addlocaltripfuel?id={{$values['id']}}&triptype=LOCAL&transtype=fuel">BOOKING REFUND</a> &nbsp;&nbsp;
+				<a class="btn btn-sm btn-purple" href="bookingrefund?id={{$values['id']}}&triptype=LOCAL&transtype=bookingrefund">BOOKING REFUND</a> &nbsp;&nbsp;
 		</div>
 		<?php $url = "addlocaltripparticular?triptype=LOCAL&tripid=".$values["id"]."&type=".$values['type']; ?>
 		<?php  if(isset($values["type"]) && $values["type"] == "advances"){?>
@@ -561,30 +561,57 @@ use Illuminate\Support\Facades\Input;
 				<input type="hidden" name="tripid" value="{{$values['id']}}"/>
 				<div class="panel-collapse collapse in" id="collapseOne">
 					<div class="panel-body">
-						<div class="col-xs-3">
-							<div class="form-group">
-								<label class="col-xs-6 control-label no-padding-right" for="form-field-1">Closing Reading  </label>
-								<div class="col-xs-6">
-									<input type="text" id="closingreading" name="closingreading"  class="form-control number">
+						<?php 
+							$bookingId = \BusBookings::where("id","=",$values["id"])->get();
+							if(count($bookingId)>0){
+								$bookingId = $bookingId[0];
+								$bookingId = $bookingId->booking_number;
+							}
+							$veh_ids = \BookingVehicles::where("booking_number","=", $bookingId)->get();
+							$veh_ids_arr = array();
+							foreach ($veh_ids as $veh_id){
+								$veh_ids_arr[] = $veh_id->vehicleId;
+							}
+							$vehicles =  \Vehicle::whereIn("id",$veh_ids_arr)->get();
+							foreach($vehicles as $vehicle){
+						?>
+						<div class="row">
+							<div class="col-xs-2">
+								<input type="hidden" id="vehid" name="vehicleid[]" value="{{$vehicle->id}}" class="form-control">
+								<div class="form-group">
+									<div class="col-xs-12">
+										<input type="text" id="vehiclename" name="vehiclename[]" readonly="readonly" value="{{$vehicle->veh_reg}}" class="form-control">
+									</div>
 								</div>
 							</div>
-						</div>
-						<div class="col-xs-3">
-							<div class="form-group">
-								<label class="col-xs-5 control-label no-padding-right" for="form-field-1"> Closing Date  </label>
-								<div class="col-xs-7">
-									<input type="text" id="closingdate" name="closingdate"  required="required" class="form-control date-picker">
+							<div class="col-xs-3">
+								<div class="form-group">
+									<label class="col-xs-6 control-label no-padding-right" for="form-field-1">Closing Reading  </label>
+									<div class="col-xs-6">
+										<input type="text" id="closingreading" name="closingreading[]"  class="form-control number">
+									</div>
 								</div>
 							</div>
-						</div>
-						<div class="col-xs-6">
-							<div class="form-group">
-								<label class="col-xs-3 control-label no-padding-right" for="form-field-1"> Remarks  </label>
-								<div class="col-xs-9">
-									<input type="text" id="remarks" name="remarks"  class="form-control">
+							<div class="col-xs-3">
+								<div class="form-group">
+									<label class="col-xs-5 control-label no-padding-right" for="form-field-1"> Closing Date  </label>
+									<div class="col-xs-7">
+										<input type="text" id="closingdate" name="closingdate[]"  required="required" class="form-control date-picker">
+									</div>
 								</div>
 							</div>
-						</div>								
+							<div class="col-xs-4">
+								<div class="form-group">
+									<label class="col-xs-3 control-label no-padding-right" for="form-field-1"> Remarks  </label>
+									<div class="col-xs-9">
+										<input type="text" id="remarks" name="remarks[]"  class="form-control">
+									</div>
+								</div>
+							</div>
+						</div>	
+						<?php 
+							}
+						?>							
 					</div>
 					<input type="hidden" name="triptype" value="local"/>
 				</div>

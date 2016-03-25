@@ -1,69 +1,100 @@
-@extends('masters.master')
-	@section('inline_css')
-		<style>
-			.pagination {
-			    display: inline-block;
-			    padding-left: 0;
-			    padding-bottom:10px;
-			    margin: 0px 0;
-			    border-radius: 4px;
-			}
-			.dataTables_wrapper .row:last-child {
-			    border-bottom: 0px solid #e0e0e0;
-			    padding-top: 5px;
-			    padding-bottom: 0px;
-			    background-color: #EFF3F8;
-			}
-			th {
-			    white-space: nowrap;
-			}
-			td {
-			    white-space: nowrap;
-			}
-			panel-group .panel {
-			    margin-bottom: 20px;
-			    border-radius: 4px;
-			}
-			label{
-				text-align: right;
-				margin-top: 5px;
-			}
-			.chosen-container{
-			  width: 100% !important;
-			}
-		</style>
-	@section('page_css')
-		<link rel="stylesheet" href="../assets/css/jquery-ui.custom.css" />
-		<link rel="stylesheet" href="../assets/css/bootstrap-datepicker3.css"/>
-		<link rel="stylesheet" href="../assets/css/chosen.css" />
-	@stop
-		
-	@stop
-	
-	@section('bredcum')	
-		<small>
-			TRIPS & SERVICES
-			<i class="ace-icon fa fa-angle-double-right"></i>
-			{{$values['bredcum']}}
-		</small>
-	@stop
+<?php
+use Illuminate\Support\Facades\Input;
+?>
+	<!-- bootstrap & fontawesome -->
+	<link rel="stylesheet" href="../assets/css/bootstrap.css" />
+	<link rel="stylesheet" href="../assets/css/font-awesome.css" />
 
-	@section('page_content')
-		<div class="col-xs-offset-4 col-xs-8 ccordion-style1 panel-group">
-			<a class="btn btn-sm btn-primary" href="dailytrips">CREATE/ADD SERVICES</a> &nbsp;&nbsp;
-			<a class="btn btn-sm  btn-inverse" href="managetrips?triptype=DAILY">MANAGE TRIPS</a> &nbsp;&nbsp;
-		</div>
+	<!-- page specific plugin styles -->
+
+	<!-- text fonts -->
+	<link rel="stylesheet" href="../assets/css/ace-fonts.css" />
+
+	<!-- ace styles -->
+	<link rel="stylesheet" href="../assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
+
+	<!--[if lte IE 9]>
+		<link rel="stylesheet" href="../assets/css/ace-part2.css" class="ace-main-stylesheet" />
+	<![endif]-->
+
+	<!--[if lte IE 9]>
+	  <link rel="stylesheet" href="../assets/css/ace-ie.css" />
+	<![endif]-->
+
+	<!-- inline styles related to this page -->
+
+	<!-- ace settings handler -->
+	<script src="../assets/js/ace-extra.js"></script>
+
+	<style>
+		.pagination {
+		    display: inline-block;
+		    padding-left: 0;
+		    padding-bottom:10px;
+		    margin: 0px 0;
+		    border-radius: 4px;
+		}
+		.dataTables_wrapper .row:last-child {
+		    border-bottom: 0px solid #e0e0e0;
+		    padding-top: 5px;
+		    padding-bottom: 0px;
+		    background-color: #EFF3F8;
+		}
+		th {
+		    white-space: nowrap;
+		}
+		td {
+			font-size:13px;
+		    white-space: nowrap;
+		}
+		panel-group .panel {
+		    margin-bottom: 20px;
+		    border-radius: 4px;
+		}
+		label{
+			text-align: right;
+			margin-top: 2px;
+		}
+		.table {
+		    width: 100%;
+		    max-width: 100%;
+		    margin-bottom: 0px;
+		}
+		.form-actions {
+		    display: block;
+		    background-color: #F5F5F5;
+		    border-top: 1px solid #E5E5E5;
+		    margin-top: 0px;
+		    /* margin-bottom: 20px; 
+		    margin-top: 20px;
+		    padding: 19px 20px 20px;*/
+		}
+		.chosen-container{
+		  width: 100% !important;
+		}
+		body{
+			background: white;
+		}
+	</style>
+	<link rel="stylesheet" href="../assets/css/jquery-ui.custom.css" />
+	<?php 
+		$values = Input::All();
+		$total_expenses = 0;
+		$total_advance = 0;
+		$total_fuel_amount = 0;
+		$total_incomes = 0;
+	?>
 		<div id="accordion1" class="col-xs-offset-0 col-xs-12 accordion-style1 panel-group">			
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					<h4 class="panel-title">
-						<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#tripinfo">
+						<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#TEST1">
 							<i class="ace-icon fa fa-angle-down bigger-110" data-icon-hide="ace-icon fa fa-angle-down" data-icon-show="ace-icon fa fa-angle-right"></i>
 							&nbsp;TRIP INFORMATION
 						</a>
 					</h4>
 				</div>
-				<div class="panel-collapse collapse in" id="tripinfo">
+				<div class="panel-collapse collapse in" id="TEST1">
 					<div class="panel-body" style="padding: 0px">
 					<div class="col-xs-offset-0 col-xs-12" style="margin-top: 1%; margin-bottom: 1%">
 						<table id="simple-table" class="table table-striped table-bordered table-hover">
@@ -121,13 +152,13 @@
 											}
 											foreach ($employees as $employee){
 												if($employee->id == $tripservice->driver1){
-													$driver1 = $employee->fullName;
+													$driver1 = $employee->fullName."<br/>".$driver1;
 												}
 												else if($employee->id == $tripservice->driver2){
-													$driver2 = $employee->fullName;
+													$driver2 = $employee->fullName."<br/>".$driver2;
 												}
 												else if($employee->id == $tripservice->helper){
-													$helper = $employee->fullName;
+													$helper = $employee->fullName."<br/>".$helper;
 												}
 											}
 										}
@@ -151,92 +182,112 @@
 				</div>
 			</div>
 		</div>
-		<div class="col-xs-offset-4 col-xs-8 ccordion-style1 panel-group">
-			<a class="btn btn-sm  btn-purple" href="addtripparticular?id={{$values['id']}}&type=advances">ADD TRIP ADVANCE</a>&nbsp;&nbsp;
-			<a class="btn btn-sm btn-purple" href="addtripparticular?id={{$values['id']}}&type=expenses_and_incomes">ADD TRIP EXPESENSES/INCOMES</a> &nbsp;&nbsp;
-		</div>
 		<div id="accordion1" class="col-xs-offset-0 col-xs-12 accordion-style1 panel-group">			
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					<h4 class="panel-title">
-						<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#TEST">
+						<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#TEST1">
 							<i class="ace-icon fa fa-angle-down bigger-110" data-icon-hide="ace-icon fa fa-angle-down" data-icon-show="ace-icon fa fa-angle-right"></i>
-							&nbsp;ADD TRIP FUEL TRANSACTION
+							&nbsp;TRIP INFORMATION
 						</a>
 					</h4>
 				</div>
-				<div class="panel-collapse collapse in" id="TEST">
+				<div class="panel-collapse collapse in" id="TEST1">
 					<div class="panel-body" style="padding: 0px">
-						<?php $form_info = $values["form_info"]; ?>
-						@include("trips.add3colform",$form_info)						
-					</div>
-				</div>
-			</div>
-		</div>	
-		</div>		
-		<div class="col-xs-12" >
-			<h3 class="header smaller lighter blue" style="font-size: 15px; font-weight: bold;margin-bottom: -10px;">MANAGE TRANSACTIONS</h3>		
-			<div class="col-xs-12" >
-				<div>
-					<div class="row" >
-						<?php if(!isset($values['entries'])) $values['entries']=10; if(!isset($values['branch'])) $values['branch']=0; if(!isset($values['page'])) $values['page']=1; ?>
-						<div class="table-header" style="margin-top: 10px;">
-							Results for <?php if(isset($values['transtype'])){ echo '"'.strtoupper($values['transtype'])." TRANCTIONS".'"';} ?>				 
-							<div style="float:right;padding-right: 15px;padding-top: 6px;"><a style="color: white;" href="{{$values['home_url']}}"><i class="ace-icon fa fa-home bigger-200"></i></a> &nbsp; &nbsp; &nbsp; <a style="color: white;"  href="{{$values['add_url']}}"><i class="ace-icon fa fa-plus-circle bigger-200"></i></a></div>				
-						</div>
-						<!-- div.table-responsive -->
-						<!-- div.dataTables_borderWrap -->
-						<div>
-							<table id="dynamic-table" class="table table-striped table-bordered table-hover">
-								<thead>
+					<div class="col-xs-offset-0 col-xs-12" style="margin-top: 1%; margin-bottom: 1%">
+						<table id="simple-table" class="table table-striped table-bordered table-hover">
+							<thead>
+								<tr>
+									<th>PARTICULAR NAME</th>
+									<th>TYPE</th>
+									<th>DATE</th>
+									<th>AMOUNT</th>
+									<th>BRANCH/INCHARGE</th>
+									<th>REMARKS</th>
+									<th>STATUS</th>
+								</tr>
+							</thead>
+							<tbody>
+							<?php 
+								$total = 0;
+								$data = array();
+								$select_args = array();
+								$select_args[] = "tripparticulars.tripId as tripId";
+								$select_args[] = "tripparticulars.lookupValueId as lookupValueId";
+								$select_args[] = "tripparticulars.lookupValueId as type";
+								$select_args[] = "tripparticulars.date as date";
+								$select_args[] = "tripparticulars.amount as amount";
+								$select_args[] = "tripparticulars.branchId as branchId";
+								$select_args[] = "tripparticulars.remarks as remarks";
+								$select_args[] = "tripparticulars.status as status";
+								$select_args[] = "tripparticulars.id as id";
+								$select_args[] = "tripparticulars.inchargeId as inchargeId";
+								
+								$entities = \TripParticulars::where("tripId","=",$values["id"])->where("status","=","ACTIVE")->where("tripType","=","DAILY")->select($select_args)->get();
+								foreach ($entities as $entity){
+									$entity["date"] = date("d-m-Y",strtotime($entity["date"]));
+									$parentId = -1;
+									$parent = \LookupTypeValues::where("id","=",$entity->lookupValueId)->get();
+									if(count($parent)>0){
+										$parent = $parent[0];
+										$parentId = $parent->parentId;
+										$entity->lookupValueId = $parent->name;
+									}
+									$parent = \LookupTypeValues::where("id","=",$parentId)->get();
+									if(count($parent)>0){
+										$parent = $parent[0];
+										$parentId = $parent->id;
+										$entity->type = $parent->name;
+									}
+									if($entity->branchId>0){
+										$branch = \OfficeBranch::where("id","=",$entity->branchId)->get();
+										if(count($branch)>0){
+											$branch = $branch[0];
+											$entity->branchId = $branch->name;
+										}
+									}
+									else{
+										$entity->branchId = "";
+									}
+									if($entity->inchargeId>0){
+										$select_args = array();
+										$select_args[] = "employee.fullName as name";
+										$select_args[] = "inchargeaccounts.id as id";
+										$incharges = \InchargeAccounts::where("inchargeaccounts.id","=",$entity->inchargeId)->join("employee","employee.id","=","inchargeaccounts.empid")->select($select_args)->get();
+										if(count($incharges)>0){
+											$incharges = $incharges[0];
+											$entity->branchId = $incharges->name;
+										}
+									}
+									$value_name_arr = array("9999"=>"DEBITED FROM BRANCH", "8888"=>"CREDITED TO BRANCH", "9001"=>"Last Closing Reading", "9002"=>"Initial Reading", "9003"=>"Closing Reading", "9004"=>"Wasted Meters", "9005"=>"Meter Reading Remarks");
+									$name_arr = array("9999", "8888", "9001", "9002", "9003", "9004", "9005");
+									if(in_array($entity->lookupValueId,$name_arr)){
+										$entity->lookupValueId = $value_name_arr[$entity->lookupValueId];
+									}
+								}
+								foreach($entities as $entity){
+								?>
 									<tr>
-										<?php 
-											$theads = $values['theads'];
-											foreach($theads as $thead){
-												echo "<th>".strtoupper($thead)."</th>";
-											}
-										?>
+										<td>{{$entity->lookupValueId}}</td>
+										<td>{{$entity->type}}</td>
+										<td>{{$entity->date}}</td>
+										<td>{{$entity->amount}}</td>
+										<td>{{$entity->branchId}}</td>
+										<td>{{$entity->remarks}}</td>
+										<td>{{$entity->status}}</td>
 									</tr>
-								</thead>
-							</table>								
-						</div>
-					</div>					
+								<?php 
+								}
+								?>
+							</tbody>
+						</table>
+					</div>
+					</div>
 				</div>
 			</div>
 		</div>
-
-		<?php 
-			if(isset($values['modals'])) {
-				$modals = $values['modals'];
-				foreach ($modals as $modal){
-		?>
-				@include('masters.layouts.modalform', $modal)
-		<?php }} ?>
-		
-		<div id="edit" class="modal" tabindex="-1">
-			<div class="modal-dialog" style="width: 80%">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal">&times;</button>
-						<h4 class="blue bigger">Please fill the following form fields</h4>
-					</div>
+		<!-- div.dataTables_borderWrap -->
 	
-					<div class="modal-body" id="modal_body">
-					</div>
-	
-					<div class="modal-footer">
-						<button class="btn btn-sm" data-dismiss="modal">
-							<i class="ace-icon fa fa-times"></i>
-							Close
-						</button>
-					</div>
-				</div>
-			</div>
-		</div><!-- PAGE CONTENT ENDS -->
-		
-	@stop
-	
-	@section('page_js')
 		<!-- page specific plugin scripts -->
 		<script src="../assets/js/dataTables/jquery.dataTables.js"></script>
 		<script src="../assets/js/dataTables/jquery.dataTables.bootstrap.js"></script>
@@ -250,283 +301,51 @@
 		<script src="../assets/js/date-time/moment.js"></script>
 		<script src="../assets/js/date-time/daterangepicker.js"></script>		
 		<script src="../assets/js/bootbox.js"></script>
-		<script src="../assets/js/chosen1.jquery.js"></script>
-	@stop
+		<script src="../assets/js/chosen.jquery.js"></script>
 	
-	@section('inline_js')
 		<!-- inline scripts related to this page -->
 		<script type="text/javascript">
-			$("#entries").on("change",function(){paginate(1);});
-			$("#branch").on("change",function(){$('#trantypebody').hide();  $("#transactionform").hide(); $('#incomebody').hide(); $('#expensebody').hide(); $('#verify').show();});
-			$("#date").on("change",function(){$('#trantypebody').hide(); $("#transactionform").hide(); $('#incomebody').hide(); $('#expensebody').hide(); $('#verify').show();});
-			
-			transtype = "";
 
-			showTranType("fuel");
-
-			function test(){;
-				paginate(1);
-			}
-
-			function setTranType1Value(val){
-				transtype = val;
-			}
-
-			function paginate(page){
-				if(transtype == ""){
-					alert("select transaction type");
-					return;
-				}	
-				branch = $("#branch1").val();
-				if(branch == ""){
-					alert("select branch");
-					return;
-				}				
-				var myin = document.createElement("input"); 
-				myin.type='hidden'; 
-				myin.name='transtype'; 
-				myin.value=transtype; 
-				document.getElementById('paginate').appendChild(myin); 
-				var myin = document.createElement("input"); 
-				$("#page").val(page);
-				$("#paginate").submit();				
-			}
-
-			function modalEditLookupValue(id, value){
-				$("#value1").val(value);
+			function modalEditTripParticulars(id,lookupvalue, date, amount, branch, remarks, status){
+				$("#branch2").prop("disabled",false);
+				$("#incharge1").prop("disabled",false);
+				$("#lookupvalue1 option").each(function() {this.selected = (this.text == lookupvalue); });	
+				$("#lookupvalue1").prop("disabled",true);	
+				$("#date1").val(date);
+				$("#amount1").val(amount);
+				$("#remarks1").text(remarks);
+				if(branch==""){
+					$("#branch2").prop("disabled",true);
+					$("#incharge1").prop("disabled",true);
+				}
+				else{
+					$("#branch2 option").each(function() {this.selected = (this.text == branch); });
+					$("#incharge1 option").each(function() {this.selected = (this.text == branch); });
+				}
+				
+				$("#amou option").each(function() { this.selected = (this.value == driver2id); });
+				$("#helper option").each(function() { this.selected = (this.value == helperid); });
+				$("#status option").each(function() { this.selected = (this.value == status); });
 				$("#id1").val(id);
-				return;				
-			}
-			
-			function verifyDate(){
-				branch = $("#branch").val();
-				dt = $("#date").val();
-				if(branch == ""){
-					alert("select branch office");
-					return;
-				}
-				if(dt == ""){
-					alert("select date");
-					return;
-				}
-				$('#verify').hide();
-				$('#trantypebody').show();
-					
-			}
-			function showTranType(val){
-				$("#formbody").hide();
-				$("#addfields").hide();
-				transtype = val;
-				var myin = document.createElement("input"); 
-				myin.type='hidden'; 
-				myin.name='transtype'; 
-				myin.value=val;
-				document.getElementById('transactionform').appendChild(myin); 
-
-				var myin = document.createElement("input"); 
-				myin.type='hidden'; 
-				myin.name='branch'; 
-				myin.value=$("#branch").val();
-				document.getElementById('transactionform').appendChild(myin); 
-				
-				if(val == "fuel"){	
-					$('#transactionform').show();				
-					$('#expensebody').hide();
-					$('#incomebody').hide();
-					$("#formbody").html('<div style="margin-left:600px; margin-top:100px;"><i class="ace-icon fa fa-spinner fa-spin orange bigger-125" style="font-size: 250% !important;"></i></div>');
-					$("#formbody").show();					
-					$.ajax({
-				      url: "getfueltransactionfields?type=trips",
-				      success: function(data) {
-				    	  $("#formbody").html(data);
-				    	  $('.date-picker').datepicker({
-							autoclose: true,
-							todayHighlight: true
-						  });
-				    	  $('.number').keydown(function(e) {
-							 this.value = this.value.replace(/[^0-9.]/g, ''); 
-							 this.value = this.value.replace(/(\..*)\./g, '$1');
-						  });
-						  $(".chosen-select").chosen();
-						  $("#paymenttype").attr("disabled",true);
-				    	  $("#formbody").show();
-				    	  
-				      },
-				      type: 'GET'
-				   });
-				}	
-			}
-			function showForm(val){
-				$('#addfields').hide(); 
-				var myin = document.createElement("input"); 
-				myin.type='hidden'; 
-				myin.name='branch'; 
-				myin.value=$("#branch").val(); 
-				document.getElementById('transactionform').appendChild(myin);
-
-				if(transtype == "income"){ 
-					var myin = document.createElement("input"); 
-					myin.type='hidden'; 
-					myin.name='type'; 
-					myin.value=$("#income").val(); 
-					document.getElementById('transactionform').appendChild(myin);
-				}
-				if(transtype == "expense"){ 
-					var myin = document.createElement("input"); 
-					myin.type='hidden'; 
-					myin.name='type'; 
-					myin.value=$("#expense").val(); 
-					document.getElementById('transactionform').appendChild(myin);
-				} 
-				if(transtype == "fuel"){ 
-					var myin = document.createElement("input"); 
-					myin.type='hidden'; 
-					myin.name='type'; 
-					myin.value="fuel"; 
-					document.getElementById('transactionform').appendChild(myin);
-				} 
-				 
-				var myin = document.createElement("input"); 
-				myin.type='hidden'; 
-				myin.name='date1'; 
-				myin.value=$("#date").val();
-				document.getElementById('transactionform').appendChild(myin);
-				$('#transactionform').show();
-
-				$("#formbody").html('<div style="margin-left:600px; margin-top:100px;"><i class="ace-icon fa fa-spinner fa-spin orange bigger-125" style="font-size: 250% !important;"></i></div>');
-				$("#formbody").show();						
-				
-				$('#incomebody').show();
-				$('#expensebody').hide();
-				$.ajax({
-			      url: "gettransactionfields?typeId="+val,
-			      success: function(data) {
-			    	  $("#formbody").html(data);
-			    	  $('.date-picker').datepicker({
-						autoclose: true,
-						todayHighlight: true
-					  });
-			    	  $('.number').keydown(function(e) {
-						 this.value = this.value.replace(/[^0-9.]/g, ''); 
-						 this.value = this.value.replace(/(\..*)\./g, '$1');
-					  });
-			    	  $('.chosen-select').chosen();
-			    	  $("#formbody").show();
-			    	  
-			      },
-			      type: 'GET'
-			   });	
-			}
-			function showPaymentFields(val){
-				$("#addfields").html('<div style="margin-left:600px; margin-top:100px;"><i class="ace-icon fa fa-spinner fa-spin orange bigger-125" style="font-size: 250% !important;"></i></div>');
-				$.ajax({
-				      url: "getpaymentfields?paymenttype="+val,
-				      success: function(data) {
-				    	  $("#addfields").html(data);
-				    	  $('.date-picker').datepicker({
-							autoclose: true,
-							todayHighlight: true
-						  });
-				    	  $("#addfields").show();
-				      },
-				      type: 'GET'
-				   });
-				
-			}
-// 			$('#trantypebody').hide();
-// 			$('#incomebody').hide();
-// 			$('#expensebody').hide();
-// 			$('#transactionform').hide();
-
-			function modalEditTransaction(id){
-				//$("#addfields").html('<div style="margin-left:600px; margin-top:100px;"><i class="ace-icon fa fa-spinner fa-spin orange bigger-125" style="font-size: 250% !important;"></i></div>');
-				url = "edittransaction?type="+transtype+"&id="+id;
-				var ifr=$('<iframe />', {
-		            id:'MainPopupIframe',
-		            src:url,
-		            style:'seamless="seamless" scrolling="no" display:none;width:100%;height:423px; border:0px solid',
-		            load:function(){
-		                $(this).show();
-		            }
-		        });
-	    	    $("#modal_body").html(ifr);
+				$('.chosen-select').trigger('chosen:updated');		
 			}
 
-			function deleteTransaction(id) {
-				bootbox.confirm("Are you sure, you want to delete this transaction?", function(result) {
-					if(result) {
-						$.ajax({
-					      url: "deletetransaction?id="+id+"&type="+transtype,
-					      success: function(data) {
-						      if(data=="success"){
-						    	  bootbox.confirm('TRANSACTION SUCCESSFULLY DELETED!', function(result) {});
-						      }
-						      else{
-						    	  bootbox.confirm('TRANSACTION COULD NOT BE DELETED!', function(result) {});
-						      }
-					      },
-					      type: 'GET'
-					   });	
-					   location.reload();
+			function validateData(){
+				var ids = document.forms['tripsform'].elements[ 'ids[]' ];
+				for(i=0; i<ids.length;i++){
+					if(ids[i].checked){
+						if($("#amount_"+i).val()==""){
+							alert("select complete information for trip particular : "+$("#names_"+i).val());
+							return false;
+						}
+						if($("#remarks_"+i).val()==""){
+							alert("select complete information for trip particular : "+$("#names_"+i).val());
+							return false;
+						}
 					}
-				});
+				    
+				}
 			};
-
-			function changeState(val){
-				$.ajax({
-			      url: "getcitiesbystateid?id="+val,
-			      success: function(data) {
-			    	  $("#cityname").html(data);
-			      },
-			      type: 'GET'
-			   });
-			}
-
-			function calcTotal(){
-				ltrs = $("#litres").val();
-				price = $("#priceperlitre").val();
-				$("#totalamount").val(ltrs*price);
-			}
-
-			function enablePaymentType(val){
-				if(val == "Yes"){
-					$("#paymenttype").attr("disabled",false);
-				}
-				else{
-					$("#paymenttype").attr("disabled",true);
-				}
-			}
-			function enableIncharge(val){
-				if(val == "Yes"){
-					$("#incharge").attr("disabled",false);
-				}
-				else{
-					$("#incharge").attr("disabled",true);
-				}
-			}
-
-			$("#reset").on("click",function(){
-				$("#{{$form_info['name']}}").reset();
-			});
-
-			$("#submit").on("click",function(){
-				fuelstationname = $("#fuelstationname").val();
-				if(fuelstationname != undefined && fuelstationname == ""){
-					alert("select fuelstationname");
-					return false;
-				}
-				var myin = document.createElement("input"); 
-				myin.type='hidden'; 
-				myin.name='triptype'; 
-				myin.value="daily";
-				document.getElementById('transactionform').appendChild(myin); 
-				$("#{{$form_info['name']}}").submit();
-			});
-
-			$("#provider").on("change",function(){
-				val = $("#provider option:selected").html();
-				window.location.replace('serviceproviders?provider='+val);
-			});
 
 			$('.number').keydown(function(e) {
 				this.value = this.value.replace(/[^0-9.]/g, ''); 
@@ -546,8 +365,6 @@
 
 			//$('.input-mask-phone').mask('(999) 999-9999');
 			
-			
-
 			
 			<?php 
 				if(Session::has('message')){
@@ -601,9 +418,7 @@
 				});
 			}
 
-					
-
-			jQuery(function($) {
+			jQuery(function($) {		
 				//initiate dataTables plugin
 				var myTable = 
 				$('#dynamic-table')
@@ -616,16 +431,14 @@
 					"bPaginate": true,
 					bInfo: true,
 					"aoColumns": [
-					  <?php $cnt=count($values["theads"]); for($i=0; $i<$cnt; $i++){ echo '{ "bSortable": false },'; }?>
 					],
 					"aaSorting": [],
 					oLanguage: {
 				        sProcessing: '<i class="ace-icon fa fa-spinner fa-spin orange bigger-250"></i>'
 				    },
-					"bProcessing": true,
-			        "bServerSide": true,
+					"bProcessing": false,
+			        "bServerSide": false,
 					"ajax":{
-		                url :"gettransactiondatatabledata?name=<?php echo $values["provider"] ?>", // json datasource
 		                type: "post",  // method  , by default get
 		                error: function(){  // error handling
 		                    $(".employee-grid-error").html("");
@@ -644,7 +457,8 @@
 					//Note: if you are applying horizontal scrolling (sScrollX) on a ".table-bordered"
 					//you may want to wrap the table inside a "div.dataTables_borderWrap" element
 			
-					//"iDisplayLength": 50			
+					//"iDisplayLength": 50
+			
 			
 					select: {
 						style: 'multi'
@@ -820,6 +634,4 @@
 				$('<button style="margin-top:-5px;" class="btn btn-minier btn-primary" id="refresh"><i style="margin-top:-2px; padding:6px; padding-right:5px;" class="ace-icon fa fa-refresh bigger-110"></i></button>').appendTo('div.dataTables_filter');
 				$("#refresh").on("click",function(){ myTable.search( '', true ).draw(); });
 			});
-			
 		</script>
-	@stop

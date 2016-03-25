@@ -394,7 +394,6 @@ use Illuminate\Support\Facades\Input;
 	@section('inline_js')
 		<!-- inline scripts related to this page -->
 		<script type="text/javascript">
-
 			function changeDate(val){
 				if(document.getElementById("trip_"+val).checked){
 					var today = new Date();

@@ -252,7 +252,19 @@
 			function cancelbooking(id) {
 				bootbox.confirm("Are you sure, you want to cancel this booking?", function(result) {
 					if(result) {
-						alert("adsf");
+						$.ajax({
+					      url: "cancellocaltrip?id="+id,
+					      success: function(data) {
+						      if(data=="success"){
+						    	  bootbox.confirm('BOOKING SUCCESSFULLY CANCELLED!', function(result) {});
+						      }
+						      else{
+						    	  bootbox.confirm('BOOKING COULD NOT BE CANCELLED!', function(result) {});
+						      }
+					      },
+					      type: 'GET'
+					   });	
+						location.reload();	
 					}
 				});
 			};

@@ -354,14 +354,23 @@ class DataTableController extends \Controller {
 			$total = \BookingVehicles::where("booking_number","=",$bookingnumber)->count();
 			$vehicle = \Vehicle::all();
 			foreach ($entities as $entity){
-				$entity->driver1 = $drivers_arr[$entity->driver1];
-				$entity->driver2 = "";
-				if(isset($drivers_arr[$entity->driver2])){
-					$entity->driver2 = $drivers_arr[$entity->driver2];
+				if(array_key_exists($entity->driver1,$drivers_arr)){
+					$entity->driver1 = $drivers_arr[$entity->driver1];
 				}
-				$entity->helper = "";
-				if(isset($drivers_arr[$entity->helper])){
-					$entity->helper = $drivers_arr[$entity->helper];
+				else{
+					$entity->driver1 ="";
+				}
+				if(array_key_exists($entity->driver2,$drivers_arr)){
+						$entity->driver2 = $drivers_arr[$entity->driver2];
+				}
+				else{
+					$entity->driver2 ="";
+				}
+				if(array_key_exists($entity->helper,$drivers_arr)){
+						$entity->helper = $drivers_arr[$entity->helper];
+				}
+				else{
+					$entity->helper  = "";
 				}
 				$entity->vehicleId = $vehicles_arr[$entity->vehicleId];
 			}
@@ -381,6 +390,7 @@ class DataTableController extends \Controller {
 						$jsdata = $jsdata." '".$entity[$jsfields[$i]]."', ";
 					}
 					$jsdata = $jsdata." '".$entity[$jsfields[$i]];
+					
 					$action_data = $action_data. "<a class='btn btn-minier btn-".$action["css"]."' href='".$action['url']."' data-toggle='modal' onClick=\"".$action['js'].$jsdata."')\">".strtoupper($action["text"])."</a>&nbsp; &nbsp;" ;
 				}
 				else {

@@ -471,12 +471,14 @@ use Illuminate\Support\Facades\Input;
 				}
 			};
 			function modalEditAssignedValues(id,driver1, driver2, helper){
+				//alert("This is test id: "+id+" This is test driver1: "+driver1+" This is test driver2: "+driver2+" This is test helper: "+helper);
 				$("#driver11 option").each(function() {this.selected = (this.value == driver1); });
 				$("#driver21 option").each(function() { this.selected = (this.value == driver2); });
 				$("#helper1 option").each(function() { this.selected = (this.value == helper); });
 				$("#id1").val(id);
 				$('.chosen-select').trigger('chosen:updated');		
 			}
+			
 			$("#provider").on("change",function(){
 				val = $("#provider option:selected").html();
 				window.location.replace('serviceproviders?provider='+val);

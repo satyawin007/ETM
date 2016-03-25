@@ -186,7 +186,7 @@
 				var autocomplete3 = new google.maps.places.Autocomplete(input3,options);
 				var autocomplete4 = new google.maps.places.Autocomplete(input4,options);
 			}             
-			//google.maps.event.addDomListener(window, 'load', initialize1);
+			google.maps.event.addDomListener(window, 'load', initialize);
 			
 			//datepicker plugin
 			//link

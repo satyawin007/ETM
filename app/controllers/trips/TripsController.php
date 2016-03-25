@@ -1604,6 +1604,8 @@ class TripsController extends \Controller {
 		$form_fields[] = $form_field;
 		$form_field = array("name"=>"id1",  "value"=>"", "content"=>"", "readonly"=>"",  "required"=>"required","type"=>"hidden", "class"=>"form-control");
 		$form_fields[] = $form_field;
+		$form_field = array("name"=>"tripid",  "value"=>$values["id"], "content"=>"", "readonly"=>"",  "required"=>"required","type"=>"hidden", "class"=>"form-control");
+		$form_fields[] = $form_field;
 
 		$modals = array();
 		$form_info["form_fields"] = $form_fields;
@@ -1611,6 +1613,33 @@ class TripsController extends \Controller {
 		$values["modals"] = $modals;
 			
 		return View::make('trips.assigndrivervehicle', array("values"=>$values));
+	}
+	
+	public function editassignedvehicle()
+	{
+		$values = Input::all();
+		//$values["test"];
+		if (\Request::isMethod('post'))
+		{
+			$field_names = array("driver11"=>"driver1","driver21"=>"driver2","helper1"=>"helper","id1"=>"id");
+			$fields = array();
+			foreach ($field_names as $key=>$val){
+				if(isset($values[$key])){
+					$fields[$val] = $values[$key];
+				}
+			}
+			$data = array('id'=>$values['id1']);
+			$db_functions_ctrl = new DBFunctionsController();
+			$table = "\BookingVehicles";
+			if($db_functions_ctrl->update($table, $fields, $data)){
+				\Session::put("message","Operation completed Successfully");
+				return \Redirect::to("assigndrivervehicle?id=".$values['tripid']);
+			}
+			else{
+				\Session::put("message","Operation Could not be completed, Try Again!");
+				return \Redirect::to("assigndrivervehicle?id=".$values['tripid']);
+			}
+		}
 	}
 	
 	/**

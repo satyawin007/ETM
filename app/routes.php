@@ -316,6 +316,8 @@ Route::any('/addlocaltrip', "trips\TripsController@addLocalTrip");
 
 Route::any('/assigndrivervehicle', "trips\TripsController@assignDriverVehicle");
 
+Route::any('/editassignedvehicle', "trips\TripsController@editassignedvehicle");
+
 Route::any('/editlocaltrip', "trips\TripsController@editLocalTrip");
 
 Route::any('/deletebooking', "trips\TripsController@deleteBooking");

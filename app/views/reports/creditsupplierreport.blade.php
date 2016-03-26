@@ -1,4 +1,4 @@
-@extends('masters.noheadermaster')
+@extends('masters.master')
 	@section('inline_css')
 		<style>
 			.pagination {
@@ -69,47 +69,30 @@
 	@stop
 
 	@section('page_content')
-		<?php $form_info = $values["form_info"]; ?>
+		<div id="accordion1" class="col-xs-offset-0 col-xs-12 accordion-style1 panel-group" style="width: 99%;">			
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h4 class="panel-title">
+						<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#TEST">
+							<i class="ace-icon fa fa-angle-down bigger-110" data-icon-hide="ace-icon fa fa-angle-down" data-icon-show="ace-icon fa fa-angle-right"></i>
+							&nbsp;SEARCH BY
+						</a>
+					</h4>
+				</div>
+				<div class="panel-collapse collapse in" id="TEST">
+					<div class="panel-body" style="padding: 0px">
+						<?php $form_info = $values["form_info"]; ?>
+						@include("reports.add3colform",$form_info)						
+					</div>
+				</div>
+			</div>
+		</div>	
+		</div>	
 		<div id="processing" class="modal-backdrop fade in"><div id = "loading" > <i  class="ace-icon fa fa-spinner fa-spin orange bigger-250"></i>	</div></div>
 		
-		<form name="getreport" id="getreport">
-			<input name="branch" type="hidden" value="{{$values['branch']}}" />
-			<input name="fromdate" type="hidden" value="{{$values['fromdate']}}" />
-			<input name="todate" type="hidden" value="{{$values['todate']}}" />
-		</form>
 		
 		<div class="row" >
 			<div id="table1">
-				<div class="row col-xs-12" style="padding-left:2%; padding-top: 1%">
-					<?php if(!isset($values['entries'])) $values['entries']=10; if(!isset($values['branch'])) $values['branch']=0; if(!isset($values['page'])) $values['page']=1; ?>
-					<div class="clearfix">
-						<div id="tableTools-container" class="pull-right tableTools-container"></div>
-					</div>
-					<div class="table-header" style="margin-top: 10px;">
-						Results for <?php if(isset($values['type'])){ echo '"'.strtoupper($values['type'])." REPORT".'"';} ?>				 
-					</div>
-					<!-- div.table-responsive -->
-					<!-- div.dataTables_borderWrap -->
-					<div>
-						<table id="dynamic-table" class="table table-striped table-bordered table-hover">
-							<thead>
-								<tr>
-									<td>BRANCH</td>
-									<td>TICKETS</td>
-									<td>TICKET CANCEL</td>
-									<td>CARGOS</td>
-									<td>CARGOS CANCEL</td>
-									<td>CARGOS SIMPLY</td>
-									<td>TOTAL</td>
-								</tr>
-							</thead>
-							<tbody id="tbody1">
-							</tbody>
-						</table>								
-					</div>
-				</div>					
-			</div>
-			<div id="table2">
 				<div class="row col-xs-12" style="padding-left:2%; padding-top: 1%">
 					<?php if(!isset($values['entries'])) $values['entries']=10; if(!isset($values['branch'])) $values['branch']=0; if(!isset($values['page'])) $values['page']=1; ?>
 					<div class="clearfix">
@@ -124,17 +107,74 @@
 						<table id="dynamic-table1" class="table table-striped table-bordered table-hover">
 							<thead>
 								<tr>
-									<td>BRANCH</td>
-									<td>TRANSACTION TYPE</td>
-									<td>DATE</td>
-									<td>AMOUNT</td>
-									<td>PURPOSE</td>
-									<td>PAID TO/REC. FROM</td>
+									<td>CREDIT SUPPLIER NAME</td>
+									<td>RANGE - REPAIRS</td>
+									<td>RANGE - PURCHASES</td>
+									<td>RANGE - PAYMEMNTS</td>
+									<td>RANGE - BALANCE</td>
+								</tr>
+							</thead>
+							<tbody id="tbody1">
+							</tbody>
+						</table>								
+					</div>
+				</div>					
+			</div>
+			<div id="table2">
+				<div class="row col-xs-12" style="padding-left:2%; padding-top: 1%">
+					<?php if(!isset($values['entries'])) $values['entries']=10; if(!isset($values['branch'])) $values['branch']=0; if(!isset($values['page'])) $values['page']=1; ?>
+					<div class="clearfix">
+						<div id="tableTools-container2" class="pull-right tableTools-container"></div>
+					</div>
+					<div class="table-header" style="margin-top: 10px;">
+						Results for <?php if(isset($values['type'])){ echo '"'.strtoupper($values['type'])." REPORT".'"';} ?>				 
+					</div>
+					<!-- div.table-responsive -->
+					<!-- div.dataTables_borderWrap -->
+					<div>
+						<table id="dynamic-table2" class="table table-striped table-bordered table-hover">
+							<thead>
+								<tr>
+									<td>CREDIT SUPPLIER</td>
+									<td>PAID AMOUNT</td>
+									<td>PAID DATE</td>
+									<td>PAYMENT INFO</td>
 									<td>COMMENTS</td>
 									<td>CREATED BY</td>
 								</tr>
 							</thead>
-							<tbody id="tbody1">
+							<tbody id="tbody2">
+							</tbody>
+						</table>								
+					</div>
+				</div>					
+			</div>
+			<div id="table3">
+				<div class="row col-xs-12" style="padding-left:2%; padding-top: 1%">
+					<?php if(!isset($values['entries'])) $values['entries']=10; if(!isset($values['branch'])) $values['branch']=0; if(!isset($values['page'])) $values['page']=1; ?>
+					<div class="clearfix">
+						<div id="tableTools-container3" class="pull-right tableTools-container"></div>
+					</div>
+					<div class="table-header" style="margin-top: 10px;">
+						Results for <?php if(isset($values['type'])){ echo '"'.strtoupper($values['type'])." REPORT".'"';} ?>				 
+					</div>
+					<!-- div.table-responsive -->
+					<!-- div.dataTables_borderWrap -->
+					<div>
+						<table id="dynamic-table3" class="table table-striped table-bordered table-hover">
+							<thead>
+								<tr>
+									<td>CREDIT SUPPLIER</td>
+									<td>VEHICLE</td>
+									<td>FILLED DATE</td>
+									<td>NO OF LTRS</td>
+									<td>AMOUNT</td>
+									<td>PAID BY BRANCH</td>
+									<td>COMMENTS</td>
+									<td>CREATED BY</td>
+								</tr>
+							</thead>
+							<tbody id="tbody2">
 							</tbody>
 						</table>								
 					</div>
@@ -196,18 +236,65 @@
 		<!-- inline scripts related to this page -->
 		<script type="text/javascript">
 			$("#processing").hide();
+			$("#creditsupplierid").hide();
+			$("#vehicleid").hide();
+			reporttype = "";
+
 			var refresh1 = 0;
 			var refresh2 = 0;
+			var refresh3 = 0;
 
-			paginate(1);
-			function paginate(page){
+			function generateReport(){
 				reporttype = "ticket_corgos_summery";
-				branch = $("#branch").val();
-				if(branch == ""){
-					alert("select branch");
+				paginate(1);
+			}
+
+			function showSelectionType(val){
+				if(val=="balanceSheetNoDt" || val=="payment" || val=="balanceSheet" || val=="repairs"){
+					$("#creditsupplierid").show();
+					$("#vehicleid").hide();
+					if(val=="balanceSheetNoDt"){
+						$("#fromdate").prop("disabled",true);
+						$("#todate").prop("disabled",true);
+					}
+					else{
+						$("#fromdate").prop("disabled",false);
+						$("#todate").prop("disabled",false);
+					}
+				}
+				else if(val=="vehicleReport"){
+					$("#creditsupplierid").hide();
+					$("#vehicleid").show();
+				}
+			}
+
+			function paginate(page){
+				reporttype = $("#supplierreporttype").val();
+				if(reporttype == ""){
+					alert("select report type");
 					return;
 				}
+				fdt="";
+				tdt="";
+				if(reporttype != "balanceSheetNoDt"){
+					fdt = $("#fromdate").val();
+					if(fdt == ""){
+						alert("select daterange FROM date");
+						return;
+					}
+					tdt = $("#fromdate").val();
+					if(tdt == ""){
+						alert("select daterange TO date");
+						return;
+					}
+				}
+				else{
+					fdt = "01-01-2010";
+					tdt = <?php echo "'".date("d-m-Y")."';"?>;
+				}
+				dt = fdt+" - "+tdt;	
 				var form=$("#getreport");	
+
 				$("#processing").show();
 				$.ajax({
 			        type:"POST",
@@ -225,27 +312,33 @@
 				            }
 				            arr.push(row);
 			        	}
-			        	if(reporttype == "ticket_corgos_summery"){
-							myTable.clear();
-							myTable.rows.add(arr); // Add new data
-							myTable.draw(); // Redraw 
-							$("#table1").show();
-							$("#table2").hide();	
-							if(refresh1 == 0){
-								myTable.draw();
-								refresh1 = 1;
-							}	
-			        	}
-			        	else if(reporttype == "txn_details"){
+			        	if(reporttype == "balanceSheetNoDt" || reporttype == "balanceSheet"){
 							myTable1.clear().draw();
 							myTable1.rows.add(arr); // Add new data
-							myTable1.columns.adjust().draw(); // Redraw theDataTable
-							$("#table1").hide();
-							$("#table2").show();
-							if(refresh2 == 0){
+							myTable1.columns.adjust().draw(); // Redraw 
+							$("#table1").show();
+							$("#table2").hide();
+							$("#table3").hide();
+							if(refresh1 == 0){
+								refresh1 = 1;
 								myTable1.draw();
-								refresh2 = 1;
-							}			
+							}		
+			        	}
+			        	else if(reporttype == "payment"){
+							myTable2.clear().draw();
+							myTable2.rows.add(arr); // Add new data
+							myTable2.columns.adjust().draw(); // Redraw theDataTable
+							$("#table1").hide();
+							$("#table2").show();	
+							$("#table3").hide();	
+			        	}
+			        	else if(reporttype == "tracking" || reporttype == "vehicleReport"){
+							myTable3.clear().draw();
+							myTable3.rows.add(arr); // Add new data
+							myTable3.columns.adjust().draw(); // Redraw theDataTable
+							$("#table1").hide();
+							$("#table2").hide();
+							$("#table3").show();		
 			        	}
 						$("#processing").hide();
 			        }
@@ -259,9 +352,9 @@
 			}
 			
 
-			function modalGetInfo(branch, fromdt, todt, empid, reportfor){
+			function modalEditTransaction(id){
 				//$("#addfields").html('<div style="margin-left:600px; margin-top:100px;"><i class="ace-icon fa fa-spinner fa-spin orange bigger-125" style="font-size: 250% !important;"></i></div>');
-				url = "edittransaction?type=fuel&id="+1;
+				url = "edittransaction?type="+transtype+"&id="+id;
 				var ifr=$('<iframe />', {
 		            id:'MainPopupIframe',
 		            src:url,
@@ -322,9 +415,6 @@
 
 			//$('.input-mask-phone').mask('(999) 999-9999');
 			
-			
-
-			
 			<?php 
 				if(Session::has('message')){
 					echo "bootbox.confirm('".Session::pull('message')."', function(result) {});";
@@ -377,13 +467,12 @@
 				});
 			}
 
-			var myTable = null;
 			var myTable1 = null;
+			var myTable2 = null;
 
 			jQuery(function($) {
 					//initiate dataTables plugin
-					myTable = 
-					$('#dynamic-table')
+					myTable1 = $('#dynamic-table1')
 					//.wrap("<div class='dataTables_borderWrap' />")   //if you are applying horizontal scrolling (sScrollX)
 					.DataTable( {
 						dom: 'Bfrtip',
@@ -410,15 +499,13 @@
 						], 
 						bAutoWidth: false,
 						"aoColumns": [
-						  { "bSortable": false },
-						  null, null,null, null, null,
-						  { "bSortable": false }
+						  null, null, null,null, null
 						],
 						"aaSorting": [],
 						//"sScrollY": "500px",
 						//"bPaginate": false,
-						//"sScrollX" :true,
-						"sScrollX": "300px",
+						"sScrollX" : "true",
+						//"sScrollX": "300px",
 						//"sScrollXInner": "120%",
 						"bScrollCollapse": true,
 						select: {
@@ -427,8 +514,7 @@
 				    } );
 					
 					//initiate dataTables plugin
-					myTable1 = 
-					$('#dynamic-table1')
+					myTable2 = $('#dynamic-table2')
 					//.wrap("<div class='dataTables_borderWrap' />")   //if you are applying horizontal scrolling (sScrollX)
 					.DataTable( {
 						dom: 'Bfrtip',
@@ -456,9 +542,50 @@
 						], 
 						bAutoWidth: false,
 						"aoColumns": [
-						  { "bSortable": false },
-						  null, null, null, null, null, null,
-						  { "bSortable": false }
+						  null, null, null, null, null, null
+						],
+						"aaSorting": [],
+						//"sScrollY": "500px",
+						//"bPaginate": false,
+						"sScrollX" : "true",
+						//"sScrollX": "300px",
+						//"sScrollXInner": "120%",
+						"bScrollCollapse": true,
+						select: {
+							style: 'multi'
+						}
+				    } );
+
+					//initiate dataTables plugin
+					myTable3 = $('#dynamic-table3')
+					//.wrap("<div class='dataTables_borderWrap' />")   //if you are applying horizontal scrolling (sScrollX)
+					.DataTable( {
+						dom: 'Bfrtip',
+						buttons: [
+							{
+								extend:'colvis',
+								text : "<i class='fa fa-search bigger-110 blue'></i> <span class='hidden'>Show/hide columns</span>"
+							},
+							{
+								extend: 'excelHtml5',
+								 title: 'reportTitle',
+								text : "<i class='fa fa-file-excel-o bigger-110 green'></i> <span class='hidden'>Export to Excel</span>",
+								exportOptions: {
+									columns: ':visible'
+								}
+							},
+							{
+								extend: 'pdfHtml5',
+								text : "<i class='fa fa-file-pdf-o bigger-110 red'></i> <span class='hidden'>Export to PDF</span>",
+								exportOptions: {
+									columns: ':visible'
+								}
+							}
+							
+						], 
+						bAutoWidth: false,
+						"aoColumns": [
+						  null, null, null, null, null, null, null, null
 						],
 						"aaSorting": [],
 						//"sScrollY": "500px",
@@ -473,9 +600,10 @@
 				    } );
 					////
 					setTimeout(function() {
-						//$("#table1").hide();
+						$("#table1").hide();
 						$("#table2").hide();
-					}, 50);
+						$("#table3").hide();
+					}, 500);
 				})
 			
 		</script>

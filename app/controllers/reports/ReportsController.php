@@ -153,6 +153,9 @@ class ReportsController extends \Controller {
 		if(isset($values["reporttype"]) && $values["reporttype"] == "fuel"){
 			return $this->getFuelReport($values);
 		}
+		if(isset($values["reporttype"]) && $values["reporttype"] == "creditsupplier"){
+			return $this->getCreditSupplierReport($values);
+		}
 		if(isset($values["reporttype"]) && $values["reporttype"] == "salaryadvances"){
 			return $this->getSalaryAdvancesReport($values);
 		}
@@ -1955,11 +1958,17 @@ class ReportsController extends \Controller {
 	private function getFuelReport($values){
 		if (\Request::isMethod('post'))
 		{
+			if(!isset($values["fromdate"])){
+				$values["fromdate"] = "10-10-2013";
+			}
+			if(!isset($values["todate"])){
+				$values["todate"] = date("d-m-Y");
+			}
 			$frmDt = date("Y-m-d", strtotime($values["fromdate"]));
 			$toDt = date("Y-m-d", strtotime($values["todate"]));
 			$resp = array();
 			DB::statement(DB::raw("CALL fuel_transactions_report('".$frmDt."', '".$toDt."');"));
-			if($values["fuelreporttype"] == "balanceSheetNoDt"){
+			if($values["fuelreporttype"] == "balanceSheetNoDt" || $values["fuelreporttype"] == "balanceSheet"){
 				if($values["fuelstation"] == "0"){
 					$fuelstations =  \FuelStation::OrderBy("name")->get();
 					foreach ($fuelstations as $fuelstation){
@@ -2018,7 +2027,13 @@ class ReportsController extends \Controller {
 						foreach($recs as  $rec) {
 							$row["amount"] = $rec->amount;
 							$row["date"] = date("d-m-Y",strtotime($rec->date));
-							$row["info"] = "Source : ".$rec->entity."<br/>"."Payment Type : ". $rec->paymentType;
+							$branchname = "";
+							$b = \OfficeBranch::where("id","=",$rec->branchId)->get();
+							if(count($b)>0){
+								$b = $b[0];
+								$branchname = $b->name;
+							}
+							$row["info"] = "Source : ".$rec->entity."<br/>"."Payment Type : ". $rec->paymentType."<br/>"."Transaction Branch : ".$branchname;
 							$row["remarks"] = $rec->remarks;
 							$row["createdBy"] = $rec->createdBy;
 							$resp[] = $row;
@@ -2169,5 +2184,291 @@ class ReportsController extends \Controller {
 		$values["form_info"] = $form_info;
 		$values["provider"] = "bankdetails";
 		return View::make('reports.fuelreport', array("values"=>$values));
+	}
+	
+	private function getCreditSupplierReport($values){
+		if (\Request::isMethod('post'))
+		{
+			if(!isset($values["fromdate"])){
+				$values["fromdate"] = "10-10-2013";
+			}
+			if(!isset($values["todate"])){
+				$values["todate"] = date("d-m-Y");
+			}
+			$frmDt = date("Y-m-d", strtotime($values["fromdate"]));
+			$toDt = date("Y-m-d", strtotime($values["todate"]));
+			$resp = array();
+			DB::statement(DB::raw("CALL credit_supplier_report('".$frmDt."', '".$toDt."');"));
+			if($values["supplierreporttype"] == "balanceSheetNoDt" || $values["supplierreporttype"] == "balanceSheet"){
+				if($values["creditsupplier"] == "0"){
+					$creditSuppliers =  \CreditSupplier::OrderBy("supplierName")->get();
+					foreach ($creditSuppliers as $creditSupplier){
+						$row = array();
+						$row["fuelstation"] = $creditSupplier->supplierName;
+						$repair_paidamt = 0;
+						$repair_unpaidamt = 0;
+						$purchase_paidamt = 0;
+						$purchase_unpaidamt = 0;
+						$payments = 0;
+						
+						$recs = DB::select( DB::raw("SELECT sum(amount) as amt FROM `temp_credit_supplier` where entity='repairs' and paymentPaid='Yes' and creditsupplier='".$creditSupplier->supplierName."'"));
+						if(count($recs)>0) {
+							$rec = $recs[0];
+							$repair_paidamt = $rec->amt;
+						}
+						$recs = DB::select( DB::raw("SELECT sum(amount) as amt FROM `temp_credit_supplier` where entity='repairs' and paymentPaid='No' and creditsupplier='".$creditSupplier->supplierName."'"));
+						if(count($recs)>0) {
+							$rec = $recs[0];
+							$repair_unpaidamt = $rec->amt;
+						}
+						
+						$recs = DB::select( DB::raw("SELECT sum(amount) as amt FROM `temp_credit_supplier` where entity='purchase' and paymentPaid='Yes' and creditsupplier='".$creditSupplier->supplierName."'"));
+						if(count($recs)>0) {
+							$rec = $recs[0];
+							$purchase_paidamt = $rec->amt;
+						}
+						$recs = DB::select( DB::raw("SELECT sum(amount) as amt FROM `temp_credit_supplier` where entity='purchase' and paymentPaid='No' and creditsupplier='".$creditSupplier->supplierName."'"));
+						if(count($recs)>0) {
+							$rec = $recs[0];
+							$purchase_unpaidamt = $rec->amt;
+						}
+
+						$recs = DB::select( DB::raw("SELECT sum(amount) as amt FROM `temp_credit_supplier` where entity='expensetransactions' and creditsupplier='".$creditSupplier->supplierName."'"));
+						if(count($recs)>0) {
+							$rec = $recs[0];
+							$payments = $rec->amt;
+						}
+						
+						$supplier_balance = ($repair_paidamt-$repair_unpaidamt)+($purchase_paidamt-$purchase_unpaidamt)+($payments);
+						
+						if($supplier_balance != 0){
+							$row["repairs"] = "<div><span style='color:red;float:right;'>UNPAID :".sprintf('%0.2f',$repair_unpaidamt)."<span><br/>";
+							$row["repairs"] = $row["repairs"]."<span style='color:green;float:right;'>PAID : ".sprintf('%0.2f',$repair_paidamt)."<span></div>";
+							
+							$row["purchases"] = "<div><span style='color:red;float:right;'>UNPAID :".sprintf('%0.2f',$purchase_unpaidamt)."<span><br/>";
+							$row["purchases"] = $row["purchases"]."<span style='color:green;float:right;'>PAID : ".sprintf('%0.2f',$purchase_paidamt)."<span></div>";
+							
+							$row["payments"] = "<div><span style='color:blue;float:right;'>".sprintf('%0.2f',$payments)."<span><br/>";
+							$color = "color:red";
+							if($supplier_balance>0){
+								$color = "color:green";
+							}
+							$row["balance"] = "<div><span style='".$color.";float:right;'>".sprintf('%0.2f',$supplier_balance)."<span><br/>";
+							
+							$resp[] = $row;
+						}
+					}
+				}
+				else if($values["creditsupplier"] > 0){
+					$creditSuppliers =  \CreditSupplier::where("id","=",$values["creditsupplier"])->get();
+					foreach ($creditSuppliers as $creditSupplier){
+						$row = array();
+						$row["fuelstation"] = $creditSupplier->supplierName;
+						$repair_paidamt = 0;
+						$repair_unpaidamt = 0;
+						$purchase_paidamt = 0;
+						$purchase_unpaidamt = 0;
+						$payments = 0;
+						$recs = DB::select( DB::raw("SELECT sum(amount) as amt FROM `temp_credit_supplier` where entity='repairs' and paymentPaid='Yes' and creditsupplier='".$creditSupplier->supplierName."'"));
+						if(count($recs)>0) {
+							$rec = $recs[0];
+							$repair_paidamt = $rec->amt;
+						}
+						$recs = DB::select( DB::raw("SELECT sum(amount) as amt FROM `temp_credit_supplier` where entity='repairs' and paymentPaid='No' and creditsupplier='".$creditSupplier->supplierName."'"));
+						if(count($recs)>0) {
+							$rec = $recs[0];
+							$repair_unpaidamt = $rec->amt;
+						}
+						
+						$recs = DB::select( DB::raw("SELECT sum(amount) as amt FROM `temp_credit_supplier` where entity='purchase' and paymentPaid='Yes' and creditsupplier='".$creditSupplier->supplierName."'"));
+						if(count($recs)>0) {
+							$rec = $recs[0];
+							$purchase_paidamt = $rec->amt;
+						}
+						$recs = DB::select( DB::raw("SELECT sum(amount) as amt FROM `temp_credit_supplier` where entity='purchase' and paymentPaid='No' and creditsupplier='".$creditSupplier->supplierName."'"));
+						if(count($recs)>0) {
+							$rec = $recs[0];
+							$purchase_unpaidamt = $rec->amt;
+						}
+
+						$recs = DB::select( DB::raw("SELECT sum(amount) as amt FROM `temp_credit_supplier` where entity='expensetransactions' and creditsupplier='".$creditSupplier->supplierName."'"));
+						if(count($recs)>0) {
+							$rec = $recs[0];
+							$payments = $rec->amt;
+						}
+						
+						$supplier_balance = ($repair_paidamt-$repair_unpaidamt)+($purchase_paidamt-$purchase_unpaidamt)+($payments);
+						
+						if($supplier_balance != 0){
+							$row["repairs"] = "<div><span style='color:red;float:right;'>UNPAID :".sprintf('%0.2f',$repair_unpaidamt)."<span><br/>";
+							$row["repairs"] = $row["repairs"]."<span style='color:green;float:right;'>PAID : ".sprintf('%0.2f',$repair_paidamt)."<span></div>";
+							
+							$row["purchases"] = "<div><span style='color:red;float:right;'>UNPAID :".sprintf('%0.2f',$purchase_unpaidamt)."<span><br/>";
+							$row["purchases"] = $row["purchases"]."<span style='color:green;float:right;'>PAID : ".sprintf('%0.2f',$purchase_paidamt)."<span></div>";
+							
+							$row["payments"] = "<div><span style='color:blue;float:right;'>".sprintf('%0.2f',$payments)."<span><br/>";
+							$color = "color:red";
+							if($supplier_balance>0){
+								$color = "color:green";
+							}
+							$row["balance"] = "<div><span style='".$color.";float:right;'>".sprintf('%0.2f',$supplier_balance)."<span><br/>";
+							
+							$resp[] = $row;
+						}
+					}
+				}
+			}
+			else if($values["supplierreporttype"] == "payment"){
+				if($values["creditsupplier"] == "0"){
+					$creditSuppliers =  \CreditSupplier::OrderBy("supplierName")->get();
+					foreach ($creditSuppliers as $creditSupplier){
+						$row = array();
+						$recs = DB::select( DB::raw("SELECT * FROM `temp_credit_supplier` where (paymentPaid='Yes' or entity='expensetransactions') and creditsupplier='".$creditSupplier->supplierName."'"));
+						foreach($recs as  $rec) {
+							$row["fuelstation"] = $creditSupplier->supplierName;
+							$row["amount"] = $rec->amount;
+							$row["date"] = date("d-m-Y",strtotime($rec->date));
+							$row["info"] = "Source : ".$rec->entity."<br/>"."Payment Type : ". $rec->paymentType;
+							$row["remarks"] = $rec->remarks;
+							$row["createdBy"] = $rec->createdBy;
+							$resp[] = $row;
+						}
+					}
+				}
+				else if($values["creditsupplier"] > 0){
+					$creditSuppliers =  \CreditSupplier::where("id","=",$values["creditsupplier"])->get();
+					foreach ($creditSuppliers as $creditSupplier){
+						$row = array();
+						$row["fuelstation"] = $creditSupplier->supplierName;
+						$recs = DB::select( DB::raw("SELECT * FROM `temp_credit_supplier` where (paymentPaid='Yes' or entity='expensetransactions') and creditsupplier='".$creditSupplier->supplierName."'"));
+						foreach($recs as  $rec) {
+							$row["amount"] = $rec->amount;
+							$row["date"] = date("d-m-Y",strtotime($rec->date));
+							$row["info"] = "Source : ".$rec->entity."<br/>"."Payment Type : ". $rec->paymentType;
+							$row["remarks"] = $rec->remarks;
+							$row["createdBy"] = $rec->createdBy;
+							$resp[] = $row;
+						}
+					}
+				}
+			}
+			else if($values["fuelreporttype"] == "tracking"){
+				if($values["fuelstation"] == "0"){
+					$fuelstations =  \FuelStation::OrderBy("name")->get();
+					foreach ($fuelstations as $fuelstation){
+						$row = array();
+						$row["fuelstation"] = $fuelstation->name;
+						$recs = DB::select( DB::raw("SELECT * FROM `temp_fuel_transaction` where (entity='FUEL TRANSACTION') and fuelStation='".$fuelstation->name."'"));
+						foreach($recs as  $rec) {
+							$row["vehicle"] = $rec->veh_reg;
+							$row["date"] = date("d-m-Y",strtotime($rec->date));
+							$row["ltrs"] = $rec->ltrs;
+							$row["amount"] = $rec->amount;
+							$row["info"] = "Source : ".$rec->entity."<br/>"."Payment Type : ". $rec->paymentType;
+							$row["remarks"] = $rec->remarks;
+							$row["createdBy"] = $rec->createdBy;
+							$resp[] = $row;
+						}
+					}
+				}
+				else if($values["fuelstation"] > 0){
+					$fuelstations =  \FuelStation::where("id","=",$values["fuelstation"])->get();
+					foreach ($fuelstations as $fuelstation){
+						$row = array();
+						$row["fuelstation"] = $fuelstation->name;
+						$recs = DB::select( DB::raw("SELECT * FROM `temp_fuel_transaction` where (entity='FUEL TRANSACTION') and fuelStation='".$fuelstation->name."'"));
+						foreach($recs as  $rec) {
+							$row["vehicle"] = $rec->veh_reg;
+							$row["date"] = date("d-m-Y",strtotime($rec->date));
+							$row["ltrs"] = $rec->ltrs;
+							$row["amount"] = $rec->amount;
+							$row["info"] = "Source : ".$rec->entity."<br/>"."Payment Type : ". $rec->paymentType;
+							$row["remarks"] = $rec->remarks;
+							$row["createdBy"] = $rec->createdBy;
+							$resp[] = $row;
+						}
+					}
+				}
+			}
+			else if($values["fuelreporttype"] == "vehicleReport"){
+				$recs = DB::select( DB::raw("SELECT * FROM `temp_fuel_transaction` where (entity='FUEL TRANSACTION') and vehicleId='".$values["vehicle"]."'"));
+				foreach($recs as  $rec) {
+					$row = array();
+					$row["fuelstation"] = $rec->fuelStation;
+					$row["vehicle"] = $rec->veh_reg;
+					$row["date"] = date("d-m-Y",strtotime($rec->date));
+					$row["ltrs"] = $rec->ltrs;
+					$row["amount"] = $rec->amount;
+					$row["info"] = "Source : ".$rec->entity."<br/>"."Payment Type : ". $rec->paymentType;
+					$row["remarks"] = $rec->remarks;
+					$row["createdBy"] = $rec->createdBy;
+					$resp[] = $row;
+				}
+			}
+			echo json_encode($resp);
+			return;
+		}
+	
+		$values['bredcum'] = strtoupper($values["reporttype"]);
+		$values['home_url'] = 'masters';
+		$values['add_url'] = 'getreport';
+		$values['form_action'] = 'getreport';
+		$values['action_val'] = '';
+		$theads = array('Bank Name','Branch Name', "Account Name", "Account No", "Account Type");
+		$values["theads"] = $theads;
+	
+		$form_info = array();
+		$form_info["name"] = "getreport";
+		$form_info["action"] = "getreport";
+		$form_info["method"] = "post";
+		$form_info["class"] = "form-horizontal";
+		$form_info["back_url"] = "bankdetails";
+		$form_info["bredcum"] = "add bank details";
+		$form_info["reporttype"] = $values["reporttype"];
+	
+		$form_fields = array();
+		$select_args = array();
+		$select_args[] = "creditsuppliers.id as id";
+		$select_args[] = "creditsuppliers.supplierName as fname";
+		$select_args[] = "cities.name as cname";
+	
+		$branches =  \CreditSupplier::leftjoin("cities","cities.id","=","creditsuppliers.cityId")->select($select_args)->get();
+		$branches_arr = array();
+		$branches_arr["0"] = "ALL CREDIT SUPPLIERS";
+		foreach ($branches as $branch){
+			$branches_arr[$branch->id] = $branch->fname." (".$branch->cname.")";
+		}
+	
+		$supplier_rep_arr = array();
+		$supplier_rep_arr['balanceSheetNoDt'] = "Credit Supplier Balance Sheet";
+		$supplier_rep_arr['balanceSheet'] = "Credit Supplier Range Sheet";
+		$supplier_rep_arr['payment'] = "Credit Supplier Payments";
+		$supplier_rep_arr['repairs'] = "Repairs";
+		$supplier_rep_arr['purchase'] = "Purchases";
+		$supplier_rep_arr['vehicleReport'] = "Track By Vehicle";
+	
+		$form_field = array("name"=>"supplierreporttype", "content"=>"report for ", "readonly"=>"",  "required"=>"required","type"=>"select", "action"=>array("type"=>"onChange","script"=>"showSelectionType(this.value)"), "options"=>$supplier_rep_arr, "class"=>"form-control chosen-select");
+		$form_fields[] = $form_field;
+		$form_field = array("name"=>"daterange", "content"=>"date range", "readonly"=>"",  "required"=>"required","type"=>"daterange", "class"=>"form-control");
+		$form_fields[] = $form_field;
+		$form_field = array("name"=>"reporttype", "value"=>$values["reporttype"], "content"=>"", "readonly"=>"",  "required"=>"required","type"=>"hidden");
+		$form_fields[] = $form_field;
+	
+		$add_form_fields = array();
+		$vehs =  \Vehicle::where("status","=","ACTIVE")->get();
+		$vehs_arr = array();
+		foreach ($vehs as $veh){
+			$vehs_arr[$veh->id] = $veh->veh_reg;
+		}
+		$form_field = array("name"=>"creditsupplier", "content"=>"by supplier", "readonly"=>"",  "required"=>"required","type"=>"select", "options"=>$branches_arr, "class"=>"form-control chosen-select");
+		$add_form_fields[] = $form_field;
+		$form_field = array("name"=>"vehicle", "content"=>"by vehicle", "readonly"=>"",  "required"=>"required","type"=>"select", "options"=>$vehs_arr, "class"=>"form-control chosen-select");
+		$add_form_fields[] = $form_field;
+	
+		$form_info["form_fields"] = $form_fields;
+		$form_info["add_form_fields"] = $add_form_fields;
+		$values["form_info"] = $form_info;
+		$values["provider"] = "bankdetails";
+		return View::make('reports.creditsupplierreport', array("values"=>$values));
 	}
 }

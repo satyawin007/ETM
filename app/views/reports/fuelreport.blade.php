@@ -239,18 +239,27 @@
 			$("#vehicleid").hide();
 			$("#driverid").hide();
 			reporttype = "";
-
+			var refresh1 = 0;
+			var refresh2 = 0;
+			var refresh3 = 0;
 			function generateReport(){
 				reporttype = "ticket_corgos_summery";
 				paginate(1);
 			}
 
 			function showSelectionType(val){
-				     
 				if(val=="balanceSheetNoDt" || val=="payment" || val=="balanceSheet" || val=="tracking"){
 					$("#fuelstationid").show();
 					$("#vehicleid").hide();
 					$("#driverid").hide();
+					if(val=="balanceSheetNoDt"){
+						$("#fromdate").prop("disabled",true);
+						$("#todate").prop("disabled",true);
+					}
+					else{
+						$("#fromdate").prop("disabled",false);
+						$("#todate").prop("disabled",false);
+					}
 				}
 				else if(val=="vehicleReport"){
 					$("#fuelstationid").hide();
@@ -270,15 +279,23 @@
 					alert("select report type");
 					return;
 				}
-				fdt = $("#fromdate").val();
-				if(fdt == ""){
-					alert("select daterange FROM date");
-					return;
+				fdt="";
+				tdt="";
+				if(reporttype != "balanceSheetNoDt"){
+					fdt = $("#fromdate").val();
+					if(fdt == ""){
+						alert("select daterange FROM date");
+						return;
+					}
+					tdt = $("#fromdate").val();
+					if(tdt == ""){
+						alert("select daterange TO date");
+						return;
+					}
 				}
-				tdt = $("#fromdate").val();
-				if(tdt == ""){
-					alert("select daterange TO date");
-					return;
+				else{
+					fdt = "01-01-2010";
+					tdt = <?php echo "'".date("d-m-Y")."';"?>;
 				}
 				dt = fdt+" - "+tdt;	
 				var form=$("#getreport");	
@@ -300,13 +317,17 @@
 				            }
 				            arr.push(row);
 			        	}
-			        	if(reporttype == "balanceSheetNoDt"){
+			        	if(reporttype == "balanceSheetNoDt" || reporttype == "balanceSheet"){
 							myTable1.clear().draw();
 							myTable1.rows.add(arr); // Add new data
 							myTable1.columns.adjust().draw(); // Redraw 
 							$("#table1").show();
 							$("#table2").hide();
-							$("#table3").hide();		
+							$("#table3").hide();
+							if(refresh1 == 0){
+								refresh1 = 1;
+								myTable1.draw();
+							}		
 			        	}
 			        	else if(reporttype == "payment"){
 							myTable2.clear().draw();
@@ -314,7 +335,11 @@
 							myTable2.columns.adjust().draw(); // Redraw theDataTable
 							$("#table1").hide();
 							$("#table2").show();	
-							$("#table3").hide();	
+							$("#table3").hide();
+							if(refresh2 == 0){
+								refresh2 = 1;
+								myTable2.draw();
+							}	
 			        	}
 			        	else if(reporttype == "tracking" || reporttype == "vehicleReport"){
 							myTable3.clear().draw();
@@ -322,7 +347,11 @@
 							myTable3.columns.adjust().draw(); // Redraw theDataTable
 							$("#table1").hide();
 							$("#table2").hide();
-							$("#table3").show();		
+							$("#table3").show();
+							if(refresh3 == 0){
+								refresh3 = 1;
+								myTable3.draw();
+							}		
 			        	}
 						$("#processing").hide();
 			        }

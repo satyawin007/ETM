@@ -79,27 +79,27 @@ use Illuminate\Support\Facades\Input;
 							<ul class="list-unstyled spaced2">
 								<li>
 									<i class="ace-icon fa fa-check green"></i>
-									<a href="report?reporttype=dailytransactions"> DAILY TRANSACTION </a>
+									<a target="_blank" href="report?reporttype=dailytransactions"> DAILY TRANSACTION </a>
 								</li>
 	
 								<li>
 									<i class="ace-icon fa fa-check green"></i>
-									<a href="printdailytransactions"> PRINT DAILY TRANSACTION </a>
+									<a target="_blank" href="printdailytransactions"> PRINT DAILY TRANSACTION </a>
 								</li>
 	
 								<li>
 									<i class="ace-icon fa fa-check green"></i>
-									<a href="report?reporttype=dailyfinance"> DAILY FINANCE REPORT </a>
+									<a target="_blank" href="report?reporttype=dailyfinance"> DAILY FINANCE REPORT </a>
 								</li>
 	
 								<li>
 									<i class="ace-icon fa fa-check green"></i>
-									<a href="dailyfinancedetailsreport"> DAILY FINANCE DETAILS REPORT </a>
+									<a target="_blank" href="report?reporttype=dailyfinancedetailed"> DAILY FINANCE DETAILS REPORT </a>
 								</li>
 	
 								<li>
 									<i class="ace-icon fa fa-check green"></i>
-									<a href="branchverification"> BRANCH VERIFICATION </a>
+									<a target="_blank" href="branchverification"> BRANCH VERIFICATION </a>
 								</li>
 							</ul>
 						</div>
@@ -125,17 +125,17 @@ use Illuminate\Support\Facades\Input;
 							<ul class="list-unstyled spaced2">
 								<li>
 									<i class="ace-icon fa fa-check green"></i>
-									<a href="report?reporttype=fuel"> FUEL TRACKING REPORT </a>
+									<a target="_blank" href="report?reporttype=fuel"> FUEL TRACKING REPORT </a>
 								</li>
 	
 								<li>
 									<i class="ace-icon fa fa-check green"></i>
-									<a href="report?reporttype=creditsupplier"> CREDIT SUPPLIER REPORT </a>
+									<a target="_blank" href="report?reporttype=creditsupplier"> CREDIT SUPPLIER REPORT </a>
 								</li>
 	
 								<li>
 									<i class="ace-icon fa fa-check green"></i>
-									<a href="dailyfinancereport"> VEHICLE VERIFICATION REPORT </a>
+									<a target="_blank" href="dailyfinancereport"> VEHICLE VERIFICATION REPORT </a>
 								</li>
 							</ul>
 						</div>
@@ -158,17 +158,17 @@ use Illuminate\Support\Facades\Input;
 							<ul class="list-unstyled spaced2">
 								<li>
 									<i class="ace-icon fa fa-check green"></i>
-									<a href="report?reporttype=salaryadvances"> SALARY ADVANCES </a>
+									<a target="_blank" href="report?reporttype=salaryadvances"> SALARY ADVANCES </a>
 								</li>
 	
 								<li>
 									<i class="ace-icon fa fa-check green"></i>
-									<a href="report?reporttype=salary"> SALARY REPORT </a>
+									<a target="_blank" href="report?reporttype=salary"> SALARY REPORT </a>
 								</li>
 	
 								<li>
 									<i class="ace-icon fa fa-check green"></i>
-									<a href="report?reporttype=estimatedsalary"> ESTIMATED SALARY REPORT </a>
+									<a target="_blank" href="report?reporttype=estimatedsalary"> ESTIMATED SALARY REPORT </a>
 								</li>
 							</ul>
 						</div>
@@ -192,17 +192,17 @@ use Illuminate\Support\Facades\Input;
 							<ul class="list-unstyled spaced2">
 								<li>
 									<i class="ace-icon fa fa-check green"></i>
-									<a href="report?reporttype=inchargetransactions"> INCHARGE TRANSACTIONS </a>
+									<a target="_blank" href="report?reporttype=inchargetransactions"> INCHARGE TRANSACTIONS </a>
 								</li>
 	
 								<li>
 									<i class="ace-icon fa fa-check green"></i>
-									<a href="report?reporttype=loans"> LOANS REPORT </a>
+									<a target="_blank" href="report?reporttype=loans"> LOANS REPORT </a>
 								</li>
 	
 								<li>
 									<i class="ace-icon fa fa-check green"></i>
-									<a href="report?reporttype=bankposition"> BANK POSITION </a>
+									<a target="_blank" href="report?reporttype=bankposition"> BANK POSITION </a>
 								</li>
 							</ul>
 						</div>

@@ -147,6 +147,32 @@
 							<?php } ?>
 						<?php }?>
 					<?php }?>
+					<?php if($form_info['reporttype']== "creditsupplier"){ ?>
+						<?php $form_fields = $form_info['add_form_fields'];?>
+						<?php foreach ($form_fields as $form_field) {?>
+							<?php if($form_field['type'] === "select"){ ?>
+							<div class="col-xs-6" style="margin-top: 10px; margin-bottom: -10px">
+							<div class="form-group" id="{{$form_field['name'].'id'}}">
+								<label class="col-xs-4 control-label no-padding-right" for="form-field-1"> <?php echo strtoupper($form_field['content']); if($form_field['required']=="required") echo '<span style="color:red;">*</span>'; ?> </label>
+								<div class="col-xs-7">
+									<select class="{{$form_field['class']}}"  {{$form_field['required']}}  name="{{$form_field['name']}}" id="{{$form_field['name']}}" <?php if(isset($form_field['action'])) { $action = $form_field['action'];  echo $action['type']."=".$action['script']; }?> <?php if(isset($form_field['multiple'])) { echo " multiple "; }?>>
+										<?php 
+											foreach($form_field["options"] as $key => $value){
+												if(isset($form_field['value']) && $form_field['value']==$key) { 
+													echo "<option selected='selected' value='$key'>$value</option>";
+												}
+												else{
+													echo "<option value='$key'>$value</option>";
+												}
+											}
+										?>
+									</select>
+								</div>			
+							</div>
+							</div>				
+							<?php } ?>
+						<?php }?>
+					<?php }?>
 					</div>
 				</form>
 			</div>

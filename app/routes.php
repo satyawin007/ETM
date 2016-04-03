@@ -339,6 +339,8 @@ Route::any('/roles', "rolejobs\RoleController@manageRoles");
 
 Route::any('/addrole', "rolejobs\RoleController@addRole");
 
+Route::any('/editrole', "rolejobs\RoleController@editRole");
+
 Route::any('/jobs', "rolejobs\JobsController@manageJobs");
 
 Route::any('/roleprivileges', "rolejobs\JobsController@rolePrivileges");
@@ -439,6 +441,8 @@ Route::any('/getitemsbyaction', "inventory\StockController@getFields");
 
 Route::any('/getiteminfo', "inventory\StockController@getItemInfo");
 
+Route::any('/getalertinfo', "inventory\StockController@getAlertInfo");
+
 Route::get('/reports', function()
 {
 	return View::make('reports.reports');
@@ -468,6 +472,10 @@ Route::get('/profile', function() {
 	return View::make('settings.profile');
 });
 
+Route::get('/employeeprofile', function() {
+	return View::make('settings.employeeprofile');
+});
+
 Route::get('/settings', function() {
 	return View::make('settings.appsettings');
 });
@@ -475,6 +483,10 @@ Route::get('/settings', function() {
 Route::any('/updateprofile', "settings\UserSettingsController@updateprofile");
 	
 Route::any('/updatepassword', "settings\UserSettingsController@updatepassword");
+
+Route::any('/updateemployeeprofile', "settings\UserSettingsController@updateEmployeeProfile");
+
+Route::any('/updateemployeepassword', "settings\UserSettingsController@updateEmployeePassword");
 	
 Route::any('/updatebannersettings', "settings\AppSettingsController@updateBannerSettings");
 

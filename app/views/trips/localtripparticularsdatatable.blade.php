@@ -80,7 +80,7 @@ use Illuminate\Support\Facades\Input;
 			$parent = $parent[0];
 			$parentId = $parent->id;
 		}
-		$tripparticulars =  \LookupTypeValues::where("parentId","=",$parentId)->where("status", "=", "ACTIVE")->get();
+		$tripparticulars =  \LookupTypeValues::where("parentId","=",$parentId)->where("status", "=", "ACTIVE")->where("modules","like","%LOCAL TRIPS%")->get();
 		foreach ($tripparticulars as $tripparticular){
 			$tripparticulars_arr[] = $tripparticular->id;
 		}
@@ -223,7 +223,7 @@ use Illuminate\Support\Facades\Input;
 												$parent = $parent[0];
 												$parentId = $parent->id;
 											}
-											$tripparticulars =  \LookupTypeValues::where("parentId","=",$parentId)->where("status", "=", "ACTIVE")->get();
+											$tripparticulars =  \LookupTypeValues::where("parentId","=",$parentId)->where("status", "=", "ACTIVE")->where("modules","like","%LOCAL TRIPS%")->get();
 											foreach ($tripparticulars as $tripparticular){
 												$tripparticulars_arr[] = $tripparticular->id;
 											}
@@ -300,7 +300,7 @@ use Illuminate\Support\Facades\Input;
 												$parent = $parent[0];
 												$parentId = $parent->id;
 											}
-											$tripparticulars =  \LookupTypeValues::where("parentId","=",$parentId)->where("status", "=", "ACTIVE")->get();
+											$tripparticulars =  \LookupTypeValues::where("parentId","=",$parentId)->where("status", "=", "ACTIVE")->where("modules","like","%LOCAL TRIPS%")->get();
 											foreach ($tripparticulars as $tripparticular){
 												$tripparticulars_arr[] = $tripparticular->id;
 											}
@@ -351,7 +351,7 @@ use Illuminate\Support\Facades\Input;
 					$parent = $parent[0];
 					$parentId = $parent->id;
 				}
-				$tripparticulars =  \LookupTypeValues::where("parentId","=",$parentId)->where("status", "=", "ACTIVE")->get();
+				$tripparticulars =  \LookupTypeValues::where("parentId","=",$parentId)->where("status", "=", "ACTIVE")->where("modules","like","%LOCAL TRIPS%")->get();
 				$tripparticulars_arr = array();
 				$expense_fields = array();
 				foreach ($tripparticulars as $tripparticular){
@@ -681,7 +681,7 @@ use Illuminate\Support\Facades\Input;
 												$parent = $parent[0];
 												$parentId = $parent->id;
 											}
-											$tripparticulars =  \LookupTypeValues::where("parentId","=",$parentId)->where("status", "=", "ACTIVE")->get();
+											$tripparticulars =  \LookupTypeValues::where("parentId","=",$parentId)->where("status", "=", "ACTIVE")->where("modules","like","%LOCAL TRIPS%")->get();
 											foreach ($tripparticulars as $tripparticular){
 												$fields = array();
 												$fields ['id'] = $tripparticular->id;
@@ -836,7 +836,7 @@ use Illuminate\Support\Facades\Input;
 												$parent = $parent[0];
 												$parentId = $parent->id;
 											}
-											$tripparticulars =  \LookupTypeValues::where("parentId","=",$parentId)->where("status", "=", "ACTIVE")->get();
+											$tripparticulars =  \LookupTypeValues::where("parentId","=",$parentId)->where("status", "=", "ACTIVE")->where("modules","like","%LOCAL TRIPS%")->get();
 											foreach ($tripparticulars as $tripparticular){
 												$fields = array();
 												$fields ['id'] = $tripparticular->id;

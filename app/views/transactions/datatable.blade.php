@@ -53,6 +53,9 @@
 	@stop
 
 	@section('page_content')
+	<?php $form_info = $values["form_info"]; ?>
+	<?php $jobs = Session::get("jobs"); ?>
+	<?php if(($values['bredcum'] == "INCOME TRANSACTIONS" && in_array(301, $jobs)) ||  ($values['bredcum'] == "EXPENSES TRANSACTIONS" && in_array(303, $jobs)) || ($values['bredcum'] == "FUEL TRANSACTIONS" && in_array(305, $jobs))){?>
 		<div id="accordion1" class="col-xs-offset-0 col-xs-12 accordion-style1 panel-group" style="width: 99%;">			
 			<div class="panel panel-default">
 				<div class="panel-heading">
@@ -65,12 +68,12 @@
 				</div>
 				<div class="panel-collapse collapse in" id="TEST">
 					<div class="panel-body" style="padding: 0px">
-						<?php $form_info = $values["form_info"]; ?>
 						@include("transactions.add3colform",$form_info)						
 					</div>
 				</div>
 			</div>
-		</div>	
+		</div>
+	<?php }?>	
 		</div>		
 		
 		<h3 class="header smaller lighter blue" style="font-size: 15px; font-weight: bold;margin-bottom: -10px;">MANAGE TRANSACTIONS</h3>		

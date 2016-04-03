@@ -37,18 +37,25 @@
 	@stop
 
 	@section('page_content')
+		<?php $jobs = Session::get("jobs"); ?>
 		<?php if($values['triptype'] == "DAILY"){ ?>
 		<div class="col-xs-12">
 			<div class="col-xs-offset-4 col-xs-8 ccordion-style1 panel-group">
-			<a class="btn btn-sm btn-primary" href="dailytrips">CREATE/ADD SERVICES</a> &nbsp;&nbsp;
-			<a class="btn btn-sm  btn-inverse" href="managetrips?triptype={{$values['triptype']}}">MANAGE TRIPS</a> &nbsp;&nbsp;
-		</div>
+				<?php if(in_array(309, $jobs)){ ?>
+				<a class="btn btn-sm btn-primary" href="dailytrips">CREATE/ADD SERVICES</a> &nbsp;&nbsp;
+				<?php } if(in_array(310, $jobs)){ ?>
+				<a class="btn btn-sm  btn-inverse" href="managetrips?triptype={{$values['triptype']}}">MANAGE TRIPS</a> &nbsp;&nbsp;
+				<?php }?>
+			</div>
 		<?php } if($values['triptype'] == "LOCAL"){ ?>
 		<div class="col-xs-12">
 			<div class="col-xs-offset-4 col-xs-8 ccordion-style1 panel-group">
-			<a class="btn btn-sm btn-primary" href="addlocaltrip">CREATE NEW BOOKING</a> &nbsp;&nbsp;
-			<a class="btn btn-sm  btn-inverse" href="managetrips?triptype={{$values['triptype']}}">MANAGE  BOOKING</a> &nbsp;&nbsp;
-		</div>
+				<?php if(in_array(312, $jobs)){ ?>
+				<a class="btn btn-sm btn-primary" href="addlocaltrip">CREATE NEW BOOKING</a> &nbsp;&nbsp;
+				<?php } if(in_array(317, $jobs)){ ?>
+				<a class="btn btn-sm  btn-inverse" href="managetrips?triptype={{$values['triptype']}}">MANAGE  BOOKING</a> &nbsp;&nbsp;
+				<?php }?>
+			</div>
 		<?php } ?>
 		<div id="accordion1" class="col-xs-offset-0 col-xs-12 accordion-style1 panel-group">			
 			<div class="panel panel-default">

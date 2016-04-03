@@ -190,7 +190,11 @@
 								<div class="radio">
 								<?php 
 									foreach($form_field["options"] as $key => $value){
-										echo "<label><input type='radio' name=\"".$form_field['name']."\"class='ace' value='$key'> <span class='lbl'>".$value."</span></label>&nbsp;&nbsp;";
+										$selected = "";
+										if($key == $form_field['value']){
+											$selected = "selected";
+										}
+										echo "<label><input type='radio' name=\"".$form_field['name']."\"class='ace' $selected  value='$key'> <span class='lbl'>".$value."</span></label>&nbsp;&nbsp;";
 									}
 								?>
 								</div>

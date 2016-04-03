@@ -10,8 +10,11 @@ class DataTableController extends \Controller {
 	 *
 	 * @return Response
 	 */
+	private $jobs;
+	
 	public function getDataTableData()
 	{
+		$this->jobs = \Session::get("jobs");
 		$values = Input::All();
 		$start = $values['start'];
 		$length = $values['length'];
@@ -131,12 +134,13 @@ class DataTableController extends \Controller {
 		$select_args[] = "incometransactions.lookupValueId as lookupValueId";
 		$select_args[] = "incometransactions.branchId as branch";
 		
-			
 		$actions = array();
-		$action = array("url"=>"#edit", "type"=>"modal", "css"=>"primary", "js"=>"modalEditTransaction(", "jsdata"=>array("id"), "text"=>"EDIT");
-		$actions[] = $action;
-		$action = array("url"=>"#delete", "type"=>"modal", "css"=>"danger", "js"=>"deleteTransaction(", "jsdata"=>array("id"), "text"=>"DELETE");
-		$actions[] = $action;
+		if(in_array(302, $this->jobs)){
+			$action = array("url"=>"#edit", "type"=>"modal", "css"=>"primary", "js"=>"modalEditTransaction(", "jsdata"=>array("id"), "text"=>"EDIT");
+			$actions[] = $action;
+			$action = array("url"=>"#delete", "type"=>"modal", "css"=>"danger", "js"=>"deleteTransaction(", "jsdata"=>array("id"), "text"=>"DELETE");
+			$actions[] = $action;
+		}
 		$values["actions"] = $actions;
 	
 		$search = $_REQUEST["search"];
@@ -225,11 +229,14 @@ class DataTableController extends \Controller {
 		$select_args[] = "creditsuppliertransactions.batta as batta";
 		$select_args[] = "creditsuppliertransactions.id as id";
 		$select_args[] = "creditsuppliertransactions.branchId as branch";
+		
 		$actions = array();
-		$action = array("url"=>"editrepairtransaction?", "type"=>"", "css"=>"primary", "js"=>"modalEditRepairTransaction(", "jsdata"=>array("id"), "text"=>"EDIT");
-		$actions[] = $action;
-		$action = array("url"=>"#","css"=>"danger", "id"=>"deleteRepairTransaction", "type"=>"", "text"=>"DELETE");
-		$actions[] = $action;
+		if(in_array(308, $this->jobs)){
+			$action = array("url"=>"editrepairtransaction?", "type"=>"", "css"=>"primary", "js"=>"modalEditRepairTransaction(", "jsdata"=>array("id"), "text"=>"EDIT");
+			$actions[] = $action;
+			$action = array("url"=>"#","css"=>"danger", "id"=>"deleteRepairTransaction", "type"=>"", "text"=>"DELETE");
+			$actions[] = $action;
+		}
 		$values["actions"] = $actions;
 	
 		$search = $_REQUEST["search"];
@@ -309,10 +316,12 @@ class DataTableController extends \Controller {
 		$select_args[] = "fueltransactions.branchId as branch";
 		
 		$actions = array();
-		$action = array("url"=>"#edit", "type"=>"modal", "css"=>"primary", "js"=>"modalEditTransaction(", "jsdata"=>array("id"), "text"=>"EDIT");
-		$actions[] = $action;
-		$action = array("url"=>"#delete", "type"=>"modal", "css"=>"danger", "js"=>"deleteTransaction(", "jsdata"=>array("id"), "text"=>"DELETE");
-		$actions[] = $action;
+		if(in_array(306, $this->jobs)){
+			$action = array("url"=>"#edit", "type"=>"modal", "css"=>"primary", "js"=>"modalEditTransaction(", "jsdata"=>array("id"), "text"=>"EDIT");
+			$actions[] = $action;
+			$action = array("url"=>"#delete", "type"=>"modal", "css"=>"danger", "js"=>"deleteTransaction(", "jsdata"=>array("id"), "text"=>"DELETE");
+			$actions[] = $action;
+		}
 		$values["actions"] = $actions;
 	
 		$search = $_REQUEST["search"];
@@ -398,10 +407,12 @@ class DataTableController extends \Controller {
 	
 			
 		$actions = array();
-		$action = array("url"=>"#edit", "type"=>"modal", "css"=>"primary", "js"=>"modalEditTransaction(", "jsdata"=>array("id"), "text"=>"EDIT");
-		$actions[] = $action;
-		$action = array("url"=>"#delete", "type"=>"modal", "css"=>"danger", "js"=>"deleteTransaction(", "jsdata"=>array("id"), "text"=>"DELETE");
-		$actions[] = $action;
+		if(in_array(304, $this->jobs)){
+			$action = array("url"=>"#edit", "type"=>"modal", "css"=>"primary", "js"=>"modalEditTransaction(", "jsdata"=>array("id"), "text"=>"EDIT");
+			$actions[] = $action;
+			$action = array("url"=>"#delete", "type"=>"modal", "css"=>"danger", "js"=>"deleteTransaction(", "jsdata"=>array("id"), "text"=>"DELETE");
+			$actions[] = $action;
+		}
 		$values["actions"] = $actions;
 	
 		$search = $_REQUEST["search"];
@@ -484,9 +495,11 @@ class DataTableController extends \Controller {
 		
 	
 		$actions = array();
-		$action = array("url"=>"#edit", "type"=>"modal", "css"=>"primary", "js"=>"modalEditPurchaseOrderItem(", "jsdata"=>array("id","repairedItem","quantity", "amount", "comments", "status"), "text"=>"EDIT");
-		$actions[] = $action;
-		$values["actions"] = $actions;
+		
+			$action = array("url"=>"#edit", "type"=>"modal", "css"=>"primary", "js"=>"modalEditPurchaseOrderItem(", "jsdata"=>array("id","repairedItem","quantity", "amount", "comments", "status"), "text"=>"EDIT");
+			$actions[] = $action;
+		
+			$values["actions"] = $actions;
 	
 		$search = $_REQUEST["search"];
 		$search = $search['value'];

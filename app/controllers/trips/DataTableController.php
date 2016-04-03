@@ -9,8 +9,10 @@ class DataTableController extends \Controller {
 	 *
 	 * @return Response
 	 */
+	private $jobs;
 	public function getDataTableData()
 	{
+		$this->jobs = \Session::get("jobs");
 		$values = Input::All();
 		$start = $values['start'];
 		$length = $values['length'];
@@ -72,10 +74,14 @@ class DataTableController extends \Controller {
 		$select_args[] = "tripdetails.id as id";
 			
 		$actions = array();
-		$action = array("url"=>"editdailytrip?triptype=DAILY","css"=>"primary", "type"=>"", "text"=>"Edit");
-		$actions[] = $action;
-		$action = array("url"=>"addtripparticular?type=expenses_and_incomes&","css"=>"inverse", "type"=>"", "text"=>"MANAGE");
-		$actions[] = $action;
+		if(in_array(310, $this->jobs)){
+			$action = array("url"=>"editdailytrip?triptype=DAILY","css"=>"primary", "type"=>"", "text"=>"Edit");
+			$actions[] = $action;
+		}
+		if(in_array(311, $this->jobs)){
+			$action = array("url"=>"addtripparticular?type=expenses_and_incomes&","css"=>"inverse", "type"=>"", "text"=>"MANAGE");
+			$actions[] = $action;
+		}
 		$values["actions"] = $actions;
 	
 		$search = $_REQUEST["search"];
@@ -215,16 +221,26 @@ class DataTableController extends \Controller {
 		$select_args[] = "busbookings.status as status";
 			
 		$actions = array();
-		$action = array("url"=>"editlocaltrip?","css"=>"primary","id"=>"editbooking", "type"=>"", "text"=>"Edit");
-		$actions[] = $action;
-		$action = array("url"=>"#","css"=>"danger", "id"=>"deletebooking", "type"=>"", "text"=>"Delete");
-		$actions[] = $action;
-		$action = array("url"=>"#","css"=>"purple", "id"=>"cancelbooking", "type"=>"", "text"=>"cancel");
-		$actions[] = $action;
-		$action = array("url"=>"printlocaltrip?","css"=>"pink", "type"=>"", "id"=>"printbooking", "text"=>"print");
-		$actions[] = $action;
-		$action = array("url"=>"addlocaltripparticular?type=expenses_and_incomes", "id"=>"addlocalbooking",  "css"=>"inverse", "type"=>"", "text"=>"MANAGE");
-		$actions[] = $action;
+		if(in_array(313, $this->jobs)){
+			$action = array("url"=>"editlocaltrip?","css"=>"primary","id"=>"editbooking", "type"=>"", "text"=>"Edit");
+			$actions[] = $action;
+		}
+		if(in_array(314, $this->jobs)){
+			$action = array("url"=>"#","css"=>"danger", "id"=>"deletebooking", "type"=>"", "text"=>"Delete");
+			$actions[] = $action;
+		}
+		if(in_array(315, $this->jobs)){
+			$action = array("url"=>"#","css"=>"purple", "id"=>"cancelbooking", "type"=>"", "text"=>"cancel");
+			$actions[] = $action;
+		}
+		if(in_array(316, $this->jobs)){
+			$action = array("url"=>"printlocaltrip?","css"=>"pink", "type"=>"", "id"=>"printbooking", "text"=>"print");
+			$actions[] = $action;
+		}
+		if(in_array(317, $this->jobs)){
+			$action = array("url"=>"addlocaltripparticular?type=expenses_and_incomes", "id"=>"addlocalbooking",  "css"=>"inverse", "type"=>"", "text"=>"MANAGE");
+			$actions[] = $action;
+		}
 		$values["actions"] = $actions;
 	
 		$search = $_REQUEST["search"];

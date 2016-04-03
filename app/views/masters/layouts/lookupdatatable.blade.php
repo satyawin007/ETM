@@ -43,7 +43,20 @@
 			<div class="col-xs-offset-1 col-xs-10">
 				<?php $form_info = $values["form_info"]; ?>
 				<?php $jobs = Session::get("jobs");?>
-				<?php if(($form_info['action']=="addstate" && in_array(206, $jobs)) or true){ ?>
+				<?php if(($form_info['action']=="addstate" && in_array(206, $jobs)) or 
+						($form_info['action']=="addcity" && in_array(208, $jobs)) or
+						($form_info['action']=="addemployeebatta" && in_array(217, $jobs)) or
+						($form_info['action']=="addservicedetails" && in_array(219, $jobs)) or
+						($form_info['action']=="addlookupvalue" && in_array(223, $jobs)) or
+						($form_info['action']=="addbankdetails" && in_array(225, $jobs)) or 
+						($form_info['action']=="addfinancecompany" && in_array(227, $jobs)) or 
+						($form_info['action']=="addcreditsupplier" && in_array(229, $jobs)) or
+						($form_info['action']=="addfuelstation" && in_array(233, $jobs)) or
+						($form_info['action']=="addloan" && in_array(235, $jobs)) or
+						($form_info['action']=="adddailyfinance" && in_array(237, $jobs)) or
+						($form_info['action']=="addserviceprovider" && in_array(239, $jobs))
+						
+					  ){ ?>
 					@include("masters.layouts.addlookupform",$form_info)
 				<?php } ?>
 			</div>
@@ -163,8 +176,27 @@
 				$("#value1").val(value);
 				$("#id1").val(id);
 				$("#remarks1").text(remarks);
-				//var array = modules.split(",");	
-				//$("#modules1[] option").each(function() {alert("dsaf"); this.selected = true; });				
+				var array = modules.split(",");	
+				$("#modules1 option").each(function() {this.selected=false});
+				$("#modules1 option").each(function() {
+					for(i=0; i<array.length; i++) {
+						if(this.text == array[i]){
+							this.selected = true;
+						}
+					}
+				});
+				var array = fields.split(",");	
+				$("#showfields1 option").each(function() {this.selected=false});
+				$("#showfields1 option").each(function() {
+					for(i=0; i<array.length; i++) {
+						if(this.text == array[i]){
+							this.selected = true;
+						}
+					}
+				});
+
+				$('.chosen-select').trigger("chosen:updated");			
+
 				if(status=="ACTIVE") {
 					$("#ACTIVE").prop("checked",true);
 				}
@@ -200,6 +232,14 @@
 				$("#status1 option").each(function() { this.selected = (this.text == status); });
 				$("#id1").val(id);		
 			}
+
+			function modalEditRole(id, name, description, status){
+				$("#rolename1").val(name);				
+				$("#description1").val(description);
+				$("#status1 option").each(function() { this.selected = (this.text == status); });
+				$("#id1").val(id);		
+			}
+
 
 			function modalEditCity(id, name, code, state, status){
 				$("#cityname1").val(name);				

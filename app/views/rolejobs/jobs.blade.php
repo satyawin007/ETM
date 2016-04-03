@@ -104,6 +104,7 @@ use Illuminate\Support\Facades\Input;
                                             		$menu_arr[] = "Show INCOME & EXPENSES Tab";
                                             		$menu_arr[] = "Show TRIPS & SERVICES Tab";
                                             		$menu_arr[] = "Show OTHERS Tab";
+                                            		$menu_arr[] = "Show STOCK & INVENTORY Tab";
                                             		$menu_arr[] = "Show REPORTS Tab";
                                             		$menu_arr[] = "Show SETTINGS Tab";
                                             		$i=1;
@@ -145,16 +146,27 @@ use Illuminate\Support\Facades\Input;
                                             		$menu_arr[] = "Show VERIFY BRANCH DAILY SETLEMENTS Tab";
                                             		$menu_arr[] = "Show TRANSACTION BLOCKING Tab";
                                             		$menu_arr[] = "Show MANAGE PREVILAGES Tab";
-                                            		$menu_arr[] = "Show TRANSACTIONSTab";
+                                            		
+                                            		$menu_arr[] = "Show INCOME TRANSACTIONS Tab";
+                                            		$menu_arr[] = "Show EXPENSE TRANSACTIONS Tab";
+                                            		$menu_arr[] = "Show FUEL TRANSACTIONS Tab";
                                             		$menu_arr[] = "Show REPAIR TRANSACTIONS Tab";
                                             		$menu_arr[] = "Show EMPLOYEE SALARY Tab";
                                             		$menu_arr[] = "Show NEW ITEM PURCHAGES Tab";
+                                            		
                                             		$menu_arr[] = "Show LOCAL TRIPS Tab";
                                             		$menu_arr[] = "Show DAILY TRIPS Tab";
-                                            		$menu_arr[] = "Show CLIENT & CONTRACT Tab";
-                                            		$menu_arr[] = "Show STOCK & INVENTORY Tab";
-                                            		$menu_arr[] = "Show BILLS & VOUCHERS Tab";
-                                            		$menu_arr[] = "Show BANK TRANSACTIONS Tab";
+                                            		
+                                            		$menu_arr[] = "Show EMPLOYEE LEAVES Tab";
+                                            		$menu_arr[] = "Show SALARY ADVANCES Tab";
+                                            		
+                                            		$menu_arr[] = "Show LOOKUP VALUES Tab";
+                                            		$menu_arr[] = "Show MANUFACTURERS Tab";
+                                            		$menu_arr[] = "Show ITEM CATEGORIES Tab";
+                                            		$menu_arr[] = "Show ITEM TYPES Tab";
+                                            		$menu_arr[] = "Show ITEMS Tab";
+                                            		$menu_arr[] = "Show PURCHASE ORDERS Tab";
+                                            		$menu_arr[] = "Show USE STOCK ITEMS Tab";
                                             		$i=101;
                                             		foreach ($menu_arr as $menu_item){
                                             			$chk = "";
@@ -309,7 +321,7 @@ use Illuminate\Support\Facades\Input;
                                             <div class="checkbox" style=" margin-bottom: 0px;padding-left: 40px;">
                                                 <label class="ng-binding">
                                                     <input type="checkbox" id="tab5" class="ng-pristine ng-untouched ng-valid">
-                                                    Transaction & Trips Operations
+                                                    Transaction, Trips & Stocks Operations
                                                 </label>
                                             </div>
                                         </div>
@@ -318,18 +330,38 @@ use Illuminate\Support\Facades\Input;
                                                  <?php 
                                             		$menu_arr = array();
                                             		$menu_arr[] = "create INCOME TRANSACTION";
-                                            		$menu_arr[] = "edit INCOME TRANSACTION";
+                                            		$menu_arr[] = "manage INCOME TRANSACTION";
                                             		$menu_arr[] = "create EXPENSE TRANSACTION";
-                                            		$menu_arr[] = "edit EXPENSE TRANSACTION";
+                                            		$menu_arr[] = "manage EXPENSE TRANSACTION";
                                             		$menu_arr[] = "create FUEL TRANSACTION";
-                                            		$menu_arr[] = "edit FUEL TRANSACTION";
+                                            		$menu_arr[] = "manage FUEL TRANSACTION";
+                                            		$menu_arr[] = "create REPAIR TRANSACTION";
+                                            		$menu_arr[] = "manage REPAIR TRANSACTION";
+                                            		
                                             		$menu_arr[] = "create DAILY TRIP";
+                                            		$menu_arr[] = "edit DAILY TRIP";
                                             		$menu_arr[] = "manage DAILY TRIP";
                                             		$menu_arr[] = "create LOCAL TRIP";
                                             		$menu_arr[] = "edit LOCAL TRIP";
                                             		$menu_arr[] = "delete LOCAL TRIP";
+                                            		$menu_arr[] = "cancel LOCAL TRIP";
                                             		$menu_arr[] = "print LOCAL TRIP";
                                             		$menu_arr[] = "manage LOCAL TRIP";
+                                            		
+                                            		$menu_arr[] = "create INVENTORY LOOKUP VALUES";
+                                            		$menu_arr[] = "manage INVENTORY LOOKUP VALUES";
+                                            		$menu_arr[] = "create MANUFACTURES";
+                                            		$menu_arr[] = "manage MANUFACTURES";
+                                            		$menu_arr[] = "create ITEM CATEGORIES";
+                                            		$menu_arr[] = "manage ITEM CATEGORIES";
+                                            		$menu_arr[] = "create ITEM TYPES";
+                                            		$menu_arr[] = "manage ITEM TYPES";
+                                            		$menu_arr[] = "create ITEMS";
+                                            		$menu_arr[] = "manage ITEMS";
+                                            		$menu_arr[] = "create PURCHASE ORDERS";
+                                            		$menu_arr[] = "manage PURCHASE ORDERS";
+                                            		$menu_arr[] = "create USE STOCK ITEMS";
+                                            		$menu_arr[] = "manage USE STOCK ITEMS";
                                             		$i=301;
                                             		foreach ($menu_arr as $menu_item){
                                             			$chk = "";

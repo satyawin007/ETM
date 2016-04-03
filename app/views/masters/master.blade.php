@@ -149,106 +149,6 @@
 												</li>
 											</ul>
 										</div><!-- /.tab-pane -->
-
-										<div id="navbar-messages" class="tab-pane">
-											<ul class="dropdown-menu-right dropdown-navbar dropdown-menu">
-												<li class="dropdown-content">
-													<ul class="dropdown-menu dropdown-navbar">
-														<li>
-															<a href="#">
-																<img src="../assets/avatars/avatar.png" class="msg-photo" alt="Alex's Avatar" />
-																<span class="msg-body">
-																	<span class="msg-title">
-																		<span class="blue">Alex:</span>
-																		Ciao sociis natoque penatibus et auctor ...
-																	</span>
-
-																	<span class="msg-time">
-																		<i class="ace-icon fa fa-clock-o"></i>
-																		<span>a moment ago</span>
-																	</span>
-																</span>
-															</a>
-														</li>
-
-														<li>
-															<a href="#">
-																<img src="../assets/avatars/avatar3.png" class="msg-photo" alt="Susan's Avatar" />
-																<span class="msg-body">
-																	<span class="msg-title">
-																		<span class="blue">Susan:</span>
-																		Vestibulum id ligula porta felis euismod ...
-																	</span>
-
-																	<span class="msg-time">
-																		<i class="ace-icon fa fa-clock-o"></i>
-																		<span>20 minutes ago</span>
-																	</span>
-																</span>
-															</a>
-														</li>
-
-														<li>
-															<a href="#">
-																<img src="../assets/avatars/avatar4.png" class="msg-photo" alt="Bob's Avatar" />
-																<span class="msg-body">
-																	<span class="msg-title">
-																		<span class="blue">Bob:</span>
-																		Nullam quis risus eget urna mollis ornare ...
-																	</span>
-
-																	<span class="msg-time">
-																		<i class="ace-icon fa fa-clock-o"></i>
-																		<span>3:15 pm</span>
-																	</span>
-																</span>
-															</a>
-														</li>
-
-														<li>
-															<a href="#">
-																<img src="../assets/avatars/avatar2.png" class="msg-photo" alt="Kate's Avatar" />
-																<span class="msg-body">
-																	<span class="msg-title">
-																		<span class="blue">Kate:</span>
-																		Ciao sociis natoque eget urna mollis ornare ...
-																	</span>
-
-																	<span class="msg-time">
-																		<i class="ace-icon fa fa-clock-o"></i>
-																		<span>1:33 pm</span>
-																	</span>
-																</span>
-															</a>
-														</li>
-
-														<li>
-															<a href="#">
-																<img src="../assets/avatars/avatar5.png" class="msg-photo" alt="Fred's Avatar" />
-																<span class="msg-body">
-																	<span class="msg-title">
-																		<span class="blue">Fred:</span>
-																		Vestibulum id penatibus et auctor  ...
-																	</span>
-
-																	<span class="msg-time">
-																		<i class="ace-icon fa fa-clock-o"></i>
-																		<span>10:09 am</span>
-																	</span>
-																</span>
-															</a>
-														</li>
-													</ul>
-												</li>
-
-												<li class="dropdown-footer">
-													<a href="inbox.html">
-														See all messages
-														<i class="ace-icon fa fa-arrow-right"></i>
-													</a>
-												</li>
-											</ul>
-										</div><!-- /.tab-pane -->
 									</div><!-- /.tab-content -->
 								</div><!-- /.tabbable -->
 							</div><!-- /.dropdown-menu -->
@@ -424,26 +324,28 @@
 									INCOME TRANSACTIONS
 								</a>
 							</li>
+							<?php } if(in_array(106, $jobs)){?>
 							<li class="hover">
 								<a href="expensetransactions">
 									<i class="menu-icon fa fa-caret-right"></i>
 									EXPENSE TRANSACTIONS
 								</a>
 							</li>
+							<?php } if(in_array(107, $jobs)){?>
 							<li class="hover">
 								<a href="fueltransactions">
 									<i class="menu-icon fa fa-caret-right"></i>
 									FUEL TRANSACTIONS
 								</a>
 							</li>
-							<?php } if(in_array(106, $jobs)){?>
+							<?php } if(in_array(108, $jobs)){?>
 							<li class="hover">
 								<a href="repairtransactions">
 									<i class="menu-icon fa fa-caret-right"></i>
 									REPAIR TRANSACTIONS
 								</a>
 							</li>
-							<?php } if(in_array(107, $jobs)){?>								
+							<?php } if(in_array(109, $jobs)){?>								
 							<li class="hover">
 								<a href="payemployeesalary">
 									<i class="menu-icon fa fa-caret-right"></i>
@@ -466,14 +368,14 @@
 						<?php }?>
 						<b class="arrow"></b>
 						<ul class="submenu">
-							<?php if(in_array(109, $jobs)){?>		
+							<?php if(in_array(110, $jobs)){?>		
 							<li class="hover">
 								<a href="managetrips?triptype=LOCAL">
 									<i class="menu-icon fa fa-caret-right"></i>
 									LOCAL TRIPS
 								</a>
 							</li>
-							<?php } if(in_array(110, $jobs)){?>		
+							<?php } if(in_array(111, $jobs)){?>		
 							<li class="hover">
 								<a href="dailytrips">
 									<i class="menu-icon fa fa-caret-right"></i>
@@ -493,67 +395,27 @@
 							</span>
 							<b class="arrow fa fa-angle-down"></b>
 						</a>
-						<?php }?>
 						<b class="arrow"></b>
 						<ul class="submenu">
+							<?php if(in_array(112, $jobs)){?>
 							<li class="hover">
 								<a href="leaves">
 									<i class="menu-icon fa fa-caret-right"></i>
 									EMPLOYEE LEAVES
 								</a>
 							</li>
+							<?php } if(in_array(113, $jobs)){?>
 							<li class="hover">
 								<a href="salaryadvances">
 									<i class="menu-icon fa fa-caret-right"></i>
 									SALARY ADVANCES
 								</a>
 							</li>
-							<?php if(in_array(111, $jobs)){?>		
-							<li class="hover">
-								<a href="#">
-									<i class="menu-icon fa fa-caret-right"></i>
-									CLIENT &AMP; CONTRACT
-								</a>
-							</li>
-							<?php } if(in_array(112, $jobs)){?>		
-							<li class="hover">
-								<a href="#">
-									<i class="menu-icon fa fa-caret-right"></i>
-									STOCK &AMP; INVENTORY
-								</a>
-							</li>
-							<?php  } if(in_array(113, $jobs)){?>		
-							<li class="hover">
-								<a href="#">
-									<i class="menu-icon fa fa-caret-right"></i>
-									BILLS &AMP; VOUCHERS
-								</a>
-							</li>
-							<?php } if(in_array(114, $jobs)){?>										
-							<li class="hover">
-								<a href="#">
-									<i class="menu-icon fa fa-caret-right"></i>
-									BANK TRANSACTIONS
-								</a>
-							</li>
-							<?php } if(in_array(115, $jobs)){?>										
-							<li class="hover">
-								<a href="#">
-									<i class="menu-icon fa fa-caret-right"></i>
-									VEHICLE INSPECTION BY DRIVER
-								</a>
-							</li>
-							<?php } if(in_array(116, $jobs)){?>										
-							<li class="hover">
-								<a href="#">
-									<i class="menu-icon fa fa-caret-right"></i>
-									VEHICLE INSPECTION BY EMPLOYEE
-								</a>
-							</li>
-							<?php } ?>
+							<?php }?>
 						</ul>
+						<?php }?>
 					</li>
-					
+					<?php if(in_array(5, $jobs)){?>	
 					<li class="open hover">
 						<a href="#" class="dropdown-toggle">
 							<i class="menu-icon fa fa-list-alt"></i>
@@ -564,51 +426,59 @@
 						</a>
 						<b class="arrow"></b>
 						<ul class="submenu">
+							<?php if(in_array(114, $jobs)){?>
 							<li class="hover">
 								<a href="inventorylookupvalues">
 									<i class="menu-icon fa fa-caret-right"></i>
 									LOOKUP VALUES
 								</a>
 							</li>
+							<?php } if(in_array(115, $jobs)){?>
 							<li class="hover">
 								<a href="manufacturers">
 									<i class="menu-icon fa fa-caret-right"></i>
 									MANUFACTURERS
 								</a>
 							</li>
+							<?php } if(in_array(116, $jobs)){?>
 							<li class="hover">
 								<a href="itemcategories">
 									<i class="menu-icon fa fa-caret-right"></i>
 									ITEM CATEGORIES
 								</a>
 							</li>
+							<?php } if(in_array(117, $jobs)){?>
 							<li class="hover">
 								<a href="itemtypes">
 									<i class="menu-icon fa fa-caret-right"></i>
 									ITEM TYPES
 								</a>
 							</li>
+							<?php } if(in_array(118, $jobs)){?>
 							<li class="hover">
 								<a href="items">
 									<i class="menu-icon fa fa-caret-right"></i>
 									ITEMS
 								</a>
 							</li>
+							<?php } if(in_array(119, $jobs)){?>
 							<li class="hover">
 								<a href="purchaseorder">
 									<i class="menu-icon fa fa-caret-right"></i>
 									PURCHASE ORDERS
 								</a>
 							</li>
+							<?php } if(in_array(120, $jobs)){?>
 							<li class="hover">
 								<a href="useitems">
 									<i class="menu-icon fa fa-caret-right"></i>
 									USE STOCK ITEMS
 								</a>
 							</li>
+							<?php }?>
 						</ul>
 					</li>
-					
+					<?php } ?>
 					<li class="hover">
 						<?php if(in_array(6, $jobs)){?>	
 						<a href="reports">
@@ -620,7 +490,7 @@
 					</li>
 					
 					<li class="hover">
-						<?php if(in_array(6, $jobs)){?>	
+						<?php if(in_array(7, $jobs)){?>	
 						<a href="settings">
 							<i class="menu-icon fa fa-cog"></i>
 							<span class="menu-text"> SETTINGS </span>

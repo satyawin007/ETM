@@ -86,7 +86,7 @@ class DataTableController extends \Controller {
 	
 		$actions = array();
 		
-		if(in_array(207, $this->jobs)){
+		if(in_array(321, $this->jobs)){
 			$action = array("url"=>"#edit", "type"=>"modal", "css"=>"primary", "js"=>"modalEditManufacture(", "jsdata"=>array("id","name","description","status"), "text"=>"EDIT");
 			$actions[] = $action;
 		}
@@ -141,7 +141,7 @@ class DataTableController extends \Controller {
 	
 		$actions = array();
 	
-		if(in_array(207, $this->jobs)){
+		if(in_array(323, $this->jobs)){
 			$action = array("url"=>"#edit", "type"=>"modal", "css"=>"primary", "js"=>"modalEditManufacture(", "jsdata"=>array("id","name","description","status"), "text"=>"EDIT");
 			$actions[] = $action;
 		}
@@ -197,7 +197,7 @@ class DataTableController extends \Controller {
 	
 		$actions = array();
 	
-		if(in_array(207, $this->jobs)){
+		if(in_array(325, $this->jobs)){
 			$action = array("url"=>"#edit", "type"=>"modal", "css"=>"primary", "js"=>"modalEditItemType(", "jsdata"=>array("id","name","itemCategoryId", "description","status"), "text"=>"EDIT");
 			$actions[] = $action;
 		}
@@ -259,7 +259,7 @@ class DataTableController extends \Controller {
 	
 		$actions = array();
 	
-		if(in_array(207, $this->jobs)){
+		if(in_array(327, $this->jobs)){
 			$action = array("url"=>"#edit", "type"=>"modal", "css"=>"primary", "js"=>"modalEditItem(", "jsdata"=>array("id"), "text"=>"EDIT");
 			$actions[] = $action;
 		}
@@ -319,8 +319,10 @@ class DataTableController extends \Controller {
 		$select_args = array('name', "parentId", "remarks", "status", "id");
 	
 		$actions = array();
-		$action = array("url"=>"#edit", "type"=>"modal", "css"=>"primary", "js"=>"modalEditLookupValue(", "jsdata"=>array("id","name","remarks","status"), "text"=>"EDIT");
-		$actions[] = $action;
+		if(in_array(319, $this->jobs)){
+			$action = array("url"=>"#edit", "type"=>"modal", "css"=>"primary", "js"=>"modalEditLookupValue(", "jsdata"=>array("id","name","remarks","status"), "text"=>"EDIT");
+			$actions[] = $action;
+		}
 		$values["actions"] = $actions;
 	
 		$search = $_REQUEST["search"];
@@ -392,11 +394,13 @@ class DataTableController extends \Controller {
 		$select_args[] = "purchase_orders.status as status";
 		$select_args[] = "purchase_orders.id as id";
 		$actions = array();
-	
-		$action = array("url"=>"editpurchaseorder?", "type"=>"", "css"=>"primary", "js"=>"modalEditPurchaseOrder(", "jsdata"=>array("id"), "text"=>"EDIT");
-		$actions[] = $action;
-		$action = array("url"=>"#","css"=>"danger", "id"=>"deletePurchaseOrder", "type"=>"", "text"=>"DELETE");
-		$actions[] = $action;
+		$jobs = \Session::get("jobs");
+		if(in_array(329, $jobs)){
+			$action = array("url"=>"editpurchaseorder?", "type"=>"", "css"=>"primary", "js"=>"modalEditPurchaseOrder(", "jsdata"=>array("id"), "text"=>"EDIT");
+			$actions[] = $action;
+			$action = array("url"=>"#","css"=>"danger", "id"=>"deletePurchaseOrder", "type"=>"", "text"=>"DELETE");
+			$actions[] = $action;
+		}
 		$values["actions"] = $actions;
 	
 		$search = $_REQUEST["search"];
@@ -522,8 +526,10 @@ class DataTableController extends \Controller {
 		$actions = array();
 		//$action = array("url"=>"editusedstock?", "type"=>"", "css"=>"primary", "js"=>"modalEditPurchaseOrderItem(", "jsdata"=>array("id","itemId","manufacturerId", "qty", "unitPrice", "itemStatus", "status"), "text"=>"EDIT");
 		//$actions[] = $action;
-		$action = array("url"=>"#","css"=>"danger", "id"=>"deleteUsedStockItem", "type"=>"", "text"=>"DELETE");
-		$actions[] = $action;
+		if(in_array(330, $this->jobs)){
+			$action = array("url"=>"#","css"=>"danger", "id"=>"deleteUsedStockItem", "type"=>"", "text"=>"DELETE");
+			$actions[] = $action;
+		}
 		$values["actions"] = $actions;
 		$entities = array();
 	
@@ -602,7 +608,7 @@ class DataTableController extends \Controller {
 			else{
 				$entity["fromActionId"] = "";
 			}
-			if($entity["toActionId"] != 0){
+			if($entity["toActionId"] != 0 && isset($vehactions_arr[$entity["toActionId"]])){
 				$entity["toActionId"] = $vehactions_arr[$entity["toActionId"]];
 			}
 			else{

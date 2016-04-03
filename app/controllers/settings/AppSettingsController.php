@@ -47,6 +47,12 @@ class AppSettingsController extends \Controller {
 				$fields["updatedBy"] = \Auth::user()->id;
 				\Parameters::where("name",'=',"emailIds")->update($fields);
 			}
+			if (isset($values["alertdays"])) {
+				$fields = array();
+				$fields["value"] = $values["alertdays"];
+				$fields["updatedBy"] = \Auth::user()->id;
+				\Parameters::where("name",'=',"alertdays")->update($fields);
+			}
 			\Session::put("message","Operation completed Successfully");
 			return \Redirect::to("settings");
 		}

@@ -12,7 +12,7 @@ class UserSettingsController extends \Controller {
 	 * @return Response
 	 */
 	
-	public function updateprofile(){
+	public function updateProfile(){
 		if (\Request::isMethod('post')){
 			//$values["test"];
 			$values = Input::all();
@@ -24,7 +24,7 @@ class UserSettingsController extends \Controller {
 					"idproofnumber"=>"idCardNumber","presentaddress"=>"presentAddress","joiningdate"=>"joiningDate",
 					"aadhdaarnumber"=>"aadharNumber","rationcardnumber"=>"rationCardNumber", "drivinglicence"=>"drivingLicence",
 					"drivingliceneexpiredate"=>"drvLicenceExpDate","accountnumber"=>"accountNumber", "bankname"=>"bankName",
-					"ifsccode"=>"ifscCode","branchname"=>"branchName", 
+					"ifsccode"=>"ifscCode","branchname"=>"branchName"
 			);
 			$fields = array();
 			foreach ($field_names as $key=>$val){
@@ -53,7 +53,48 @@ class UserSettingsController extends \Controller {
 		}
 	}
 	
-	public function updatepassword(){
+	public function updateEmployeeProfile(){
+		if (\Request::isMethod('post')){
+			//$values["test"];
+			$values = Input::all();
+			$field_names = array("fullname"=>"fullName","gender"=>"gender","city"=>"cityId",
+					"password"=>"password", "workgroup"=>"workGroup","dateofbirth"=>"dob","age"=>"age",
+					"fathername"=>"fatherName","religion"=>"religion","residance"=>"residance",
+					"nonlocaldetails"=>"detailsForNonLocal",
+					"phonenumber"=>"mobileNo","homenumber"=>"homePhoneNo", "idproof"=>"idCardName",
+					"idproofnumber"=>"idCardNumber","presentaddress"=>"presentAddress","joiningdate"=>"joiningDate",
+					"aadhdaarnumber"=>"aadharNumber","rationcardnumber"=>"rationCardNumber", "drivinglicence"=>"drivingLicence",
+					"drivingliceneexpiredate"=>"drvLicenceExpDate","accountnumber"=>"accountNumber", "bankname"=>"bankName",
+					"ifsccode"=>"ifscCode","branchname"=>"branchName", "roleprevilage"=>"rolePrevilegeId", "designation"=>"roleId", "emailid"=>"emailId"
+			);
+			$fields = array();
+			foreach ($field_names as $key=>$val){
+				if(isset($values[$key])){
+					$fields[$val] = $values[$key];
+				}
+			}
+			if (isset($values["billfile"]) && Input::hasFile('billfile') && Input::file('billfile')->isValid()) {
+				$destinationPath = storage_path().'/uploads/'; // upload path
+				$extension = Input::file('billfile')->getClientOriginalExtension(); // getting image extension
+				$fileName = uniqid().'.'.$extension; // renameing image
+				Input::file('billfile')->move($destinationPath, $fileName); // upl1oading file to given path
+				$fields["filePath"] = $fileName;
+			}
+			$db_functions_ctrl = new DBFunctionsController();
+			$table = "\Employee";
+			$data = array("id"=>$values["id"]);
+			if($db_functions_ctrl->update($table, $fields, $data)){
+				\Session::put("message","Operation completed Successfully");
+				return \Redirect::to("employeeprofile?id=".$values["id"]);
+			}
+			else{
+				\Session::put("message","Operation Could not be completed, Try Again!");
+				return \Redirect::to("employeeprofile?id=".$values["id"]);
+			}
+		}
+	}
+	
+	public function updatePassword(){
 	if (\Request::isMethod('post')){
 			//$values["test"];
 			$values = Input::all();
@@ -80,6 +121,36 @@ class UserSettingsController extends \Controller {
 			else{
 				\Session::put("message","Operation Could not be completed, Try Again!");
 				return \Redirect::to("profile");
+			}
+		}
+	}
+	
+	public function updateEmployeePassword(){
+		if (\Request::isMethod('post')){
+			//$values["test"];
+			$values = Input::all();
+			$field_names = array("pass1"=>"password");
+			$fields = array();
+			foreach ($field_names as $key=>$val){
+				if(isset($values[$key])){
+					if($val == "password"){
+						$fields[$val] = \Hash::make($values[$key]);
+					}
+					else{
+						$fields[$val] = $values[$key];
+					}
+				}
+			}
+			$db_functions_ctrl = new DBFunctionsController();
+			$table = "\Employee";
+			$data = array("id"=>$values["id"]);
+			if($db_functions_ctrl->update($table, $fields, $data)){
+				\Session::put("message","Operation completed Successfully");
+				return \Redirect::to("employeeprofile?id=".$values["id"]);
+			}
+			else{
+				\Session::put("message","Operation Could not be completed, Try Again!");
+				return \Redirect::to("employeeprofile?id=".$values["id"]);
 			}
 		}
 	}

@@ -20,7 +20,7 @@ class StockController extends \Controller {
 			$url = "useitems";
 			//$values['asdf'];
 			if(isset($values["action"]) && $values["action"]=="itemtovehicles"){
-				$field_names = array("action"=>"action","date"=>"date","warehouse"=>"fromWareHouseId");
+				$field_names = array("action"=>"action","date"=>"date","warehouse"=>"fromWareHouseId","alertdate"=>"alertDate");
 				$fields = array();
 				foreach ($field_names as $key=>$val){
 					if(isset($values[$key])){
@@ -44,6 +44,9 @@ class StockController extends \Controller {
 						$fields["remarks"] = $values["remarks"][$i];
 						if(isset($values["alertdate"]) && $values["alertdate"][$i] != ""){
 							$fields["alertDate"] = date("Y-m-d",strtotime($values["alertdate"][$i]));
+						}
+						if(isset($values["position"]) && $values["position"][$i] != ""){
+							$fields["toActionId"] = $values["position"][$i];
 						}
 						$db_functions_ctrl->insert($table, $fields);
 						
@@ -468,7 +471,7 @@ class StockController extends \Controller {
 		}
 		
 		$form_fields = array();		
-		$form_field = array("name"=>"action", "id"=>"action",  "content"=>"select action", "readonly"=>"", "required"=>"required", "type"=>"select", "action"=>array("type"=>"onchange","script"=>"getItems(this.value)"), "options"=>array("itemtovehicles"=>"vehicles","itemstovehicle"=>"items","vehicletowarehouse"=>"repairs","warehousetowarehouse"=>"warehouse","vehicletovehicle"=>"vehicle to vehicle"), "class"=>"form-control chosen-select");
+		$form_field = array("name"=>"action", "id"=>"action",  "content"=>"select action", "readonly"=>"", "required"=>"required", "type"=>"select", "action"=>array("type"=>"onchange","script"=>"getItems(this.value)"), "options"=>array("itemtovehicles"=>"item","vehicletowarehouse"=>"repairs","warehousetowarehouse"=>"warehouse","vehicletovehicle"=>"vehicle to vehicle"), "class"=>"form-control chosen-select");
 		$form_fields[] = $form_field;
 		$form_field = array("name"=>"date", "id"=>"date",  "content"=>"date", "readonly"=>"", "required"=>"required", "type"=>"text", "class"=>"form-control date-picker");
 		$form_fields[] = $form_field;
@@ -651,6 +654,15 @@ class StockController extends \Controller {
 			$jsondata["itemactions"] = "";
 		}
 		echo json_encode($jsondata);
+	}
+	
+	public function getAlertInfo(){
+		$values = Input::all();
+		$itemid = $values["id"];
+		$alert = "No";
+		$item = \PurchasedItems::where("purchased_items.id","=",$itemid)->join("items","items.id","=","purchased_items.itemId")->select(array("needAlert"))->first();
+		$alert = $item->needAlert;
+		echo $alert;
 	}
 	
 	public function deleteUsedStockItem(){

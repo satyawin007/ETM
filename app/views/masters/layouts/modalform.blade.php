@@ -40,7 +40,7 @@
 							<div class="form-group">
 								<label class="col-xs-3 control-label no-padding-right" for="form-field-1"> <?php echo strtoupper($form_field['content']); if($form_field['required']=="required") echo '<span style="color:red;">*</span>'; ?> </label>
 								<div class="col-xs-7">
-									<select class="{{$form_field['class']}}" name="{{$form_field['name']}}" id="{{$form_field['name']}}"  <?php if(isset($form_field['action'])) { $action = $form_field['action'];  echo $action['type']."=".$action['script']; }?> <?php if(isset($form_field['multiple'])) { echo " multiple "; }?>>
+									<select class="{{$form_field['class']}}" name="{{$form_field['name']}}" <?php if(isset($form_field['id'])) { echo " id='".$form_field['id']."' "; } else {?> id="{{$form_field['name']}}" <?php } ?> <?php if(isset($form_field['action'])) { $action = $form_field['action'];  echo $action['type']."=".$action['script']; }?> <?php if(isset($form_field['multiple'])) { echo " multiple "; }?>>
 										<option value="">-- {{$form_field['name']}} --</option>
 										<?php 
 											foreach($form_field["options"] as $key => $value){

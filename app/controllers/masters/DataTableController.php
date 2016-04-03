@@ -133,7 +133,7 @@ class DataTableController extends \Controller {
 		$select_args[] = "cities.id as id";
 			
 		$actions = array();
-		if(true){
+		if(in_array(209, $this->jobs)){
 			$action = array("url"=>"#edit", "type"=>"modal", "css"=>"primary", "js"=>"modalEditCity(", "jsdata"=>array("id","cityName","cityCode", "stateName", "status"), "text"=>"EDIT");
 			$actions[] = $action;
 		}
@@ -249,8 +249,10 @@ private function getProvider($values, $length, $start){
 		$select_args[] = "serviceproviders.configDetails as configDetails";
 						
 		$actions = array();
-		$action = array("url"=>"#edit", "type"=>"modal", "css"=>"primary", "js"=>"modalEditServiceProvider(", "jsdata"=>array("id","branchId","provider","name","number","companyName","configDetails","address","refName","refNumber","status"), "text"=>"EDIT");
-		$actions[] = $action;
+		if(in_array(240, $this->jobs)){
+			$action = array("url"=>"#edit", "type"=>"modal", "css"=>"primary", "js"=>"modalEditServiceProvider(", "jsdata"=>array("id","branchId","provider","name","number","companyName","configDetails","address","refName","refNumber","status"), "text"=>"EDIT");
+			$actions[] = $action;
+		}
 		$values["actions"] = $actions;
 		
 		$search = $_REQUEST["search"];
@@ -310,8 +312,10 @@ private function getProvider($values, $length, $start){
 		$select_args[] = "officebranch.id as id";
 		
 		$actions = array();
-		$action = array("url"=>"editofficebranch?","css"=>"primary", "type"=>"", "text"=>"Edit");
-		$actions[] = $action;
+		if(in_array(211, $this->jobs)){
+			$action = array("url"=>"editofficebranch?","css"=>"primary", "type"=>"", "text"=>"Edit");
+			$actions[] = $action;
+		}
 		$values["actions"] = $actions;
 		
 		$search = $_REQUEST["search"];
@@ -369,8 +373,10 @@ private function getProvider($values, $length, $start){
 		$select_args = array('name', "parentId", "remarks", "modules", "fields", "enabled", "status", "id");
 	
 		$actions = array();
-		$action = array("url"=>"#edit", "type"=>"modal", "css"=>"primary", "js"=>"modalEditLookupValue(", "jsdata"=>array("id","name","remarks","modules","fields","enabled","status"), "text"=>"EDIT");
-		$actions[] = $action;
+		if(in_array(224, $this->jobs)){
+			$action = array("url"=>"#edit", "type"=>"modal", "css"=>"primary", "js"=>"modalEditLookupValue(", "jsdata"=>array("id","name","remarks","modules","fields","enabled","status"), "text"=>"EDIT");
+			$actions[] = $action;
+		}
 		$values["actions"] = $actions;
 	
 		$search = $_REQUEST["search"];
@@ -492,29 +498,37 @@ private function getProvider($values, $length, $start){
 		$select_args[] = "vehicle.id as id";
 			
 		$actions = array();
-		$action = array("url"=>"editvehicle?","css"=>"primary", "type"=>"", "text"=>"Edit");
-		$actions[] = $action;
-		if(isset($values['action']) && $values['action']=="blocked") {
-			$action = array("url"=>"#block", "type"=>"modal", "css"=>"purple", "js"=>"modalBlockVehicle(", "jsdata"=>array("id","veh_reg"), "text"=>"Unblock");
+		if(in_array(213, $this->jobs)){
+			$action = array("url"=>"editvehicle?","css"=>"prary", "type"=>"", "text"=>"Edit");
+			$actions[] = $action;
 		}
-		else{
-			$action = array("url"=>"#block", "type"=>"modal", "css"=>"purple", "js"=>"modalBlockVehicle(", "jsdata"=>array("id","veh_reg"), "text"=>"block");
+		if(in_array(214, $this->jobs)){
+			if(isset($values['action']) && $values['action']=="blocked") {
+				$action = array("url"=>"#block", "type"=>"modal", "css"=>"purple", "js"=>"modalBlockVehicle(", "jsdata"=>array("id","veh_reg"), "text"=>"Unblock");
+			}
+			else{
+				$action = array("url"=>"#block", "type"=>"modal", "css"=>"purple", "js"=>"modalBlockVehicle(", "jsdata"=>array("id","veh_reg"), "text"=>"block");
+			}
+			$actions[] = $action;
 		}
-		$actions[] = $action;
-		if(isset($values['action']) && $values['action']=="sell") {
-			$action = array("url"=>"#sell", "type"=>"modal", "css"=>"grey", "js"=>"modalSellVehicle(", "jsdata"=>array("id","veh_reg"), "text"=>"sell");
+		if(in_array(215, $this->jobs)){
+			if(isset($values['action']) && $values['action']=="sell") {
+				$action = array("url"=>"#sell", "type"=>"modal", "css"=>"grey", "js"=>"modalSellVehicle(", "jsdata"=>array("id","veh_reg"), "text"=>"sell");
+			}
+			else{
+				$action = array("url"=>"#sell", "type"=>"modal", "css"=>"grey", "js"=>"modalSellVehicle(", "jsdata"=>array("id","veh_reg"), "text"=>"sell");
+			}
+			$actions[] = $action;
 		}
-		else{
-			$action = array("url"=>"#sell", "type"=>"modal", "css"=>"grey", "js"=>"modalSellVehicle(", "jsdata"=>array("id","veh_reg"), "text"=>"sell");
+		if(in_array(216, $this->jobs)){
+			if(isset($values['action']) && $values['action']=="renew") {
+				$action = array("url"=>"#renew", "type"=>"modal", "css"=>"success", "js"=>"modalRenewVehicle(", "jsdata"=>array("veh_reg"), "text"=>"renew");
+			}
+			else{
+				$action = array("url"=>"#renew", "type"=>"modal", "css"=>"success", "js"=>"modalRenewVehicle(", "jsdata"=>array("veh_reg"), "text"=>"renew");
+			}
+			$actions[] = $action;
 		}
-		$actions[] = $action;
-		if(isset($values['action']) && $values['action']=="renew") {
-			$action = array("url"=>"#renew", "type"=>"modal", "css"=>"success", "js"=>"modalRenewVehicle(", "jsdata"=>array("veh_reg"), "text"=>"renew");
-		}
-		else{
-			$action = array("url"=>"#renew", "type"=>"modal", "css"=>"success", "js"=>"modalRenewVehicle(", "jsdata"=>array("veh_reg"), "text"=>"renew");
-		}
-		$actions[] = $action;
 		
 		$values["actions"] = $actions;
 	
@@ -576,10 +590,12 @@ private function getProvider($values, $length, $start){
 		$data = array();
 		
 		$actions = array();
-		$action = array("url"=>"editemployeebatta?","css"=>"primary", "type"=>"", "text"=>"Edit");
-		$actions[] = $action;
+		if(in_array(218, $this->jobs)){
+			$action = array("url"=>"editemployeebatta?","css"=>"primary", "type"=>"", "text"=>"Edit");
+			$actions[] = $action;
+		}
 		$values["actions"] = $actions;
-			
+		
 		if(!isset($values['entries'])){
 			$values['entries'] = 10;
 		}
@@ -643,8 +659,10 @@ private function getProvider($values, $length, $start){
 		$data = array();
 	
 		$actions = array();
-		$action = array("url"=>"#edit", "type"=>"modal", "css"=>"primary", "js"=>"modalEditService(", "jsdata"=>array("id","sourceCity","destinationCity","serviceNo","active","serviceStatus"), "text"=>"EDIT");
-		$actions[] = $action;
+		if(in_array(220, $this->jobs)){
+			$action = array("url"=>"#edit", "type"=>"modal", "css"=>"primary", "js"=>"modalEditService(", "jsdata"=>array("id","sourceCity","destinationCity","serviceNo","active","serviceStatus"), "text"=>"EDIT");
+			$actions[] = $action;
+		}
 		$values["actions"] = $actions;
 		
 		$select_args = array();		
@@ -702,8 +720,10 @@ private function getProvider($values, $length, $start){
 	
 		$select_args = array('lookuptypevalues.name as bankName','branchName', "accountName", "accountNo", "lookuptypevalues1.name as accountType", "balanceAmount", "bankdetails.status as status", "bankdetails.id as id");
 		$actions = array();
-		$action = array("url"=>"editbankdetails?","css"=>"primary", "type"=>"", "text"=>"Edit");
-		$actions[] = $action;
+		if(in_array(226, $this->jobs)){
+			$action = array("url"=>"editbankdetails?","css"=>"primary", "type"=>"", "text"=>"Edit");
+			$actions[] = $action;
+		}
 		$values["actions"] = $actions;
 			
 		$search = $_REQUEST["search"];
@@ -753,8 +773,10 @@ private function getProvider($values, $length, $start){
 		$data = array();
 	
 		$actions = array();
-		$action = array("url"=>"editfinancecompany?","css"=>"primary", "type"=>"", "text"=>"Edit");
-		$actions[] = $action;
+		if(in_array(228, $this->jobs)){
+			$action = array("url"=>"editfinancecompany?","css"=>"primary", "type"=>"", "text"=>"Edit");
+			$actions[] = $action;
+		}
 		$values["actions"] = $actions;
 
 		$select_args = array();
@@ -810,8 +832,10 @@ private function getProvider($values, $length, $start){
 		$data = array();
 	
 		$actions = array();
-		$action = array("url"=>"editcreditsupplier?","css"=>"primary", "type"=>"", "text"=>"Edit");
-		$actions[] = $action;
+		if(in_array(230, $this->jobs)){
+			$action = array("url"=>"editcreditsupplier?","css"=>"primary", "type"=>"", "text"=>"Edit");
+			$actions[] = $action;
+		}
 		$values["actions"] = $actions;
 
 		$select_args = array();
@@ -881,8 +905,10 @@ private function getProvider($values, $length, $start){
 		$data = array();
 	
 		$actions = array();
-		$action = array("url"=>"editsalarydetails?","css"=>"primary", "type"=>"", "text"=>"Edit");
-		$actions[] = $action;
+		if(in_array(232, $this->jobs)){
+			$action = array("url"=>"editsalarydetails?","css"=>"primary", "type"=>"", "text"=>"Edit");
+			$actions[] = $action;
+		}
 		$values["actions"] = $actions;
 	
 		$select_args = array();
@@ -944,8 +970,10 @@ private function getProvider($values, $length, $start){
 		$data = array();
 		
 		$actions = array();
-		$action = array("url"=>"editfuelstation?","css"=>"primary", "type"=>"", "text"=>"Edit");
-		$actions[] = $action;
+		if(in_array(234, $this->jobs)){
+			$action = array("url"=>"editfuelstation?","css"=>"primary", "type"=>"", "text"=>"Edit");
+			$actions[] = $action;
+		}
 		$values["actions"] = $actions;
 			
 		if(!isset($values['entries'])){
@@ -1018,8 +1046,10 @@ private function getProvider($values, $length, $start){
 		$data = array();
 	
 		$actions = array();
-		$action = array("url"=>"editfuelstation?","css"=>"primary", "type"=>"", "text"=>"Edit");
-		$actions[] = $action;
+		if(in_array(236, $this->jobs)){
+			$action = array("url"=>"editfuelstation?","css"=>"primary", "type"=>"", "text"=>"Edit");
+			$actions[] = $action;
+		}
 		$values["actions"] = $actions;
 			
 		$tds = array('loanNo','vehicleId', "purpose", "financeCompanyId", "amountFinanced", "agmtDate", "frequency", "installmentAmount","TotInsmt", "PaidInsmt");
@@ -1121,8 +1151,10 @@ private function getProvider($values, $length, $start){
 		$data = array();
 			
 		$actions = array();
-		$action = array("url"=>"editdailyfinance?","css"=>"primary", "type"=>"", "text"=>"Edit");
-		$actions[] = $action;
+		if(in_array(238, $this->jobs)){
+			$action = array("url"=>"editdailyfinance?","css"=>"primary", "type"=>"", "text"=>"Edit");
+			$actions[] = $action;
+		}
 		$values["actions"] = $actions;
 			
 		$select_args = array();
@@ -1197,7 +1229,7 @@ private function getProvider($values, $length, $start){
 		$data = array();
 			
 		$actions = array();
-		$action = array("url"=>"editrole?","css"=>"primary", "type"=>"", "text"=>"Edit");
+		$action = array("url"=>"#edit", "type"=>"modal", "css"=>"primary", "js"=>"modalEditRole(", "jsdata"=>array("id","roleName","description","status"), "text"=>"EDIT");
 		$actions[] = $action;
 		$action = array("url"=>"jobs?","css"=>"primary", "type"=>"", "text"=>"privilages");
 		$actions[] = $action;

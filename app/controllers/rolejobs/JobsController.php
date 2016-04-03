@@ -28,6 +28,13 @@ class JobsController extends \Controller {
 					$values = array();
 					$db_functions_ctrl->insert($table, $fields);
 				}
+				$roleid = \Auth::user()->rolePrevilegeId;
+				$privileges = \RolePrivileges::where("roleId","=",$roleid)->get();
+				$privileges_arr = array();
+				foreach ($privileges as $privilege){
+					$privileges_arr[] = $privilege->jobId;
+				}
+				\Session::put("jobs",$privileges_arr);
 			}
 			\Session::put("message","Operation completed Successfully");
 			return \Redirect::to("jobs?&id=".$roleId);

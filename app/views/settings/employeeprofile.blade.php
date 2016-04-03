@@ -64,7 +64,9 @@ use Illuminate\Support\Facades\Input;
 		<small>
 			HOME
 			<i class="ace-icon fa fa-angle-double-right"></i>
-			USER SETTINGS
+			EMPLOYEE
+			<i class="ace-icon fa fa-angle-double-right"></i>
+			EDIT EMPLOYEE SETTINGS
 		</small>
 	@stop
 
@@ -74,8 +76,11 @@ use Illuminate\Support\Facades\Input;
                 <div style="height: 10px;"></div>
                 <div class="" role="alert"></div>
                 <?php 
-                	$employee = Employee::where("id","=",Auth::user()->id)->get();
+                	$filename= "";
+                	$values = Input::All();
+                	$employee = Employee::where("id","=",$values["id"])->get();
                 	$employee = $employee[0];
+                	$filename = $employee->filePath;
                 	$userrolemaster = UserRoleMaster::where("id","=",$employee->roleId)->get();
                 	$userrolemaster = $userrolemaster[0];
                 ?>
@@ -105,12 +110,37 @@ use Illuminate\Support\Facades\Input;
 								<div class="tab-content profile-edit-tab-content">
 									
 									<div id="edit-basic" class="tab-pane active">
-										<form class="form-horizontal" action="updateprofile" method="post" role="form" enctype="multipart/form-data" name="updateprofile">
+										<form class="form-horizontal" action="updateemployeeprofile" method="post" role="form" enctype="multipart/form-data" name="updateprofile">
 										<h4 class="header blue bolder smaller">BASIC INFORMATION</h4>
-
+										<input type="hidden" name="id" value="{{$values['id']}}">
 										<div class="row">
-											<div class="col-xs-offset-1 col-xs-4">
+											<div class="col-xs-offset-1 col-xs-5">
 												<label class="ace-file-input ace-file-multiple"><input name="billfile" type="file"></label>
+												<div style="margin-top: 10%;" class="form-group">
+													<label class="col-xs-4 control-label no-padding-right" for="form-field-1"> Email ID</label>
+													<div class="col-xs-8">
+														<input type="text" id="emailid" name="emailid"  required="" class="form-control" value="{{$employee->emailId}}">
+													</div>
+												</div>
+												<div class="form-group">
+													<label class="col-xs-4 control-label no-padding-right" for="form-field-1"> Role-Previlage </label>
+													<div class="col-xs-8">
+														<select class="form-control"   name="roleprevilage" >
+															<option value="">-- Select Role Previlage --</option>
+															<?php 
+																$roles = \Role::All();
+																foreach ($roles as $role){
+																	if($employee->rolePrevilegeId == $role->id){
+																		echo "<option selected value='".$role->id."'>".$role->roleName."</option>";
+																	}
+																	else{
+																		echo "<option value='".$role->id."'>".$role->roleName."</option>";
+																	}
+																}
+															?>												
+														</select>
+													</div>
+												</div>
 											</div>
 
 
@@ -178,9 +208,23 @@ use Illuminate\Support\Facades\Input;
 													</div>
 												</div>
 												<div class="form-group">
-													<label class="col-xs-4 control-label no-padding-right" for="form-field-1"> Designation </label>
+													<label class="col-xs-4 control-label no-padding-right" for="form-field-1"> Designation<span style="color:red;">*</span> </label>
 													<div class="col-xs-8">
-														<input type="text" id="designation" name="designation" disabled="disabled" required="" class="form-control" value="{{$userrolemaster->name}}" >													
+														<select class="form-control chosen-select" required="required"  name="designation" onChange="getEmpId()"" >
+															<option value="">-- Select Designation --</option>
+															<?php 
+																$roles = \UserRoleMaster::All();
+																foreach ($roles as $role){
+																	
+																	if($employee->roleId == $role->id){
+																		echo "<option selected value='".$role->id."'>".$role->name."</option>";
+																	}
+																	else{
+																		echo "<option value='".$role->id."'>".$role->name."</option>";
+																	}
+																}
+															?>												
+														</select>
 													</div>
 												</div>
 												<div class="form-group">
@@ -387,7 +431,8 @@ use Illuminate\Support\Facades\Input;
 									</div>
 									
 									<div id="edit-settings" class="tab-pane">
-										<form class="form-horizontal" action="updatepassword" method="post">
+										<form class="form-horizontal" action="updateemployeepassword" method="post">
+											<input type="hidden" name="id" value="{{$values['id']}}">
 											<h4 class="header blue bolder smaller">Change Your Password </h4>
 											<div class="form-group">
 												<label class="col-xs-3 control-label no-padding-right" for="form-field-pass1">New Password<span style="color:red;">*</span></label>
@@ -887,7 +932,7 @@ use Illuminate\Support\Facades\Input;
 		$('.input-mask-phone').mask('(999) 999-9999');
 
 		<?php 
-			$filename = "'../app/storage/uploads/".Auth::user()->filePath."'";
+			$filename = "'../app/storage/uploads/".$filename."'";
 		?>
 	
 		$('#edit-basic').find('input[type=file]').ace_file_input('show_file_list', [{type: 'image', name: {{$filename}}}]);

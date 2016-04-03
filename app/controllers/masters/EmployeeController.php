@@ -116,11 +116,11 @@ class EmployeeController extends \Controller {
 			
 			$actions = array();
 			if(in_array(202, $jobs)){
-				$action = array("url"=>"salarydetails?","css"=>"success", "type"=>"", "text"=>"salary Add/Edit");
+				$action = array("url"=>"editsalarydetails?","css"=>"success", "type"=>"", "text"=>"salary Add/Edit");
 				$actions[] = $action; 
 			}
 			if(in_array(203, $jobs)){
-				$action = array("url"=>"editemployee?","css"=>"primary", "type"=>"", "text"=>"Edit");
+				$action = array("url"=>"employeeprofile?","css"=>"primary", "type"=>"", "text"=>"Edit");
 				$actions[] = $action;
 			}
 			if(in_array(204, $jobs)){

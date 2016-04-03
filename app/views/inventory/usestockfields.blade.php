@@ -90,6 +90,7 @@
 						<div style="width:43%; float:right; ">
 							<input type="text" id="remarks0" placeholder="remarks"  name="remarks[]" class="form-control remarks" >
 						</div>
+							<input type="hidden" name="position[]"  id="position0" class="position"/>
 					</div>
 				</div>
 			</div>

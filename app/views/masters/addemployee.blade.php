@@ -4,10 +4,32 @@
 			.accordion-style1.panel-group .panel + .panel {
 			    margin-top: 10px;
 			}
+			.pagination {
+			    display: inline-block;
+			    padding-left: 0;
+			    padding-bottom:10px;
+			    margin: 0px 0;
+			    border-radius: 4px;
+			}
+			.dataTables_wrapper .row:last-child {
+			    border-bottom: 0px solid #e0e0e0;
+			    padding-top: 5px;
+			    padding-bottom: 0px;
+			    background-color: #EFF3F8;
+			}
+			th, td {
+				white-space: nowrap;
+			}
+			.chosen-container{
+			  width: 100% !important;
+			}
 		</style>
-		<link rel="stylesheet" href="../assets/css/bootstrap-datepicker3.css"/>
 	@stop
-
+	
+	@section('page_css')
+		<link rel="stylesheet" href="../assets/css/bootstrap-datepicker3.css"/>
+		<link rel="stylesheet" href="../assets/css/chosen.css" />
+	@stop
 	@section('bredcum')	
 		<small>
 			ADMINISTRATION
@@ -59,7 +81,7 @@
 									<div class="form-group">
 										<label class="col-xs-4 control-label no-padding-right" for="form-field-1"> State<span style="color:red;">*</span> </label>
 										<div class="col-xs-8">
-											<select class="form-control"   required="required" name="state" id="state" onChange="changeState(this.value)">
+											<select class="form-control chosen-select"   required="required" name="state" id="state" onChange="changeState(this.value)">
 												<option selected="selected" value="">-- Select State --</option>
 												<?php 
 													$states = \State::All();
@@ -73,7 +95,7 @@
 									<div class="form-group">
 										<label class="col-xs-4 control-label no-padding-right" for="form-field-1"> City<span style="color:red;">*</span> </label>
 										<div class="col-xs-8">
-											<select class="form-control"   required="required" name="city" id="city" onchange="changeCity(this.value)">
+											<select class="form-control  chosen-select"   required="required" name="city" id="city" onchange="changeCity(this.value)">
 												<option selected="selected" value="">-- Select City --</option>												
 											</select>
 										</div>
@@ -102,7 +124,7 @@
 									<div class="form-group">
 										<label class="col-xs-4 control-label no-padding-right" for="form-field-1"> Designation<span style="color:red;">*</span> </label>
 										<div class="col-xs-8">
-											<select class="form-control" required="required"  name="designation" onChange="getEmpId()"">
+											<select class="form-control chosen-select" required="required" id="designation"  name="designation" onChange="getEmpId()"">
 												<option value="">-- Select Designation --</option>
 												<?php 
 													$roles = \UserRoleMaster::All();
@@ -116,7 +138,7 @@
 									<div class="form-group">
 										<label class="col-xs-4 control-label no-padding-right" for="form-field-1"> Role-Previlage </label>
 										<div class="col-xs-8">
-											<select class="form-control"   name="roleprevilage" >
+											<select class="form-control"   id="roleprevilage" name="roleprevilage" >
 												<option value="">-- Select Role Previlage --</option>
 												<?php 
 													$roles = \Role::All();
@@ -151,7 +173,13 @@
 									<div class="form-group">
 										<label class="col-xs-4 control-label no-padding-right" for="form-field-1"> Office Branch<span style="color:red;">*</span> </label>
 										<div class="col-xs-8">
-											<select class="form-control" name="officebranch" id="branch"   required="required">
+											<select class="form-control chosen-select" name="officebranch" id="branch"   required="required">
+											<?php 
+												$branches = OfficeBranch::All();
+												foreach ($branches as $branch){
+													echo "<option value='".$branch->id.">".$branch->name."</option>";
+												}
+											?>
 											</select>
 										</div>
 									</div>
@@ -561,6 +589,7 @@
 	@section('inline_js')
 		<script src="../assets/js/date-time/bootstrap-datepicker.js"></script>
 		<script src="../assets/js/bootbox.js"></script>
+		<script src="../assets/js/chosen.jquery.js"></script>
 		<script src="../assets/js/jquery.maskedinput.js"></script>
 		
 		<script>
@@ -580,6 +609,7 @@
 			      success: function(data) {
 			    	  $("#city").html(data);
 			    	  $("#rtaoffice").html(data);
+			    	  $('.chosen-select').trigger("chosen:updated");		
 			      },
 			      type: 'GET'
 			   });
@@ -615,12 +645,63 @@
 			});
 			
 			$("#submit").on("click",function(){
+				var designation = $("#designation").val();
+				if(designation != undefined && designation ==""){
+					alert("Please select designation");
+					return false;
+				}
+				var state = $("#state").val();
+				if(state != undefined && state ==""){
+					alert("Please select state");
+					return false;
+				}
+				var city = $("#city").val();
+				if(city != undefined && city ==""){
+					alert("Please select city");
+					return false;
+				}
+				var branch = $("#branch").val();
+				if(branch != undefined && branch ==""){
+					alert("Please select branch");
+					return false;
+				}
+				
 				$("#addemployee").submit(); 
 			});			
 			
 			$("#reset").on("click",function(){
 				$("#addemployee").reset();
 			});
+
+			if(!ace.vars['touch']) {
+				$('.chosen-select').chosen({allow_single_deselect:true}); 
+				//resize the chosen on window resize
+		
+				$(window)
+				.off('resize.chosen')
+				.on('resize.chosen', function() {
+					$('.chosen-select').each(function() {
+						 var $this = $(this);
+						 $this.next().css({'width': $this.parent().width()});
+					})
+				}).trigger('resize.chosen');
+				//resize chosen on sidebar collapse/expand
+				$(document).on('settings.ace.chosen', function(e, event_name, event_val) {
+					if(event_name != 'sidebar_collapsed') return;
+					$('.chosen-select').each(function() {
+						 var $this = $(this);
+						 $this.next().css({'width': $this.parent().width()});
+					})
+				});
+		
+		
+				$('#chosen-multiple-style .btn').on('click', function(e){
+					var target = $(this).find('input[type=radio]');
+					var which = parseInt(target.val());
+					if(which == 2) $('#form-field-select-4').addClass('tag-input-style');
+					 else $('#form-field-select-4').removeClass('tag-input-style');
+				});
+			}
 
 			$('.number').keydown(function(e) {
 				this.value = this.value.replace(/[^0-9.]/g, ''); 

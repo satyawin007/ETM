@@ -101,6 +101,7 @@ class LookupValueController extends \Controller {
 		$values = Input::all();
 		if (\Request::isMethod('post'))
 		{
+			//$values["SDf"];
 			$field_names = array("type1"=>"parentId","value1"=>"name", "modules1"=>"modules", "showfields1"=>"fields", "is_Enabled"=>"enabled","remarks1"=>"remarks","status"=>"status");
 			$fields = array();
 			foreach ($field_names as $key=>$val){
@@ -117,6 +118,12 @@ class LookupValueController extends \Controller {
 						$fields[$val] = $values[$key];
 					}
 				}
+			}
+			if(!isset($values["modules1"])){
+				$fields["modules"] = "";
+			}
+			if(!isset($values["showfields1"])){
+				$fields["fields"]="";
 			}
 			$data = array('id'=>$values['id1']);			
 			$db_functions_ctrl = new DBFunctionsController();
@@ -205,7 +212,7 @@ class LookupValueController extends \Controller {
 		$form_fields[] = $form_field;
 // 		$form_field = array("name"=>"modules", "content"=>"show in modules", "readonly"=>"",  "required"=>"","type"=>"checkbox", "options"=>array("incharge"=>"YES", "vehicle"=>"YES", "branch"=>"YES", "employee"=>"YES"), "class"=>"form-control");
 // 		$form_fields[] = $form_field;
-		$form_field = array("name"=>"modules[]", "content"=>"show in modules", "readonly"=>"",  "required"=>"", "type"=>"select", "class"=>"form-control chosen-select", "multiple"=>"multiple", "options"=>array("DAILY TRIPS"=>"DAILY TRIPS","REPAIRE EXPENSES"=>"REPAIRE EXPENSES"));
+		$form_field = array("name"=>"modules[]", "content"=>"show in modules", "readonly"=>"",  "required"=>"", "type"=>"select", "class"=>"form-control chosen-select", "multiple"=>"multiple", "options"=>array("DAILY TRIPS"=>"DAILY TRIPS","LOCAL TRIPS"=>"LOCAL TRIPS"));
 		$form_fields[] = $form_field;
 		$form_field = array("name"=>"enabled",  "value"=>"NO", "content"=>"is Enabled", "readonly"=>"",  "required"=>"","type"=>"radio", "options"=>array("NO"=>" NO","YES"=>" YES"), "class"=>"form-control");
 		$form_fields[] = $form_field;
@@ -234,11 +241,11 @@ class LookupValueController extends \Controller {
 		$form_fields[] = $form_field;
 // 		$form_field = array("name"=>"modules", "content"=>"show in modules", "readonly"=>"",  "required"=>"","type"=>"checkbox", "options"=>array("incharge"=>"YES", "vehicle"=>"YES", "branch"=>"YES", "employee"=>"YES"), "class"=>"form-control");
 // 		$form_fields[] = $form_field;
-		$form_field = array("name"=>"modules1[]", "content"=>"show in modules", "readonly"=>"",  "required"=>"", "type"=>"select", "class"=>"form-control chosen-select", "multiple"=>"multiple", "options"=>array("DAILY TRIPS"=>"DAILY TRIPS","REPAIRE EXPENSES"=>"REPAIRE EXPENSES"));
+		$form_field = array("name"=>"modules1[]", "id"=>"modules1", "content"=>"show in modules", "readonly"=>"",  "required"=>"", "type"=>"select", "class"=>"form-control chosen-select", "multiple"=>"multiple", "options"=>array("DAILY TRIPS"=>"DAILY TRIPS","LOCAL TRIPS"=>"LOCAL TRIPS"));
 		$form_fields[] = $form_field;		
 // 		$form_field = array("name"=>"showvalues", "content"=>"show Fields", "readonly"=>"",  "required"=>"","type"=>"checkbox", "options"=>array("incharge"=>"YES", "vehicle"=>"YES", "branch"=>"YES", "employee"=>"YES"), "class"=>"form-control");
 // 		$form_fields[] = $form_field;
-		$form_field = array("name"=>"showfields1[]", "content"=>"show fields", "readonly"=>"",  "required"=>"", "type"=>"select", "class"=>"form-control chosen-select", "multiple"=>"multiple", "options"=>array("INCHARGE"=>"INCHARGE","VEHICLE"=>"VEHICLE","BANK"=>"BANK","EMPLOYEE"=>"EMPLOYEE","BRANCH"=>"BRANCH"));
+		$form_field = array("name"=>"showfields1[]", "id"=>"showfields1", "content"=>"show fields", "readonly"=>"",  "required"=>"", "type"=>"select", "class"=>"form-control chosen-select", "multiple"=>"multiple", "options"=>array("INCHARGE"=>"INCHARGE","VEHICLE"=>"VEHICLE","BANK"=>"BANK","EMPLOYEE"=>"EMPLOYEE","BRANCH"=>"BRANCH"));
 		$form_fields[] = $form_field;
 		$form_field = array("name"=>"remarks1", "content"=>"additional information", "readonly"=>"",  "required"=>"required","type"=>"textarea", "class"=>"form-control");
 		$form_fields[] = $form_field;

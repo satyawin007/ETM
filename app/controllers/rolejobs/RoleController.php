@@ -58,12 +58,12 @@ class RoleController extends \Controller {
 	 *
 	 * @return Response
 	 */
-	public function editState()
+	public function editRole()
 	{
 		$values = Input::all();
 		if (\Request::isMethod('post'))
 		{
-			$field_names = array("statename1"=>"name","statecode1"=>"code","status1"=>"status");
+			$field_names = array("rolename1"=>"roleName","description1"=>"description", "statecode1"=>"code","status1"=>"status");
 			$fields = array();
 			foreach ($field_names as $key=>$val){
 				if(isset($values[$key])){
@@ -72,15 +72,15 @@ class RoleController extends \Controller {
 			}
 			$data = array('id'=>$values['id1']);			
 			$db_functions_ctrl = new DBFunctionsController();
-			$table = "\State";
+			$table = "\Role";
 			$values = array();
 			if($db_functions_ctrl->update($table, $fields, $data)){
 				\Session::put("message","Operation completed Successfully");
-				return \Redirect::to("states");
+				return \Redirect::to("roles");
 			}
 			else{
 				\Session::put("message","Operation Could not be completed, Try Again!");
-				return \Redirect::to("states");
+				return \Redirect::to("roles");
 			}
 		}
 		$form_info = array();

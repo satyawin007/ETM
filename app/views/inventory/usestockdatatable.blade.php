@@ -78,6 +78,10 @@
 
 	@section('page_content')		
 		<div class="row col-xs-offset-0 col-xs-12">
+		<?php 
+			$jobs = \Session::get("jobs");
+			if(in_array(330, $jobs)){
+		?>
 		<div class="widget-box">
 			<div class="widget-header">
 				<h4 class="widget-title">{{ strtoupper($form_info['bredcum'])}}</h4>
@@ -181,6 +185,7 @@
 				</form>
 				</div>
 			</div>
+			<?php }?>
 			<h3 class="header smaller lighter blue" style="font-size: 15px; font-weight: bold;margin-bottom: -10px;">MANAGE TRANSACTIONS</h3>		
 			<div class="row" >
 				<div>
@@ -286,6 +291,8 @@
 		?>
 				@include('masters.layouts.modalform', $modal);
 		<?php }} ?>
+		
+		
 	@stop
 	
 	@section('page_js')
@@ -345,8 +352,8 @@
 			    	  $("#units").attr("disabled",true);
 			    	  //$("#alertdate").hide();
 			    	  $('.chosen-select').chosen();
-			    	  $('.date-picker').datepicker({ autoclose: true, todayHighlight: true })
 			    	  $('.chosen-select').trigger('chosen:updated');
+			    	  $("#alertdate"+0).prop("readonly",true);
 			    	  //var ele = $('#children_fields:first-child').clone(false);
 			    	  $("#children_add").on("click",function(){
 			    		    count = count+1;
@@ -356,7 +363,6 @@
 			    		    ele = $('#children_fields:last-child').clone();
 			    		    ele.appendTo('#children_fields_all');
 			    		    $('#children_fields:last-child select').removeClass("chosen-select").removeAttr("id").css("display", "block").next().remove();
-
 			    		    $("#children_fields:last-child").find(".item").attr('id',"item"+count);
 			    		    $("#children_fields:last-child").find(".units").attr('id',"units"+count);
 			    		    $("#units"+count).attr("readonly","readonly");
@@ -366,15 +372,17 @@
 			    		    $("#qty"+count).removeAttr("readonly");
 			    		    $("#children_fields:last-child").find(".remarks").attr('id',"remarks"+count);
 			    		    $("#remarks"+count).val("");
+			    		    $("#children_fields:last-child").find(".position").attr('id',"position"+count);
+			    		    $("#position"+count).val("");
 			    		    $("#children_fields:last-child").find(".date-picker").attr('id',"alertdate"+count);
 			    		    $("#alertdate"+count).val("");
+			    		    $("#alertdate"+count).prop("readonly",true);
 			    		    $("#children_fields:last-child").find(".vehicle").attr('id',"vehicle"+count);
-			    		    
 			                $('#children_fields:last-child select').addClass("chosen-select");
 			                //$('#children_fields:last-child #').removeClass("chosen-select");
 			                $('#children_fields:last-child select').chosen();
 					    	//$('.chosen-select').trigger('chosen:updated');
-					    	
+					    	$("#alertdate"+count).prop("readonly",true);
 							itemVal = $("#"+lastItemId+" option:selected").text();
 							if(itemVal.indexOf("qty")>0){
 								start = itemVal.indexOf("qty(");
@@ -504,6 +512,17 @@
 					id = "item0";
 				}
 				var units = id.substring(4, id.length);
+
+				itemVal = $("#item"+units+" option:selected").text();
+				start = itemVal.indexOf(" - qty(");
+				itemname = itemVal.substring(0,start);
+				if(itemname=="tires"){
+					showTirePositions(units);
+				}
+				
+				alertid = "#alertdate"+units;
+				$(alertid).prop("readonly",true);
+				$("#position"+units).val("");
 				units = "#units"+units;
 				$.ajax({
 			      url: "getiteminfo?id="+val,
@@ -513,6 +532,18 @@
 			      },
 			      type: 'GET'
 			   });
+
+				$.ajax({
+			      url: "getalertinfo?id="+val,
+			      success: function(data) {
+				      //alert(data);
+				      if(data=="Yes"){
+			    	  	$(alertid).prop("readonly",false);
+			    	  	$(alertid).datepicker({ autoclose: true, todayHighlight: true })
+				      }
+			      },
+			      type: 'GET'
+			   });	
 			}
 
 			function deleteUsedStockItem(id) {
@@ -616,6 +647,47 @@
 					echo "bootbox.confirm('".Session::pull('message')."', function(result) {});";
 				}
 			?>
+
+			function showTirePositions(id) {
+				message_data = '<label>SELECT TIRE CHANGING POSITION : </label><br/><select class="form-control" required="" name="tireposition" id="tireposition">';
+				<?php 
+					$parentId = -1;
+					$parent = \InventoryLookupValues::where("name","=","ITEM ACTIONS")->get();
+					if(count($parent)>0){
+						$parent = $parent[0];
+						$parentId = $parent->id;
+					}
+					$veh_actions_arr = array();
+					$veh_actions =  \InventoryLookupValues::where("parentId","=",$parentId)->where("status","=","ACTIVE")->get();
+					$veh_actions_data = "";
+					foreach ($veh_actions  as $veh_action){
+						$veh_actions_data = $veh_actions_data.'<option value="'.$veh_action['id'].'">'.$veh_action->name.'</option>';
+					}
+					echo "message_data=message_data+'".$veh_actions_data."';";
+				?>
+				message_data = message_data+'</select>';							
+				bootbox.confirm({
+					message: message_data,
+					buttons: {
+					  confirm: {
+						 label: "OK",
+						 className: "btn-primary btn-sm",
+					  },
+					  cancel: {
+						 label: "Cancel",
+						 className: "btn-sm",
+					  }
+					},
+					callback: function(result) {
+						if(result){
+							val= $("#tireposition").val();
+							 $("#position"+id).val(val);
+						}
+					}
+				  }
+				);
+			}
+		
 
 			$('.file').ace_file_input({
 				no_file:'No File ...',

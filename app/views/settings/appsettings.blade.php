@@ -91,9 +91,16 @@ use Illuminate\Support\Facades\Input;
 									</li>
 
 									<li class="">
-										<a data-toggle="tab" href="#edit-settings" aria-expanded="false">
+										<a data-toggle="tab" href="#edit-email" aria-expanded="false">
 											<i class="purple ace-icon fa fa-envelope bigger-125"></i>
 											email
+										</a>
+									</li>
+									
+									<li class="">
+										<a data-toggle="tab" href="#edit-alert" aria-expanded="false">
+											<i class="red ace-icon fa fa-bell bigger-125"></i>
+											alerts
 										</a>
 									</li>
 								</ul>
@@ -153,7 +160,7 @@ use Illuminate\Support\Facades\Input;
 										</form>
 									</div>
 									
-									<div id="edit-settings" class="tab-pane">
+									<div id="edit-email" class="tab-pane">
 										<form class="form-horizontal" action="updatebannersettings" method="post">
 											<h4 class="header blue bolder smaller">Provide Email Addresses for DB Updates </h4>
 											<div class="row">
@@ -166,6 +173,40 @@ use Illuminate\Support\Facades\Input;
 																$rec = $rec[0];
 															?>
 															<input class="col-xs-12" name="emails" type="text" id="form-field-username" placeholder="test@gmail.com,test1@gmail.com" value="{{$rec->value}}" >
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="clearfix form-actions">
+												<div class="col-md-offset-3 col-md-9">
+													<button class="btn btn-info" type="submit">
+														<i class="ace-icon fa fa-check bigger-110"></i>
+														Save
+													</button>
+				
+													&nbsp; &nbsp;
+													<button class="btn" type="reset">
+														<i class="ace-icon fa fa-undo bigger-110"></i>
+														Reset
+													</button>
+												</div>
+											</div>
+										</form>
+									</div>
+									
+									<div id="edit-alert" class="tab-pane">
+										<form class="form-horizontal" action="updatebannersettings" method="post">
+											<h4 class="header blue bolder smaller">Provide Alert Days </h4>
+											<div class="row">
+												<div class="col-xs-6">
+													<div class="form-group">
+														<span class="col-sm-10 no-padding-right" >How many days before alert is needed?</span>
+														<div class="col-sm-10">
+															<?php 
+																$rec = Parameters::where("name","=","alertdays")->get();
+																$rec = $rec[0];
+															?>
+															<input class="col-xs-12" name="alertdays" type="text" id="form-field-username" placeholder="0" value="{{$rec->value}}" >
 														</div>
 													</div>
 												</div>

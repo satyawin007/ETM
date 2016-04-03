@@ -99,7 +99,7 @@ class SalaryDetailsController extends \Controller {
 		$select_args[] = "empsalarydetails.fromDate as fromDate";
 		$select_args[] = "empsalarydetails.id as id";
 		
-		$entity = \SalaryDetails::where("empsalarydetails.id","=",$values['id'])->join("employee","employee.id","=","empsalarydetails.empId")->leftjoin("officebranch", "employee.officeBranchId","=","officebranch.id")->leftjoin("client", "employee.clientId","=","client.id")->leftjoin("user_roles_master", "empsalarydetails.title","=","user_roles_master.id")->join("cities", "cities.id","=","employee.cityId")->select($select_args)->get();;
+		$entity = \SalaryDetails::where("empsalarydetails.empId","=",$values['id'])->join("employee","employee.id","=","empsalarydetails.empId")->leftjoin("officebranch", "employee.officeBranchId","=","officebranch.id")->leftjoin("client", "employee.clientId","=","client.id")->leftjoin("user_roles_master", "empsalarydetails.title","=","user_roles_master.id")->join("cities", "cities.id","=","employee.cityId")->select($select_args)->get();;
 			
 		if(count($entity)){
 			$entity = $entity[0];
@@ -127,8 +127,13 @@ class SalaryDetailsController extends \Controller {
 			foreach ($roles as $role){
 				$roles_arr[$role->id] = $role->name;
 			}
-			
-			$form_field = array("name"=>"employeetype", "value"=>$entity->typeId, "content"=>"employeetype", "readonly"=>"readonly",  "required"=>"","type"=>"text",  "class"=>"form-control");
+			if($entity->typeId==1){
+				$emptype ="Office";
+			}
+			else{
+				$emptype = "Non-Office";
+			}
+			$form_field = array("name"=>"employeetype", "id"=>"employeetype", "value"=>$emptype, "content"=>"employeetype", "readonly"=>"readonly",  "required"=>"","type"=>"text", "class"=>"form-control");
 			$form_fields[] = $form_field;
 			$form_field = array("name"=>"client", "value"=>$entity->client, "content"=>"Branch Name", "readonly"=>"readonly",  "required"=>"","type"=>"text", "class"=>"form-control");
 			$form_fields[] = $form_field;

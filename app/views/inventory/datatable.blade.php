@@ -75,8 +75,11 @@
 			<?php if(isset($values["create_link"])){ 
 				$create_link  = $values["create_link"];
 			?>
-			<div class="row" style="margin-right: 0px;"><div class="pull-right tableTools-container"><a class="btn btn-sm btn-primary"  href="{{$create_link['href']}}" >{{$create_link["text"]}}</a></div></div>
-			<?php } ?>
+			<?php $jobs = Session::get("jobs"); 
+				if(in_array(328, $jobs)){
+			?>
+				<div class="row" style="margin-right: 0px;"><div class="pull-right tableTools-container"><a class="btn btn-sm btn-primary"  href="{{$create_link['href']}}" >{{$create_link["text"]}}</a></div></div>
+			<?php } } ?>
 			<div class="table-header" style="margin-top: 10px;">
 				Results for "{{$values['bredcum']}}"				 
 								

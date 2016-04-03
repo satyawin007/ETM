@@ -63,10 +63,15 @@ use Illuminate\Support\Facades\Input;
 	@stop
 
 	@section('page_content')
+		<?php $jobs = Session::get("jobs"); ?>
 		<div class="col-xs-offset-4 col-xs-8 ccordion-style1 panel-group">
-			<a class="btn btn-sm btn-primary" href="dailytrips">CREATE/ADD SERVICES</a> &nbsp;&nbsp;
-			<a class="btn btn-sm  btn-inverse" href="managetrips?triptype=DAILY">MANAGE TRIPS</a> &nbsp;&nbsp;
+			<?php if(in_array(309, $jobs)){ ?>
+				<a class="btn btn-sm btn-primary" href="dailytrips">CREATE/ADD SERVICES</a> &nbsp;&nbsp;
+			<?php } if(in_array(310, $jobs)){ ?>
+				<a class="btn btn-sm  btn-inverse" href="managetrips?triptype=DAILY">MANAGE TRIPS</a> &nbsp;&nbsp;
+			<?php }?>
 		</div>
+		<?php if(in_array(309, $jobs)){ ?>
 		<div id="accordion1" class="col-xs-offset-0 col-xs-12 accordion-style1 panel-group">			
 			<div class="panel panel-default">
 				<div class="panel-heading">
@@ -363,6 +368,7 @@ use Illuminate\Support\Facades\Input;
 				</div>
 			</div>
 		</div>	
+		<?php }?>
 		</div>		
 		<?php 
 			if(isset($values['modals'])) {
@@ -433,7 +439,9 @@ use Illuminate\Support\Facades\Input;
 			}
 
 			$("#reset").on("click",function(){
-				$("#{{$form_info['name']}}").reset();
+				<?php if(in_array(309, $jobs)){ ?>
+					$("#{{$form_info['name']}}").reset();
+				<?php } ?>
 			});
 
 			function validateData(){

@@ -332,12 +332,49 @@ class ReportsController extends \Controller {
 				}
 			}
 			else if($values["btntype"] == "branch_summery"){
-				DB::statement(DB::raw("CALL daily_transactions_report('".$frmDt."', '".$toDt."');"));
-				if($brachId == 0){
-					$recs = DB::select( DB::raw("select * from temp_daily_transaction order by branchId"));
-				}
-				else if($brachId > 0){
-					$recs = DB::select( DB::raw("select * from temp_daily_transaction where branchId=".$brachId." order by branchId"));
+				DB::statement(DB::raw("CALL branch_summary_report('".$frmDt."', '".$toDt."');"));
+				if(true){
+					if ($brachId == 0){
+						$branches =  \OfficeBranch::OrderBy("name")->get();
+					}
+					else{
+						$branches =  \OfficeBranch::where("id","=",$brachId)->OrderBy("name")->get();
+					}
+					foreach ($branches as $branch){
+						$row = array();
+						$recs = DB::select( DB::raw("select sum(amount) as amt from temp_branch_summary where type!=243 and  transactiontype ='incometransactions' and branchId=".$branch->id." and date between '".$frmDt."' and '".$toDt."'"));
+						if(count($recs)>0) {
+							$rec = $recs[0];
+							$row["branch"] = $branch->name;
+							$row["income"] = $rec->amt;
+						}
+						$recs = DB::select( DB::raw("select sum(amount) as amt from temp_branch_summary where type=243 and  transactiontype ='incometransactions' and  branchId=".$branch->id." and date between '".$frmDt."' and '".$toDt."'"));
+						if(count($recs)>0) {
+							$rec = $recs[0];
+							$row["amtreceived"] = $rec->amt;
+						}
+						$recs = DB::select( DB::raw("select sum(amount) as amt from temp_branch_summary where type!=123 and  transactiontype ='expensetransactions' and type!=125 and  branchId=".$branch->id." and date between '".$frmDt."' and '".$toDt."'"));
+						if(count($recs)>0) {
+							$rec = $recs[0];
+							$row["expense"] = $rec->amt;
+						}
+						$recs = DB::select( DB::raw("select sum(amount) as amt from temp_branch_summary where type=123 and  transactiontype ='expensetransactions' and  branchId=".$branch->id." and date between '".$frmDt."' and '".$toDt."'"));
+						if(count($recs)>0) {
+							$rec = $recs[0];
+							$row["amtdeposited"] = $rec->amt;
+						}
+						$recs = DB::select( DB::raw("select sum(amount) as amt from temp_branch_summary where type=125 and  transactiontype ='expensetransactions' and  branchId=".$branch->id." and date between '".$frmDt."' and '".$toDt."'"));
+						if(count($recs)>0) {
+							$rec = $recs[0];
+							$row["bank_deposits"] = $rec->amt;
+						}
+						if ($row["income"] != 0 || $row["amtreceived"] !=0 || $row["expense"] !=0 || $row["amtdeposited"] !=0 || $row["bank_deposits"] !=0){
+							$income = $row["income"]+$row["amtreceived"];
+							$expens = $row["expense"]+$row["amtdeposited"]+$row["bank_deposits"];
+							$row["balance"] = $income - $expens ;
+							$resp[] = $row;
+						}
+					}
 				}
 			}
 			else if($values["btntype"] == "txn_details"){
@@ -398,7 +435,6 @@ class ReportsController extends \Controller {
 							else{
 								$row["employee"] = $rec->entity;
 							}
-								
 						}
 						$row["comments"] = $rec->remarks;
 						//$row["billno"] = $rec->billNo;

@@ -128,6 +128,12 @@ Route::get('/masters', function()
 
 Route::any('/getdatatabledata',"masters\DataTableController@getDataTableData");
 
+Route::get('/printdailytransactions', function()
+{
+	return View::make('reports.printdailytransactions');
+});
+
+
 Route::any('/gettransactiondatatabledata',"transactions\DataTableController@getDataTableData");
 
 Route::any('/gettripsdatatabledata',"trips\DataTableController@getDataTableData");

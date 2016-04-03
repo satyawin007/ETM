@@ -180,13 +180,16 @@
 		
 		<div class="row col-xs-12" style="padding: 10px; padding-top:0px;">
 			<?php if($form_info['reporttype'] == "dailytransactions"){?>
-			<div class="col-xs-offset-2 col-xs-4">
+			<div class="col-xs-offset-1 col-xs-3">
+				<input class="btn btn-sm btn-primary" type="button" value="  PRINT DAILY TRANSACTIONS  " onclick="getReport4()"/>
+			</div>
+			<div class="col-xs-3">
 				<input class="btn btn-sm btn-primary" type="button" value="  TICKETS & CARGOS SUMMARY  " onclick="getReport1()"/>
 			</div>
 			<div class="col-xs-3">
 				<input class="btn btn-sm btn-primary" type="button" value="  BRANCH SUMMARY  " onclick="getReport2()"/>
 			</div>
-			<div class="col-xs-2">
+			<div class="col-xs-1">
 				<input class="btn btn-sm btn-primary" type="button" value="  TXN DETAILS  " onclick="getReport3()"/>
 			</div>
 			<?php } else { ?>

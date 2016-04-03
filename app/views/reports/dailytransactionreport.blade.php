@@ -267,12 +267,40 @@
 				reporttype = "txn_details";
 				paginate(1);
 			}
+			function getReport4(){
+				//reporttype = "print_daily_transactions";
+				//paginate(1);
+				branch = $("#branch").val();
+				fromDate = $("#fromdate").val();
+				toDate = $("#todate").val();
+				if(branch == ""){
+					alert("select branch");
+					return;
+				}
+				if(branch == 0){
+					alert("select any one of the branches");
+					return;
+				}
+				if(fromDate == ""){
+					alert("select Date");
+					return;
+				}
+				url ="printdailytransactions?branchId="+branch+"&fromDt="+fromDate+"&toDt="+toDate;
+				window.open(url,"_blank")
+			}
 
 			function paginate(page){
 				branch = $("#branch").val();
 				if(branch == ""){
 					alert("select branch");
 					return;
+				}
+				if(reporttype == "ticket_corgos_summery" && branch>0){
+					employee = $("#employee").val();
+					if(employee == ""){
+						alert("select employee");
+						return;
+					}
 				}
 				if(reporttype == "ticket_corgos_summery" && branch>0){
 					employee = $("#employee").val();
@@ -333,8 +361,8 @@
 							$("#table2").hide();	
 							$("#table3").hide();
 							if(refresh1 == 0){
-								paginate(1);
 								refresh1 = 1;
+								myTable.draw();
 							}	
 			        	}
 			        	else if(reporttype == "branch_summery"){
@@ -345,7 +373,7 @@
 							$("#table2").hide();
 							$("#table3").show();
 							if(refresh3 == 0){
-								paginate(1);
+								myTable3.draw();
 								refresh3 = 1;
 							}			
 			        	}
@@ -357,7 +385,7 @@
 							$("#table2").show();
 							$("#table3").hide();
 							if(refresh2 == 0){
-								paginate(1);
+								myTable1.draw();
 								refresh2 = 1;
 							}			
 			        	}

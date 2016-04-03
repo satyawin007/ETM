@@ -81,8 +81,45 @@
 				</div>
 				<div class="panel-collapse collapse in" id="TEST">
 					<div class="panel-body" style="padding: 0px">
-						<?php $form_info = $values["form_info"]; ?>
-						@include("reports.add3colform",$form_info)						
+						<?php  $form_info = $values["form_info"]; ?>
+
+		<div class="col-xs-12" style="margin-top: -1%; margin-bottom: 1%;">
+		<div class="row">
+			<div class="col-xs-12">
+				<div >
+				<form style="padding-top:15px;" class="{{$form_info['class']}}" action="{{$form_info['action']}}" method="{{$form_info['method']}}" name="{{$form_info['name']}}"  id="{{$form_info['name']}}" enctype="multipart/form-data">
+					<?php  $form_fields = $form_info['form_fields']; ?>
+					<div id="formbody">	
+						<div class="col-xs-12" style="margin-top: 15px; margin-bottom: -10px">
+						<?php $form_field = $form_fields[0];?>
+						<?php if($form_field['type'] === "text" || $form_field['type'] === "email" ||$form_field['type'] === "number" || $form_field['type'] === "password"){ ?>
+						<div class="col-xs-offset-2 col-xs-4" >
+							<label class="col-xs-4 control-label no-padding-right" for="form-field-1"> <?php echo strtoupper($form_field['content']); if($form_field['required']=="required") echo '<span style="color:red;">*</span>'; ?> </label>
+							<div class="col-xs-7">
+								<input {{$form_field['readonly']}} type="{{$form_field['type']}}" id="{{$form_field['name']}}" required="{{$form_field['required']}}" name="{{$form_field['name']}}" class="{{$form_field['class']}}" <?php if(isset($form_field['action'])) { $action = $form_field['action'];  echo $action['type']."=".$action['script']; }?>>
+							</div>			
+						</div>
+						<?php } ?>
+						<?php $form_field = $form_fields[1];?>
+						<?php if($form_field['type'] === "hidden"){ ?>
+								<input type="{{$form_field['type']}}" id="{{$form_field['name']}}" name="{{$form_field['name']}}" value="{{$form_field['value']}}" >
+					<?php } ?>
+					<div class="row col-xs-4" style="padding: 10px; padding-top:0px;">
+						<div class="col-xs-3">
+							<input class="btn btn-sm btn-primary" type="button" value="  GENERATE REPORT  " onclick="generateReport()"/>
+						</div>
+					</div>
+					</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		
+		
+		
+	</div>
+</div>
+							
 					</div>
 				</div>
 			</div>

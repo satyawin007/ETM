@@ -55,7 +55,7 @@ return array(
 		'mysql' => array(
 			'driver'    => 'mysql',
 			'host'      => 'localhost',
-			'database'  => 'etm1',
+			'database'  => 'etm',
 			'username'  => 'root',
 			'password'  => '',
 			'charset'   => 'utf8',

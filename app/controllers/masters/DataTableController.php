@@ -1,7 +1,7 @@
 <?php namespace masters;
 
 use Illuminate\Support\Facades\Input;
-use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\DB;
 class DataTableController extends \Controller {
 
 	/**
@@ -20,7 +20,12 @@ class DataTableController extends \Controller {
 		$total = 0;
 		$data = array();
 		
-		if(isset($values["name"]) && $values["name"]=="cities") {
+		if(isset($values["name"]) && $values["name"]=="employees") {
+			$ret_arr = $this->getEmployees($values, $length, $start);
+			$total = $ret_arr["total"];
+			$data = $ret_arr["data"];
+		}
+		else if(isset($values["name"]) && $values["name"]=="cities") {
 			$ret_arr = $this->getCities($values, $length, $start);
 			$total = $ret_arr["total"];
 			$data = $ret_arr["data"];
@@ -119,6 +124,129 @@ class DataTableController extends \Controller {
 				"data"            => $data
 			);
 		echo json_encode($json_data);
+	}
+	
+	private function getEmployees($values, $length, $start){
+		$total = 0;
+		$data = array();
+		$select_args = array();
+		$select_args[] = "employee.empCode as empCode";
+		$select_args[] = "employee.fullName as fullName";
+		$select_args[] = "officebranch.name as officeBranchName";
+		$select_args[] = "employee.mobileNo as mobileNo";
+		$select_args[] = "user_roles_master.name as name";
+		$select_args[] = "employee.emailid as emailid";
+		$select_args[] = "employee.proofs as proofs";
+		$select_args[] = "employee.fatherName as fatherName";
+		$select_args[] = "employee.status as status";
+		$select_args[] = "employee.id as id";
+			
+		$actions = array();
+		if(in_array(202, $this->jobs)){
+			$action = array("url"=>"editsalarydetails?","css"=>"success", "type"=>"", "text"=>"salary Add/Edit");
+			$actions[] = $action; 
+		}
+		if(in_array(203, $this->jobs)){
+			$action = array("url"=>"employeeprofile?","css"=>"primary", "type"=>"", "text"=>"Edit");
+			$actions[] = $action;
+		}
+		if(in_array(204, $this->jobs)){
+			if(isset($values['action']) && $values['action']=="terminated") {
+				$action = array("url"=>"#terminate", "type"=>"modal", "css"=>"inverse", "js"=>"modalTerminateEmployee(", "jsdata"=>array("id","fullName","empCode"), "text"=>"Unterminate");
+			}
+			else{
+				$action = array("url"=>"#terminate", "type"=>"modal", "css"=>"inverse", "js"=>"modalTerminateEmployee(", "jsdata"=>array("id","fullName","empCode"), "text"=>"terminate");
+			}
+			$actions[] = $action;
+		}
+		if(in_array(205, $this->jobs)){
+			if(isset($values['action']) && $values['action']=="blocked") {
+				$action = array("url"=>"#block", "type"=>"modal", "css"=>"purple", "js"=>"modalBlockEmployee(", "jsdata"=>array("id","fullName","empCode"),  "text"=>"Unblock");
+			}
+			else{
+				$action = array("url"=>"#block", "type"=>"modal", "css"=>"purple", "js"=>"modalBlockEmployee(", "jsdata"=>array("id","fullName","empCode"),  "text"=>"block");
+			}
+			$actions[] = $action;
+		}
+		$values["actions"] = $actions;
+	
+		$search = $_REQUEST["search"];
+		$search = $search['value'];
+		if($search != ""){
+			$entities = \Employee::where('fullName',"like","%$search%")->leftjoin('officebranch','employee.officeBranchId','=','officebranch.id')->leftjoin('user_roles_master','employee.roleId','=','user_roles_master.id')->select($select_args)->limit($length)->offset($start)->get();
+			$total = \Employee::where('fullName',"like","%$search%")->count();
+		}
+		else{
+			if(isset($values['action']) && $values['action']=="driver_helpers"){
+				if(isset($values['branch']) && $values['branch'] != ""){
+					$branch = $values['branch'];
+					$entities = \Employee::whereRaw(" (roleId=20 or roleId=19) and officebranchId='$branch' ")->leftjoin('officebranch','employee.officeBranchId','=','officebranch.id')->leftjoin('user_roles_master','employee.roleId','=','user_roles_master.id')->select($select_args)->limit($length)->offset($start)->get();
+					$total = \Employee::whereRaw(" (roleId=20 or roleId=19) and officebranchId='$branch' ")->count();
+				}
+				else{
+					$entities = \Employee::leftjoin('officebranch','employee.officeBranchId','=','officebranch.id')->where('roleId',"=",20)->orwhere("roleId", "=",19)->leftjoin('user_roles_master','employee.roleId','=','user_roles_master.id')->select($select_args)->limit($length)->offset($start)->get();
+					$total = \Employee::where('roleId',"=",20)->orwhere("roleId", "=",19)->count();
+				}
+			}
+			if(isset($values['action']) && $values['action']=="blocked"){
+				if(isset($values['branch']) && $values['branch'] != ""){
+					$branch = $values['branch'];
+					$entities = \Employee::where("officebranchId","=",$values['branch'])->where("status","=","BLOCKED")->leftjoin('officebranch','employee.officeBranchId','=','officebranch.id')->leftjoin('user_roles_master','employee.roleId','=','user_roles_master.id')->select($select_args)->limit($length)->offset($start)->get();
+					$total = \Employee::where("officebranchId","=",$values['branch'])->where("status","=","BLOCKED")->count();
+				}
+				else{
+					$entities = \Employee::where("status","=","BLOCKED")->leftjoin('officebranch','employee.officeBranchId','=','officebranch.id')->leftjoin('user_roles_master','employee.roleId','=','user_roles_master.id')->select($select_args)->limit($length)->offset($start)->get();
+					$total = \Employee::where("status","=","BLOCKED")->count();
+				}
+			}
+			if(isset($values['action']) && $values['action']=="terminated"){
+				if(isset($values['branch']) && $values['branch'] != ""){
+					$branch = $values['branch'];
+					$entities = \Employee::where("officebranchId","=",$values['branch'])->where("status","=","TERMINATED")->leftjoin('officebranch','employee.officeBranchId','=','officebranch.id')->leftjoin('user_roles_master','employee.roleId','=','user_roles_master.id')->select($select_args)->limit($length)->offset($start)->get();
+					$total = \Employee::where("officebranchId","=",$values['branch'])->where("status","=","TERMINATED")->count();
+				}
+				else{
+					$entities = \Employee::where("status","=","TERMINATED")->leftjoin('officebranch','employee.officeBranchId','=','officebranch.id')->leftjoin('user_roles_master','employee.roleId','=','user_roles_master.id')->select($select_args)->limit($length)->offset($start)->get();
+					$total = \Employee::where("status","=","TERMINATED")->count();
+				}
+			}
+			if(isset($values['action']) && $values['action']=="all"){
+				if(isset($values['branch']) && $values['branch'] != ""){
+					$entities = \Employee::where('officeBranchId',"=",$values['branch'])->where('roleId',"!=",20)->where("roleId", "!=",19)->where("status", "=","Active")->leftjoin('user_roles_master','employee.roleId','=','user_roles_master.id')->leftjoin('officebranch','employee.officeBranchId','=','officebranch.id')->select($select_args)->limit($length)->offset($start)->get();
+					$total = \Employee::where('officeBranchId',"=",$values['branch'])->where('roleId',"!=",20)->where("roleId", "!=",19)->where("status", "=","Active")->count();
+				}
+				else {
+					$entities = \Employee::where('roleId',"!=",20)->where("roleId", "!=",19)->where("status", "=","Active")->leftjoin('user_roles_master','employee.roleId','=','user_roles_master.id')->leftjoin('officebranch','employee.officeBranchId','=','officebranch.id')->select($select_args)->select($select_args)->limit($length)->offset($start)->get();
+					$total = \Employee::where('roleId',"!=",20)->where("roleId", "!=",19)->where("status", "=","Active")->leftjoin('user_roles_master','employee.roleId','=','user_roles_master.id')->leftjoin('officebranch','employee.officeBranchId','=','officebranch.id')->get();
+					$total = count($total);					
+				}
+			}
+		}
+	
+		$entities = $entities->toArray();
+		foreach($entities as $entity){
+			$data_values = array_values($entity);
+			$actions = $values['actions'];
+			$action_data = "";
+			foreach($actions as $action){
+				if($action["type"] == "modal"){
+					$jsfields = $action["jsdata"];
+					$jsdata = "";
+					$i=0;
+					for($i=0; $i<(count($jsfields)-1); $i++){
+						$jsdata = $jsdata." '".$entity[$jsfields[$i]]."', ";
+					}
+					$jsdata = $jsdata." '".$entity[$jsfields[$i]];
+					$action_data = $action_data. "<a class='btn btn-minier btn-".$action["css"]."' href='".$action['url']."' data-toggle='modal' onClick=\"".$action['js'].$jsdata."')\">".strtoupper($action["text"])."</a>&nbsp; &nbsp;" ;
+				}
+				else {
+					$action_data = $action_data."<a class='btn btn-minier btn-".$action["css"]."' href='".$action['url']."&id=".$entity['id']."'>".strtoupper($action["text"])."</a>&nbsp; &nbsp;" ;
+				}
+			}
+			$data_values[9] = $action_data;
+			$data[] = $data_values;
+		}
+		return array("total"=>$total, "data"=>$data);
 	}
 	
 	private function getCities($values, $length, $start){
@@ -232,7 +360,7 @@ class DataTableController extends \Controller {
 		return array("total"=>$total, "data"=>$data);
 	}
 	
-private function getProvider($values, $length, $start){
+	private function getProvider($values, $length, $start){
 		$total = 0;
 		$data = array();
 		$select_args = array();

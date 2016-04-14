@@ -157,21 +157,22 @@ class EmployeeController extends \Controller {
 			$select_args[] = "employee.fatherName as fatherName";
 			$select_args[] = "employee.status as status";
 			$select_args[] = "employee.fullName as fullName";
-					
+			
+			$values['provider'] = "employees&action=";
 			if(isset($values['action']) && $values['action']=="driver_helpers"){
+				$values["provider"] = $values["provider"]."driver_helpers";
 				if(isset($values['branch']) && $values['branch'] != ""){
-					$entities = \Employee::leftjoin('officebranch','employee.officeBranchId','=','officebranch.id')->where('officeBranchId',"=",$values['branch'])->where('roleId',"=",20)->orwhere("roleId", "=",19)->leftjoin('user_roles_master','employee.roleId','=','user_roles_master.id')->select($select_args)->paginate($entries);
+					$values["provider"] = $values["provider"]."&branch=".$values['branch'];
+					/*$entities = \Employee::leftjoin('officebranch','employee.officeBranchId','=','officebranch.id')->where('officeBranchId',"=",$values['branch'])->where('roleId',"=",20)->orwhere("roleId", "=",19)->leftjoin('user_roles_master','employee.roleId','=','user_roles_master.id')->select($select_args)->paginate($entries);
 					$total = \Employee::leftjoin('officebranch','employee.officeBranchId','=','officebranch.id')->where('officeBranchId',"=",$values['branch'])->where('roleId',"=",20)->orwhere("roleId", "=",19)->leftjoin('user_roles_master','employee.roleId','=','user_roles_master.id')->select($select_args)->get();
 					$total = count($total);
-				}
-				else{
-					$entities = \Employee::leftjoin('officebranch','employee.officeBranchId','=','officebranch.id')->where('roleId',"=",20)->orwhere("roleId", "=",19)->leftjoin('user_roles_master','employee.roleId','=','user_roles_master.id')->select($select_args)->paginate($entries);
-					$total = \Employee::leftjoin('officebranch','employee.officeBranchId','=','officebranch.id')->where('roleId',"=",20)->orwhere("roleId", "=",19)->leftjoin('user_roles_master','employee.roleId','=','user_roles_master.id')->select($select_args)->get();
-					$total = count($total);
+					*/
 				}
 			}
 			else if(isset($values['action']) && $values['action']=="blocked"){
+				$values["provider"] = $values["provider"]."blocked";
 				if(isset($values['branch']) && $values['branch'] != ""){
+					$values["provider"] = $values["provider"]."&branch=".$values['branch'];
 					$entities = \Employee::where('officeBranchId',"=",$values['branch'])->where('status',"=","BLOCKED")->leftjoin('user_roles_master','employee.roleId','=','user_roles_master.id')->leftjoin('officebranch','employee.officeBranchId','=','officebranch.id')->select($select_args)->paginate($entries);
 					$total = \Employee::where('officeBranchId',"=",$values['branch'])->where('status',"=","BLOCKED")->leftjoin('user_roles_master','employee.roleId','=','user_roles_master.id')->leftjoin('officebranch','employee.officeBranchId','=','officebranch.id')->select($select_args)->get();
 					$total = count($total);
@@ -183,7 +184,9 @@ class EmployeeController extends \Controller {
 				}
 			}
 			else if(isset($values['action']) && $values['action']=="terminated"){
+				$values["provider"] = $values["provider"]."terminated";
 				if(isset($values['branch']) && $values['branch'] != ""){
+					$values["provider"] = $values["provider"]."&branch=".$values['branch'];
 					$entities = \Employee::where('officeBranchId',"=",$values['branch'])->where('status',"=","TERMINATED")->leftjoin('user_roles_master','employee.roleId','=','user_roles_master.id')->leftjoin('officebranch','employee.officeBranchId','=','officebranch.id')->select($select_args)->paginate($entries);
 					$total = \Employee::where('officeBranchId',"=",$values['branch'])->where('status',"=","TERMINATED")->leftjoin('user_roles_master','employee.roleId','=','user_roles_master.id')->leftjoin('officebranch','employee.officeBranchId','=','officebranch.id')->select($select_args)->get();
 					$total = count($total);
@@ -195,7 +198,9 @@ class EmployeeController extends \Controller {
 				}
 			}
 			else if(isset($values['action']) && $values['action']=="all"){
+				$values["provider"] = $values["provider"]."all";
 				if(isset($values['branch']) && $values['branch'] != ""){
+					$values["provider"] = $values["provider"]."&branch=".$values['branch'];
 					$entities = \Employee::where('officeBranchId',"=",$values['branch'])->where('roleId',"!=",20)->where("roleId", "!=",19)->where("status", "=","Active")->leftjoin('user_roles_master','employee.roleId','=','user_roles_master.id')->leftjoin('officebranch','employee.officeBranchId','=','officebranch.id')->select($select_args)->paginate($entries);
 					$total = \Employee::where('officeBranchId',"=",$values['branch'])->where('roleId',"!=",20)->where("roleId", "!=",19)->where("status", "=","Active")->leftjoin('user_roles_master','employee.roleId','=','user_roles_master.id')->leftjoin('officebranch','employee.officeBranchId','=','officebranch.id')->select($select_args)->get();
 					$total = count($total);
@@ -207,8 +212,6 @@ class EmployeeController extends \Controller {
 				}
 			}
 			
-			$values['entities'] = $entities;
-			$values['total'] = $total;
 			
 			//Code to add modal forms
 			$modals =  array();
@@ -253,7 +256,6 @@ class EmployeeController extends \Controller {
 			$modals[] = $form_info;
 			
 			$values["modals"] = $modals;
-			$values['provider'] = "employees";
 				
 			return View::make('masters.layouts.employeedatatable', array("values"=>$values));
 		}
@@ -370,7 +372,7 @@ class EmployeeController extends \Controller {
 	public function addEmployee()
 	{
 		$values = Input::all();
-		$field_names = array("fullname"=>"fullName","gender"=>"gender", "city"=>"cityId",
+		$field_names = array("fullname"=>"fullName","gender"=>"gender", "city"=>"cityId","employeeid"=>"empCode",
 				"email"=>"emailId","password"=>"password", "designation"=>"roleId", "roleprevilage"=>"rolePrevilegeId",
 				"workgroup"=>"workGroup","age"=>"age", "fathername"=>"fatherName",
 				"religion"=>"religion","residance"=>"residance", "nonlocaldetails"=>"detailsForNonLocal",
@@ -387,7 +389,7 @@ class EmployeeController extends \Controller {
 					$fields[$val] = date("Y-m-d",strtotime($values[$key]));
 				}
 				else if($val == "password"){
-					$fields[$val] = md5($values[$key]);
+					$fields[$val] = \Hash::make($values[$key]);
 				}
 				else {
 					$fields[$val] = $values[$key];
@@ -399,33 +401,19 @@ class EmployeeController extends \Controller {
 			$entity[$key] = $value;
 		}
 		
-		
-		if(isset($values['family_name']) && $entity->save()){
-			$empid = $entity->id;
-			for($i=0; $i<count($values['family_name']); $i++){
-				$field_names = array("family_name"=>"name","family_relationship"=>"relationship", "family_gender"=>"gender",
-						"family_age"=>"age","family_nominee"=>"nominee", "family_job"=>"job",
-						"family_aadhaar"=>"aadharNumber","family_education"=>"Education", "family_mobile"=>"mobileNumber",
-						"family_accountnumber"=>"accountNumber","family_ifsccode"=>"ifscCode", "family_bankname"=>"bankName", "family_branchname"=>"branchName"
-					);
-				$fields = array();
-				foreach ($field_names as $key=>$val){
-					if(isset($values[$key])){
-						$fields[$val] = $values[$key][$i];
-					}
-				}
-				$fields["empid"] = $empid;
-				$entity = new \FamilyMembers();
-				foreach($fields as $key=>$value){
-					$entity[$key] = $value;
-				}
-				$entity->save();
-			}
+		$db_functions_ctrl = new DBFunctionsController();
+		$table = "Employee";
+		$values = array();
+		if($db_functions_ctrl->insert($table, $fields)){
 			\Session::put("message","Operation completed Successfully");
 			return \Redirect::to("addemployee");
 		}
-		\Session::put("message","Operation Could not be completed, Try Again!");
-		return \Redirect::to("addemployee");
+		else{
+			\Session::put("message","Operation Could not be completed, Try Again!");
+			return \Redirect::to("addemployee");
+		}
+		
+		
 	}
 	
 	/**

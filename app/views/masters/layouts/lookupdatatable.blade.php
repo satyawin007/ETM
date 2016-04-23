@@ -247,6 +247,7 @@
 				$("#statename1 option").each(function() {this.selected = (this.text == state); });
 				$("#status1 option").each(function() { this.selected = (this.text == status); });
 				$("#id1").val(id);		
+				$('.chosen-select').trigger("chosen:updated");
 			}
 
 			function modalEditService(id, source, dest, serviceno, status, servstatus){
@@ -397,7 +398,7 @@
 			}
 			<?php 
 				if(Session::has('message')){
-					echo "bootbox.confirm('".Session::pull('message')."', function(result) {});";
+					echo "bootbox.alert('".Session::pull('message')."', function(result) {});";
 				}
 			?>
 

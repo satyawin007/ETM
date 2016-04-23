@@ -373,14 +373,14 @@ class EmployeeController extends \Controller {
 	{
 		$values = Input::all();
 		$field_names = array("fullname"=>"fullName","gender"=>"gender", "city"=>"cityId","employeeid"=>"empCode",
-				"email"=>"emailId","password"=>"password", "designation"=>"roleId", "roleprevilage"=>"rolePrevilegeId",
+				"email"=>"emailId","password"=>"password", "roleprevilage"=>"roleId", "roleprevilage"=>"rolePrevilegeId",
 				"workgroup"=>"workGroup","age"=>"age", "fathername"=>"fatherName",
 				"religion"=>"religion","residance"=>"residance", "nonlocaldetails"=>"detailsForNonLocal",
 				"phonenumber"=>"mobileNo","homenumber"=>"homePhoneNo", "idproof"=>"idCardName",
 				"idproofnumber"=>"idCardNumber","leftjoiningdate"=>"leftjoiningDate", "rtaoffice"=>"rtaBranch",
 				"aadhdaarnumber"=>"aadharNumber","rationcardnumber"=>"rationCardNumber", "drivinglicence"=>"drivingLicence",
 				"drivingliceneexpiredate"=>"drvLicenceExpDate","accountnumber"=>"accountNumber", "bankname"=>"bankName",
-				"ifsccode"=>"ifscCode","branchname"=>"branchName", "presentaddress"=>"presentAddress"
+				"ifsccode"=>"ifscCode","branchname"=>"branchName", "presentaddress"=>"presentAddress","dateofbirth"=>"dob"
 			);
 		$fields = array();
 		foreach ($field_names as $key=>$val){

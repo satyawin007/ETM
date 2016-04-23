@@ -136,9 +136,9 @@
 										</div>
 									</div>-->
 									<div class="form-group">
-										<label class="col-xs-4 control-label no-padding-right" for="form-field-1"> Role-Previlage </label>
+										<label class="col-xs-4 control-label no-padding-right" for="form-field-1"> Role-Previlage<span style="color:red;">*</span> </label>
 										<div class="col-xs-8">
-											<select class="form-control"   id="roleprevilage" name="roleprevilage" onChange="getEmpId()">
+											<select class="form-control"   id="roleprevilage" name="roleprevilage" onChange="getEmpId()" required="required">
 												<option value="">-- Select Role Previlage --</option>
 												<?php 
 													$roles = \Role::All();
@@ -718,7 +718,7 @@
 			
 			<?php 
 				if(Session::has('message')){
-					echo "bootbox.confirm('".Session::pull('message')."', function(result) {});";
+					echo "bootbox.alert('".Session::pull('message')."', function(result) {});";
 				}
 			?>
 			

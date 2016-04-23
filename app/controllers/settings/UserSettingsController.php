@@ -31,6 +31,9 @@ class UserSettingsController extends \Controller {
 				if(isset($values[$key])){
 					$fields[$val] = $values[$key];
 				}
+				if($val == "dob" || $val == "drvLicenceExpDate" || $val == "joiningDate"){
+					$fields[$val] = date("Y-m-d",strtotime($values[$key]));
+				}
 			}
 			if (isset($values["billfile"]) && Input::hasFile('billfile') && Input::file('billfile')->isValid()) {
 				$destinationPath = storage_path().'/uploads/'; // upload path
@@ -65,12 +68,15 @@ class UserSettingsController extends \Controller {
 					"idproofnumber"=>"idCardNumber","presentaddress"=>"presentAddress","joiningdate"=>"joiningDate",
 					"aadhdaarnumber"=>"aadharNumber","rationcardnumber"=>"rationCardNumber", "drivinglicence"=>"drivingLicence",
 					"drivingliceneexpiredate"=>"drvLicenceExpDate","accountnumber"=>"accountNumber", "bankname"=>"bankName",
-					"ifsccode"=>"ifscCode","branchname"=>"branchName", "roleprevilage"=>"rolePrevilegeId", "designation"=>"roleId", "emailid"=>"emailId"
+					"ifsccode"=>"ifscCode","branchname"=>"branchName", "roleprevilage"=>"rolePrevilegeId", "roleprevilage"=>"roleId", "emailid"=>"emailId"
 			);
 			$fields = array();
 			foreach ($field_names as $key=>$val){
 				if(isset($values[$key])){
 					$fields[$val] = $values[$key];
+				}
+				if($val == "dob" || $val == "drvLicenceExpDate" || $val == "joiningDate"){
+					$fields[$val] = date("Y-m-d",strtotime($values[$key]));
 				}
 			}
 			if (isset($values["billfile"]) && Input::hasFile('billfile') && Input::file('billfile')->isValid()) {

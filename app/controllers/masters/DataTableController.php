@@ -804,13 +804,13 @@ class DataTableController extends \Controller {
 		$search = $_REQUEST["search"];
 		$search = $search['value'];
 		if($search != ""){
-			$citieids = \City::where("name", "like", "%$search%")->select("id")->get();
+			/* $citieids = \City::where("serviceNo", "like", "%$search%")->select("id")->get();
 			$citieids_arr = array();
 			foreach($citieids as $cityid){
 				$citieids_arr[] = $cityid->id;
-			}
-			$entities = \ServiceDetails::wherein("sourceCity", $citieids_arr)->join("cities","cities.id","=","servicedetails.sourceCity")->join("cities as cities1","cities1.id","=","servicedetails.destinationCity")->select($select_args)->limit($length)->offset($start)->get();
-			$total = \ServiceDetails::wherein("sourceCity", $citieids_arr)->join("cities","cities.id","=","servicedetails.sourceCity")->join("cities as cities1","cities1.id","=","servicedetails.destinationCity")->count();
+			} */
+			$entities = \ServiceDetails::where("serviceNo", "like", "%$search%")->join("cities","cities.id","=","servicedetails.sourceCity")->join("cities as cities1","cities1.id","=","servicedetails.destinationCity")->select($select_args)->limit($length)->offset($start)->get();
+			$total = \ServiceDetails::where("serviceNo", "like", "%$search%")->join("cities","cities.id","=","servicedetails.sourceCity")->join("cities as cities1","cities1.id","=","servicedetails.destinationCity")->count();
 		}
 		else{
 			$entities = \ServiceDetails::join("cities","cities.id","=","servicedetails.sourceCity")->join("cities as cities1","cities1.id","=","servicedetails.destinationCity")->select($select_args)->limit($length)->offset($start)->get();
@@ -862,12 +862,14 @@ class DataTableController extends \Controller {
 			foreach($bankids as $bankid){
 				$bankids_arr[] = $bankid->id;
 			}
-			$entities = \BankDetails::wherein("bankName", $bankids_arr)->select($select_args)->limit($length)->offset($start)->get();
-			$total = \BankDetails::wherein("bankName", $bankids_arr)->count();;
+			$entities = \BankDetails::whereIn("bankName",$bankids_arr)->join("lookuptypevalues","lookuptypevalues.id","=","bankdetails.bankName")
+									->join("lookuptypevalues as lookuptypevalues1","lookuptypevalues1.id","=","bankdetails.accountType")
+									->select($select_args)->limit($length)->offset($start)->get();
+			$total = \BankDetails::count();
 		}
 		else{
 			//$entities = \BankDetails::join("cities","cities.id","=","servicedetails.sourceCity")->join("cities as cities1","cities1.id","=","servicedetails.destinationCity")->select($select_args)->limit($length)->offset($start)->get();
-			$entities = \BankDetails::leftjoin("lookuptypevalues","lookuptypevalues.id","=","bankdetails.bankName")->leftjoin("lookuptypevalues as lookuptypevalues1","lookuptypevalues1.id","=","bankdetails.accountType")->select($select_args)->limit($length)->offset($start)->get();
+			$entities = \BankDetails::join("lookuptypevalues","lookuptypevalues.id","=","bankdetails.bankName")->join("lookuptypevalues as lookuptypevalues1","lookuptypevalues1.id","=","bankdetails.accountType")->select($select_args)->limit($length)->offset($start)->get();
 			$total = \BankDetails::count();
 		}
 		$entities = $entities->toArray();

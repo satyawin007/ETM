@@ -68,7 +68,7 @@ class UserSettingsController extends \Controller {
 					"idproofnumber"=>"idCardNumber","presentaddress"=>"presentAddress","joiningdate"=>"joiningDate",
 					"aadhdaarnumber"=>"aadharNumber","rationcardnumber"=>"rationCardNumber", "drivinglicence"=>"drivingLicence",
 					"drivingliceneexpiredate"=>"drvLicenceExpDate","accountnumber"=>"accountNumber", "bankname"=>"bankName",
-					"ifsccode"=>"ifscCode","branchname"=>"branchName", "roleprevilage"=>"rolePrevilegeId", "roleprevilage"=>"roleId", "emailid"=>"emailId"
+					"ifsccode"=>"ifscCode","branchname"=>"branchName", "roleprevilage"=>"rolePrevilegeId",  "emailid"=>"emailId"
 			);
 			$fields = array();
 			foreach ($field_names as $key=>$val){
@@ -79,6 +79,7 @@ class UserSettingsController extends \Controller {
 					$fields[$val] = date("Y-m-d",strtotime($values[$key]));
 				}
 			}
+			$fields["roleId"] = $fields["rolePrevilegeId"];
 			if (isset($values["billfile"]) && Input::hasFile('billfile') && Input::file('billfile')->isValid()) {
 				$destinationPath = storage_path().'/uploads/'; // upload path
 				$extension = Input::file('billfile')->getClientOriginalExtension(); // getting image extension
@@ -91,6 +92,15 @@ class UserSettingsController extends \Controller {
 			$data = array("id"=>$values["id"]);
 			if($db_functions_ctrl->update($table, $fields, $data)){
 				\Session::put("message","Operation completed Successfully");
+				
+				$roleid = $values["roleprevilage"];
+				$privileges = \RolePrivileges::where("roleId","=",$roleid)->get();
+				$privileges_arr = array();
+				foreach ($privileges as $privilege){
+					$privileges_arr[] = $privilege->jobId;
+				}
+				\Session::put("jobs",$privileges_arr);
+				
 				return \Redirect::to("employeeprofile?id=".$values["id"]);
 			}
 			else{

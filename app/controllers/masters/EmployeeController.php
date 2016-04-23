@@ -373,11 +373,11 @@ class EmployeeController extends \Controller {
 	{
 		$values = Input::all();
 		$field_names = array("fullname"=>"fullName","gender"=>"gender", "city"=>"cityId","employeeid"=>"empCode",
-				"email"=>"emailId","password"=>"password", "roleprevilage"=>"roleId", "roleprevilage"=>"rolePrevilegeId",
+				"email"=>"emailId","password"=>"password", "roleprevilage"=>"rolePrevilegeId",
 				"workgroup"=>"workGroup","age"=>"age", "fathername"=>"fatherName",
 				"religion"=>"religion","residance"=>"residance", "nonlocaldetails"=>"detailsForNonLocal",
 				"phonenumber"=>"mobileNo","homenumber"=>"homePhoneNo", "idproof"=>"idCardName",
-				"idproofnumber"=>"idCardNumber","leftjoiningdate"=>"leftjoiningDate", "rtaoffice"=>"rtaBranch",
+				"idproofnumber"=>"idCardNumber","joiningdate"=>"joiningDate", "rtaoffice"=>"rtaBranch",
 				"aadhdaarnumber"=>"aadharNumber","rationcardnumber"=>"rationCardNumber", "drivinglicence"=>"drivingLicence",
 				"drivingliceneexpiredate"=>"drvLicenceExpDate","accountnumber"=>"accountNumber", "bankname"=>"bankName",
 				"ifsccode"=>"ifscCode","branchname"=>"branchName", "presentaddress"=>"presentAddress","dateofbirth"=>"dob"
@@ -385,7 +385,7 @@ class EmployeeController extends \Controller {
 		$fields = array();
 		foreach ($field_names as $key=>$val){
 			if(isset($values[$key])){
-				if($val == "dob" || $val == "drvLicenceExpDate" || $val == "leftjoiningDate"){
+				if($val == "dob" || $val == "drvLicenceExpDate" || $val == "joiningDate"){
 					$fields[$val] = date("Y-m-d",strtotime($values[$key]));
 				}
 				else if($val == "password"){
@@ -396,6 +396,7 @@ class EmployeeController extends \Controller {
 				}
 			}
 		}
+		$fields["roleId"] = $fields["rolePrevilegeId"];
 		$entity = new \Employee();
 		foreach($fields as $key=>$value){
 			$entity[$key] = $value;

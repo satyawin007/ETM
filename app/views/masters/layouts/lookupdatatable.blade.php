@@ -54,8 +54,8 @@
 						($form_info['action']=="addfuelstation" && in_array(233, $jobs)) or
 						($form_info['action']=="addloan" && in_array(235, $jobs)) or
 						($form_info['action']=="adddailyfinance" && in_array(237, $jobs)) or
-						($form_info['action']=="addserviceprovider" && in_array(239, $jobs))
-						
+						($form_info['action']=="addserviceprovider" && in_array(239, $jobs)) or
+						($form_info['action']=="addrole" && in_array(239, $jobs))
 					  ){ ?>
 					@include("masters.layouts.addlookupform",$form_info)
 				<?php } ?>
